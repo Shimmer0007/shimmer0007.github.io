@@ -35,7 +35,7 @@
 <body class="flex flex-col items-center justify-center min-h-screen text-center relative">
     <canvas id="particleCanvas"></canvas>
     <h1 class="text-4xl sm:text-5xl font-bold mb-4">日安，欢迎来到Shimmer的小站</h1>
-    <p class="text-lg text-gray-600 mb-6">你的到来让这里蓬~荜~生~辉~</p>
+    <p class="text-lg text-gray-600 mb-6">好日子在后头，而我们要向前看</p>
     <div class="grid grid-cols-2 gap-6 sm:flex sm:space-x-6">
         <button class="button bg-white bg-opacity-80 px-6 py-3 rounded-lg shadow-lg">微光博客</button>
         <button class="button bg-white bg-opacity-80 px-6 py-3 rounded-lg shadow-lg">课业笔记</button>
@@ -43,7 +43,7 @@
         <button class="button bg-white bg-opacity-80 px-6 py-3 rounded-lg shadow-lg">技能树</button>
     </div>
     <footer class="absolute bottom-4 text-gray-500 text-sm">
-        “好日子在后头，我们要向前看” © 2024 Shimmer的二月计划
+        脚踏实地，稳扎稳打，抓紧时间不放松 © 2024 Shimmer的二月计划
     </footer>
     <script>
         document.querySelectorAll('.button').forEach(button => {
@@ -62,6 +62,7 @@
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         let particles = [];
+        let mouse = { x: null, y: null };
 
         class Particle {
             constructor(x, y, size, speedX, speedY) {
@@ -76,6 +77,14 @@
                 this.y += this.speedY;
                 if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
                 if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+                
+                let dx = this.x - mouse.x;
+                let dy = this.y - mouse.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < 100) {
+                    this.x += dx * -0.02;
+                    this.y += dy * -0.02;
+                }
             }
             draw() {
                 ctx.fillStyle = "rgba(78, 205, 196, 0.5)";
@@ -105,6 +114,29 @@
         }
         initParticles();
         animateParticles();
+        
+        window.addEventListener("mousemove", (event) => {
+            mouse.x = event.clientX;
+            mouse.y = event.clientY;
+            
+            const trail = document.createElement("div");
+            trail.style.position = "absolute";
+            trail.style.width = "6px";
+            trail.style.height = "6px";
+            trail.style.background = "linear-gradient(45deg, rgba(78, 205, 196, 0.6), rgba(46, 134, 222, 0.6), rgba(142, 68, 173, 0.6))";
+            trail.style.borderRadius = "50%";
+            trail.style.left = `${mouse.x}px`;
+            trail.style.top = `${mouse.y}px`;
+            trail.style.pointerEvents = "none";
+            trail.style.opacity = "1";
+            trail.style.transition = "opacity 0.5s ease-out";
+            document.body.appendChild(trail);
+            
+            setTimeout(() => {
+                trail.style.opacity = "0";
+                setTimeout(() => trail.remove(), 500);
+            }, 50);
+        });
     </script>
 </body>
 </html>
