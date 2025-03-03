@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shimmer的小站</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #f0f4ff, #e6e9ff);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+        }
+        .button {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(78, 205, 196, 0.4);
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen text-center relative">
+    <canvas id="particleCanvas"></canvas>
+    <h1 class="text-4xl sm:text-5xl font-bold mb-4">日安，欢迎来到Shimmer的小站</h1>
+    <p class="text-lg text-gray-600 mb-6">你的到来让这里蓬~荜~生~辉~</p>
+    <div class="grid grid-cols-2 gap-6 sm:flex sm:space-x-6">
+        <button class="button bg-white bg-opacity-80 px-6 py-3 rounded-lg shadow-lg">微光博客</button>
+        <button class="button bg-white bg-opacity-80 px-6 py-3 rounded-lg shadow-lg">课业笔记</button>
+        <button class="button bg-white bg-opacity-80 px-6 py-3 rounded-lg shadow-lg">彩蛋</button>
+        <button class="button bg-white bg-opacity-80 px-6 py-3 rounded-lg shadow-lg">技能树</button>
+    </div>
+    <footer class="absolute bottom-4 text-gray-500 text-sm">
+        “好日子在后头，我们要向前看” © 2024 Shimmer的二月计划
+    </footer>
+    <script>
+        document.querySelectorAll('.button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                let ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                ripple.style.left = `${e.clientX - button.offsetLeft}px`;
+                ripple.style.top = `${e.clientY - button.offsetTop}px`;
+                button.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        const canvas = document.getElementById("particleCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+
+        class Particle {
+            constructor(x, y, size, speedX, speedY) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.speedX = speedX;
+                this.speedY = speedY;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+                if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = "rgba(78, 205, 196, 0.5)";
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 50; i++) {
+                let size = Math.random() * 3 + 1;
+                let x = Math.random() * canvas.width;
+                let y = Math.random() * canvas.height;
+                let speedX = (Math.random() - 0.5) * 2;
+                let speedY = (Math.random() - 0.5) * 2;
+                particles.push(new Particle(x, y, size, speedX, speedY));
+            }
+        }
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles();
+        animateParticles();
+    </script>
+</body>
+</html>
