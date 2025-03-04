@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程笔记</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 自定义颜色 */
+        .status-progress {
+            background-color: #f59e0b; /* 进行中-黄色 */
+        }
+
+        .status-completed {
+            background-color: #10b981; /* 已完成-绿色 */
+        }
+
+        /* 响应式 */
+        @media (max-width: 640px) {
+            .card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+
+    <!-- 顶部导航区 -->
+    <header class="flex justify-between items-center p-4 bg-blue-600 text-white">
+        <h1 class="text-xl font-bold">课程笔记</h1>
+        <div class="relative w-1/4">
+            <input type="text" id="searchInput" placeholder="搜索笔记..." class="w-full px-4 py-2 rounded-lg bg-white text-gray-700 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        </div>
+    </header>
+
+    <!-- 分类过滤栏 -->
+    <div class="flex space-x-4 p-4">
+        <div class="flex space-x-2">
+            <button class="category-filter px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200" data-category="编程">编程</button>
+            <button class="category-filter px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200" data-category="数学">数学</button>
+            <button class="category-filter px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200" data-category="设计">设计</button>
+        </div>
+        <div class="flex space-x-2 ml-auto">
+            <button class="status-filter px-4 py-2 rounded-lg bg-yellow-200 hover:bg-yellow-300" data-status="进行中">进行中</button>
+            <button class="status-filter px-4 py-2 rounded-lg bg-green-200 hover:bg-green-300" data-status="已完成">已完成</button>
+        </div>
+    </div>
+
+    <!-- 笔记展示区 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4" id="notesContainer">
+        <!-- 卡片内容将通过 JavaScript 动态渲染 -->
+    </div>
+
+    <script>
+        // 模拟数据
+        const notes = [
+            {
+                id: 1,
+                category: "编程",
+                title: "JavaScript基础",
+                lastUpdated: "2024-02-20",
+                status: "进行中",
+                tags: ["变量", "函数", "对象"]
+            },
+            {
+                id: 2,
+                category: "数学",
+                title: "微积分入门",
+                lastUpdated: "2024-02-15",
+                status: "已完成",
+                tags: ["极限", "导数", "积分"]
+            },
+            {
+                id: 3,
+                category: "设计",
+                title: "UI/UX设计原则",
+                lastUpdated: "2024-02-10",
+                status: "进行中",
+                tags: ["界面", "用户体验", "交互设计"]
+            },
+            {
+                id: 4,
+                category: "编程",
+                title: "React框架深入",
+                lastUpdated: "2024-01-30",
+                status: "已完成",
+                tags: ["React", "Hooks", "State"]
+            },
+            {
+                id: 5,
+                category: "设计",
+                title: "色彩搭配技巧",
+                lastUpdated: "2024-01-25",
+                status: "进行中",
+                tags: ["配色", "色轮", "对比度"]
+            },
+            {
+                id: 6,
+                category: "数学",
+                title: "线性代数基础",
+                lastUpdated: "2024-02-18",
+                status: "已完成",
+                tags: ["矩阵", "行列式", "特征值"]
+            }
+        ];
+
+        // 动态渲染笔记卡片
+        function renderNotes(filteredNotes) {
+            const notesContainer = document.getElementById('notesContainer');
+            notesContainer.innerHTML = ''; // 清空容器
+
+            filteredNotes.forEach(note => {
+                const card = document.createElement('div');
+                card.classList.add('card', 'bg-white', 'p-4', 'rounded-lg', 'shadow-lg', 'hover:scale-105', 'transition-all', 'cursor-pointer');
+                card.innerHTML = `
+                    <div class="flex items-center mb-4">
+                        <span class="text-blue-600 font-semibold">${note.category}</span>
+                    </div>
+                    <h2 class="text-xl font-semibold">${note.title}</h2>
+                    <p class="text-sm text-gray-500 mt-2">最后更新：${note.lastUpdated}</p>
+                    <div class="flex space-x-2 mt-3">
+                        <span class="px-2 py-1 text-xs text-white rounded-full ${note.status === '进行中' ? 'status-progress' : 'status-completed'}">${note.status}</span>
+                    </div>
+                    <div class="flex space-x-2 mt-2">
+                        ${note.tags.map(tag => `<span class="text-xs bg-gray-200 px-2 py-1 rounded-full">${tag}</span>`).join('')}
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    window.location.href = `/notes/${note.id}`; // 点击卡片跳转详情页
+                });
+                notesContainer.appendChild(card);
+            });
+        }
+
+        // 初次渲染所有笔记
+        renderNotes(notes);
+
+        // 搜索框过滤
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+            const filteredNotes = notes.filter(note =>
+                note.title.toLowerCase().includes(searchTerm) ||
+                note.category.toLowerCase().includes(searchTerm) ||
+                note.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+            );
+            renderNotes(filteredNotes);
+        });
+
+        // 分类过滤
+        document.querySelectorAll('.category-filter').forEach(button => {
+            button.addEventListener('click', function () {
+                const category = this.getAttribute('data-category');
+                const filteredNotes = notes.filter(note => note.category === category);
+                renderNotes(filteredNotes);
+                document.querySelectorAll('.category-filter').forEach(btn => btn.classList.remove('bg-blue-100'));
+                this.classList.add('bg-blue-100');
+            });
+        });
+
+        // 状态过滤
+        document.querySelectorAll('.status-filter').forEach(button => {
+            button.addEventListener('click', function () {
+                const status = this.getAttribute('data-status');
+                const filteredNotes = notes.filter(note => note.status === status);
+                renderNotes(filteredNotes);
+                document.querySelectorAll('.status-filter').forEach(btn => btn.classList.remove('bg-blue-100'));
+                this.classList.add('bg-blue-100');
+            });
+        });
+    </script>
+
+</body>
+
+</html>
