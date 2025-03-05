@@ -1,194 +1,88 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="auto">
+<html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>下一代博客导航</title>
-  <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css">
-  <style>
-    /* 设计系统变量 */
-    :root {
-      --surface-1: oklch(99% 0.02 290);
-      --surface-2: oklch(95% 0.03 290 / 0.6);
-      --text-1: oklch(25% 0.06 290);
-      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      
-      /* 暗黑模式变量 */
-      @media (prefers-color-scheme: dark) {
-        --surface-1: oklch(20% 0.02 290);
-        --surface-2: oklch(25% 0.03 290 / 0.6);
-        --text-1: oklch(95% 0.02 290);
-      }
-    }
-
-    /* 原子化基础样式 */
-    .grid { display: grid; gap: 1rem; }
-    .flex { display: flex; gap: 0.5rem; }
-    .wrap { flex-wrap: wrap; }
-    .card { 
-      background: var(--surface-2);
-      backdrop-filter: blur(10px);
-      border-radius: 1rem;
-      padding: 1rem;
-      transition: var(--transition);
-    }
-    
-    /* 响应式布局 */
-    .blog-grid {
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      @media (width >= 1280px) { grid-template-columns: repeat(4, 1fr); }
-      @media (width <= 768px) { grid-template-columns: 1fr; }
-    }
-    
-    /* 玻璃拟态效果 */
-    .glass {
-      background: linear-gradient(
-        135deg,
-        var(--surface-2),
-        var(--surface-1)
-      );
-      box-shadow: 0 8px 32px rgb(0 0 0 / 0.1);
-      border: 1px solid rgb(255 255 255 / 0.1);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客导航</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #6767be, #2a2a4a);
+            color: white;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .nav-header {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        .search-container input {
+            padding: 10px;
+            width: 300px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+        }
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            width: 80%;
+        }
+        .blog-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .blog-card:hover {
+            transform: scale(1.05);
+        }
+        footer {
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const blogContainer = document.getElementById("blog-container");
+            const blogs = [
+                { title: "JavaScript 深入解析", author: "张三", time: "2小时前", tags: ["JS", "Web"] },
+                { title: "CSS 动画指南", author: "李四", time: "1天前", tags: ["CSS", "动画"] },
+                { title: "Web 性能优化", author: "王五", time: "3天前", tags: ["优化", "性能"] }
+            ];
+            
+            blogs.forEach(blog => {
+                const card = document.createElement("div");
+                card.className = "blog-card";
+                card.innerHTML = `
+                    <h2>${blog.title}</h2>
+                    <p>作者: ${blog.author} | ${blog.time}</p>
+                    <p>标签: ${blog.tags.join(", ")}</p>
+                `;
+                blogContainer.appendChild(card);
+            });
+        });
+    </script>
 </head>
 <body>
-  <blog-nav>
-    <header class="glass">
-      <search-box>
-        <input type="search" aria-label="搜索文章">
-        <filter-controls>
-          <time-filter>
-            <select aria-label="时间排序">
-              <option value="newest">最新</option>
-              <option value="popular">最热</option>
-            </select>
-          </time-filter>
-        </filter-controls>
-      </search-box>
+    <header class="nav-header">
+        <h1>博客导航</h1>
+        <div class="search-container">
+            <input type="text" id="search" placeholder="搜索文章...">
+        </div>
     </header>
-
-    <main>
-      <article-grid class="blog-grid">
-        <template id="card-template">
-          <article class="card glass">
-            <header>
-              <h3 class="truncate"></h3>
-              <author-info>
-                <img width="40" height="40" alt="作者头像">
-                <div>
-                  <p class="author-name"></p>
-                  <time class="relative-time"></time>
-                </div>
-              </author-info>
-            </header>
-            <tag-cloud></tag-cloud>
-          </article>
-        </template>
-        <div id="skeleton-loader" aria-busy="true"></div>
-      </article-grid>
-    </main>
-  </blog-nav>
-
-  <script type="module">
-    // 响应式状态管理
-    const state = new Proxy({
-      posts: [],
-      filters: new URLSearchParams(location.search),
-      page: 1
-    }, {
-      set(target, key, value) {
-        target[key] = value;
-        if (key === 'posts') renderCards();
-        return true;
-      }
-    });
-
-    // Web Component定义
-    class BlogNav extends HTMLElement {
-      constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
-      }
-
-      connectedCallback() {
-        this.shadowRoot.innerHTML = `
-          <style>
-            :host { 
-              display: block;
-              min-height: 100dvh;
-              background: var(--surface-1);
-              color: var(--text-1);
-              font-family: 'Inter', sans-serif;
-            }
-          </style>
-          <slot></slot>
-        `;
-      }
-    }
-    customElements.define('blog-nav', BlogNav);
-
-    // 数据加载与渲染
-    async function loadPosts() {
-      try {
-        const response = await fetch('/api/posts');
-        state.posts = await response.json();
-      } catch (error) {
-        console.error('数据加载失败:', error);
-      }
-    }
-
-    function renderCards() {
-      const grid = document.querySelector('article-grid');
-      grid.innerHTML = '';
-      
-      state.posts.slice(0, state.page * 20).forEach(post => {
-        const card = document.importNode(
-          document.querySelector('#card-template').content, true
-        );
-        
-        // 填充卡片数据
-        card.querySelector('h3').textContent = post.title;
-        card.querySelector('img').src = post.author.avatar;
-        card.querySelector('.author-name').textContent = post.author.name;
-        card.querySelector('.relative-time').textContent = formatRelativeTime(post.date);
-        
-        // 交互事件绑定
-        card.querySelector('article').addEventListener('click', () => {
-          toggleSummary(card, post.content);
-        });
-        
-        grid.appendChild(card);
-      });
-    }
-
-    // 实用函数
-    const formatRelativeTime = date => new Intl.RelativeTimeFormat('zh-CN').format(
-      Math.round((new Date(date) - Date.now()) / 3600000), 'hour'
-    );
-
-    // 初始化
-    window.addEventListener('DOMContentLoaded', () => {
-      loadPosts();
-      setupIntersectionObserver();
-      setupServiceWorker();
-    });
-
-    // 性能优化相关
-    function setupIntersectionObserver() {
-      const observer = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting) {
-          state.page++;
-        }
-      });
-      observer.observe(document.querySelector('#skeleton-loader'));
-    }
-
-    function setupServiceWorker() {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js');
-      }
-    }
-  </script>
+    
+    <main id="blog-container" class="blog-grid"></main>
+    
+    <footer>
+        <p>© 2025 博客导航</p>
+    </footer>
 </body>
 </html>
