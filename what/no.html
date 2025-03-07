@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>警告界面</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(45deg, #2a0a0a 0%, #0a0000 100%);
+            overflow: hidden;
+            cursor: pointer;
+            font-family: 'Arial Black', sans-serif;
+        }
+
+        .warning-container {
+            position: relative;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: pulse 2.5s infinite;
+        }
+
+        .warning-text {
+            color: #ff4444;
+            font-size: 2.8rem;
+            text-shadow: 0 0 15px #ff0000;
+            text-align: center;
+            padding: 20px;
+            border: 3px solid #ff5555;
+            transform: rotate(-2deg);
+            background: rgba(0, 0, 0, 0.7);
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .warning-text::after {
+            content: "⚠";
+            position: absolute;
+            top: -30px;
+            right: -20px;
+            font-size: 4rem;
+            opacity: 0.3;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes blink {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.1; }
+            100% { opacity: 0.3; }
+        }
+
+        /* 背景危险图案 */
+        body::before {
+            content: "";
+            position: fixed;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                repeating-linear-gradient(45deg, 
+                    transparent 0 10px, 
+                    rgba(255 0 0 / 0.05) 10px 20px),
+                repeating-linear-gradient(-45deg, 
+                    transparent 0 10px, 
+                    rgba(255 0 0 / 0.05) 10px 20px);
+            animation: scan 30s linear infinite;
+        }
+
+        @keyframes scan {
+            from { transform: translateY(0); }
+            to { transform: translateY(-50%); }
+        }
+    </style>
+</head>
+<body>
+    <div class="warning-container" onclick="window.location.href='https://fakeupdate.net/win7'">
+        <div class="warning-text">
+            你根本不知道这是什么地方！
+        </div>
+    </div>
+
+    <script>
+        // 添加随机震动效果
+        document.addEventListener('mousemove', (e) => {
+            const intensity = Math.min(
+                Math.abs(e.clientX - window.innerWidth/2)/50 +
+                Math.abs(e.clientY - window.innerHeight/2)/50, 5
+            );
+            document.body.style.backdropFilter = 
+                `blur(${intensity}px) brightness(${100 - intensity*5}%)`;
+        });
+
+        // 点击前随机频率的警告音效提示（需要音效文件）
+        setInterval(() => {
+            if(Math.random() > 0.7) {
+                new Audio('alert-beep.mp3').play().catch(() => {});
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
