@@ -1,0 +1,90 @@
+<html><plasmo-csui id="plasmo-copy-text-sidebar"></plasmo-csui><head><title>BSOD</title>
+
+    <style>
+    body { cursor:none;}
+    .content {width:700px; margin:10% auto;user-select:none;-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none; }
+    </style>
+    <script type="text/javascript"> 
+    
+    var message="Sorry, right-click has been disabled"; 
+    function clickIE() {if (document.all) {(message);return false;}} 
+    function clickNS(e) {if 
+    (document.layers||(document.getElementById&&!document.all)) { 
+    if (e.which==2||e.which==3) {(message);return false;}}} 
+    if (document.layers) 
+    {document.captureEvents(Event.MOUSEDOWN);document.onmousedown=clickNS;} 
+    else{document.onmouseup=clickNS;document.oncontextmenu=clickIE;} 
+    document.oncontextmenu=new Function("return false") 
+    // --> 
+    
+    
+    
+    
+    setInterval(goBack, 20000);
+    
+    function goBack() {
+    location.href = "upgrade.html";
+    }
+    
+    
+    </script> 
+    
+    </head><body bgcolor="#0086ac" scroll="no"> 
+    
+    <div class="content">
+    <font face="Segoe UI" size="4" color="#FFFFFF"> 
+    <p style="font-size:100pt; margin:0; padding-bottom:20pt" id="zero">:(</p>
+    <p style="font-size:20pt; margin:0; padding:0">System Info<br><span id="one">Is your keyboard missing some keys, or are you always this slow?</span></p>
+    <p style="font-size:11pt; color:#7ce3ff; margin:0; padding:20px 0 0 0">Problem Details: <span id="two" style="text-transform:uppercase">SCREEN_SADNESS_SYNDROME: Your computer is experiencing an emotional breakdown. It's okay, we all have those days.</span></p>
+    <p style="font-size:20pt; margin:0; padding-top:20px" id="three">Restart your PC manually</p>
+    <img src="qr.png" style="width:72px;opacity:0.5;margin-top:30px;">
+    </font></div><font face="Segoe UI" size="4" color="#FFFFFF">
+    </font> 
+    
+    
+    <script>
+    function replaceInsult() {
+      const insultElement = document.getElementById("one");
+      if (insultElement) {
+    
+    const faces = [":(", "Lol", ":)", ":<", ":|", ";_;", "):", ":(", ":(", ":("]
+    document.getElementById("zero").innerText = faces[Math.floor(Math.random() * faces.length)];
+    
+      const bsodMessages = [
+        "ERROR_FATAL_ERROR: Your computer tried to divide by zero and failed math class.",
+        "SYSTEM_MELTDOWN_EXCEPTION: Too much heat in your computer. Maybe it needs a vacation?",
+        "KERNEL_PANIC_OVERCOFFEE: Your computer drank too much coffee and crashed. Time for decaf!",
+        "PAGE_FAULT_IN_NONEXISTENT_BOOK: Your computer tried to read a book that doesn't exist. Classic literature bug.",
+        "IRQL_NOT_EQUAL_TO_CLEVERNESS: Your computer couldn't match the required cleverness level. Try upgrading your jokes.",
+        "DRIVER_IRL_ISSUES: Your computer is having a mid-life crisis. It's time for a new driver's license photo.",
+        "BAD_POOL_PARTY_EXCEPTION: Your computer wasn't invited to the pool party and got upset. Socially rejected error.",
+        "CRITICAL_PROCESS_HUNGRY: Your computer is hangry and demanding snacks. Feed it some bytes!",
+        "INFINITE_LOOP_DEJA_VU: Your computer is stuck in a loop but insists it's never happened before. D茅j脿 vu error.",
+        "SCREEN_SADNESS_SYNDROME: Your computer is experiencing an emotional breakdown. It's okay, we all have those days."
+      ];
+    
+    document.getElementById("two").innerText = bsodMessages[Math.floor(Math.random() * bsodMessages.length)];
+        const insults = [
+          "You're not the brightest bulb in the chandelier, are you?",
+           "Your PC is okay and operates normally. This is just a wallpaper. 100% operational Promise.",
+          "If you were any slower, you'd be going backward.",
+          "Are you on a coffee break from being productive?",
+          "You're not the sharpest tool in the shed, but at least you're useful sometimes.",
+          "I'd agree with you but then we'd both be wrong.",
+          "Your intelligence is a rare and wonderful thing. Too bad you don't have any.",
+          "Is your keyboard missing some keys, or are you always this slow?",
+          "I'd insult you, but nature already did a better job.",
+          "You're like a human proof that evolution can go in reverse.",
+          "I'm not saying you're stupid, but you have a lot of bad luck thinking."
+        ];
+    
+        const randomInsult = insults[Math.floor(Math.random() * insults.length)];
+        insultElement.innerText = randomInsult;
+      }
+    }
+    
+    replaceInsult(); // Call the function on page load
+    
+    </script>
+     
+    <kimi-web-extension data-wxt-shadow-root="" style="z-index: 2147483647; overflow: visible; position: relative; width: 0px; height: 0px; display: block;"></kimi-web-extension></body></html>
