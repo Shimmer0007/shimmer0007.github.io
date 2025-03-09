@@ -116,7 +116,7 @@
             // 可以在此添加更多特殊跳转：id: 'url'
         };
 
-        
+
         // 动态渲染笔记卡片
         function renderNotes(filteredNotes) {
             const notesContainer = document.getElementById('notesContainer');
@@ -141,7 +141,7 @@
                     </div>
                 `;
                 card.addEventListener('click', () => {
-                    window.location.href = `/notes/${note.id}`; // 点击卡片跳转详情页
+                    window.location.href = specialLinks[note.id] || `/notes/${note.id}`; // 点击卡片跳转网页
                 });
                 notesContainer.appendChild(card);
             });
