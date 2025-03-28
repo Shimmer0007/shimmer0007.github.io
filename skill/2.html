@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>张三的个人技能树</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+            --panel-bg: #ffffff;
+            --locked-color: #cccccc;
+            --beginner-color: #8bc34a;
+            --intermediate-color: #ffc107;
+            --advanced-color: #ff9800;
+            --expert-color: #f44336;
+            --master-color: #9c27b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            grid-template-rows: 60px 1fr;
+            height: 100vh;
+            grid-template-areas:
+                "header header"
+                "main sidebar";
+        }
+
+        header {
+            grid-area: header;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 8px 15px 8px 35px;
+            border-radius: 20px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 200px;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+            width: 250px;
+        }
+
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.8;
+        }
+
+        .main-content {
+            grid-area: main;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #skill-tree {
+            width: 100%;
+            height: 100%;
+            background-color: var(--panel-bg);
+        }
+
+        .sidebar {
+            grid-area: sidebar;
+            background-color: var(--panel-bg);
+            border-left: 1px solid #e0e0e0;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .detail-icon {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+
+        .detail-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-icon {
+            margin-right: 8px;
+        }
+
+        .item-list {
+            list-style-type: none;
+        }
+
+        .item {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .item-icon {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+
+        .skill-level {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .level-beginner { background-color: var(--beginner-color); }
+        .level-intermediate { background-color: var(--intermediate-color); }
+        .level-advanced { background-color: var(--advanced-color); }
+        .level-expert { background-color: var(--expert-color); }
+        .level-master { background-color: var(--master-color); }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 5px;
+            height: 6px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 5px;
+            background: linear-gradient(90deg, var(--beginner-color), var(--master-color));
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+        }
+
+        .filter-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .filter-tag {
+            background-color: #e0e0e0;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tag:hover, .filter-tag.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* 节点样式 */
+        .node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .node circle {
+            stroke-width: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .node text {
+            font-size: 12px;
+            font-weight: bold;
+            fill: #333;
+            text-shadow: 0 0 3px white, 0 0 3px white, 0 0 3px white;
+        }
+
+        .node.root circle {
+            fill: var(--primary-color);
+            stroke: white;
+            stroke-width: 3px;
+            r: 20;
+        }
+
+        .node.category circle {
+            fill: var(--secondary-color);
+            stroke: white;
+            r: 16;
+        }
+
+        .node.skill circle {
+            fill: white;
+            stroke: var(--accent-color);
+            r: 14;
+        }
+
+        .node.locked circle {
+            fill: var(--locked-color);
+            stroke: #999;
+        }
+
+        .node.beginner circle {
+            fill: var(--beginner-color);
+            stroke: white;
+        }
+
+        .node.intermediate circle {
+            fill: var(--intermediate-color);
+            stroke: white;
+        }
+
+        .node.advanced circle {
+            fill: var(--advanced-color);
+            stroke: white;
+        }
+
+        .node.expert circle {
+            fill: var(--expert-color);
+            stroke: white;
+        }
+
+        .node.master circle {
+            fill: var(--master-color);
+            stroke: white;
+            filter: url(#glow);
+        }
+
+        .link {
+            stroke: #ccc;
+            stroke-width: 2px;
+            fill: none;
+        }
+
+        .link.strong {
+            stroke: var(--accent-color);
+            stroke-width: 3px;
+        }
+
+        /* 动画 */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .node.master {
+            animation: pulse 2s infinite;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 60px 1fr auto;
+                grid-template-areas:
+                    "header"
+                    "main"
+                    "sidebar";
+            }
+
+            .sidebar {
+                height: 300px;
+                border-left: none;
+                border-top: 1px solid #e0e0e0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <span class="logo-icon">🌳</span>
+                <span>个人技能树</span>
+            </div>
+            <div class="controls">
+                <div class="search-box">
+                    <input type="text" placeholder="搜索技能..." id="search-input">
+                </div>
+                <button class="control-btn" id="zoom-in">+</button>
+                <button class="control-btn" id="zoom-out">-</button>
+                <button class="control-btn" id="reset-view">↻</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <svg id="skill-tree"></svg>
+        </div>
+
+        <div class="sidebar">
+            <div id="detail-panel">
+                <div class="empty-state">
+                    <div class="empty-icon">🔍</div>
+                    <h3>点击技能节点查看详情</h3>
+                    <p>探索我的技能树，了解我的专业能力</p>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">筛选条件</div>
+                <div class="filter-tags">
+                    <div class="filter-tag active" data-filter="all">全部</div>
+                    <div class="filter-tag" data-filter="data-science">数据科学</div>
+                    <div class="filter-tag" data-filter="management">管理学</div>
+                    <div class="filter-tag" data-filter="economics">经济学</div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">掌握程度</div>
+                <div class="filter-tags">
+                    <div class="filter-tag active" data-level="all">全部</div>
+                    <div class="filter-tag" data-level="beginner">入门</div>
+                    <div class="filter-tag" data-level="intermediate">中级</div>
+                    <div class="filter-tag" data-level="advanced">高级</div>
+                    <div class="filter-tag" data-level="expert">专家</div>
+                    <div class="filter-tag" data-level="master">精通</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 技能数据
+        const skillData = {
+            nodes: [
+                // 根节点
+                {
+                    id: "root",
+                    name: "张三",
+                    title: "数据科学家 & 项目经理",
+                    type: "root",
+                    description: "5年数据分析经验，擅长机器学习和商业智能，具有项目管理专业背景。",
+                    image: "👨‍💻"
+                },
+                
+                // 数据科学分支
+                {
+                    id: "data-science",
+                    name: "数据科学",
+                    parent: "root",
+                    type: "category",
+                    description: "数据收集、处理、分析和可视化的科学与艺术",
+                    icon: "📊"
+                },
+                {
+                    id: "machine-learning",
+                    name: "机器学习",
+                    parent: "data-science",
+                    type: "skill",
+                    level: "expert",
+                    description: "构建和部署机器学习模型解决实际问题",
+                    details: {
+                        courses: [
+                            {name: "Coursera机器学习(Andrew Ng)", score: "98%", year: "2020"},
+                            {name: "高级机器学习专项课程", score: "95%", year: "2021"}
+                        ],
+                        projects: [
+                            {name: "电商用户行为预测系统", role: "首席数据科学家", description: "使用XGBoost预测用户购买行为，提升转化率15%"},
+                            {name: "客户流失预测模型", role: "项目负责人", description: "构建LSTM模型预测客户流失，准确率92%"}
+                        ],
+                        certificates: [
+                            {name: "AWS机器学习认证", year: "2022"},
+                            {name: "Google机器学习工程师认证", year: "2021"}
+                        ]
+                    },
+                    icon: "🤖"
+                },
+                {
+                    id: "data-visualization",
+                    name: "数据可视化",
+                    parent: "data-science",
+                    type: "skill",
+                    level: "advanced",
+                    description: "将数据转化为有意义的可视化洞察",
+                    details: {
+                        courses: [
+                            {name: "数据可视化原理", score: "A", year: "2019"}
+                        ],
+                        projects: [
+                            {name: "销售仪表盘开发", role: "前端开发", description: "使用D3.js开发交互式销售仪表盘"},
+                            {name: "COVID-19可视化", role: "个人项目", description: "全球疫情数据动态可视化"}
+                        ],
+                        tools: ["Tableau", "Power BI", "D3.js", "Matplotlib"]
+                    },
+                    icon: "📈"
+                },
+                {
+                    id: "big-data",
+                    name: "大数据技术",
+                    parent: "data-science",
+                    type: "skill",
+                    level: "intermediate",
+                    description: "处理和分析海量数据集的技术",
+                    details: {
+                        courses: [
+                            {name: "Hadoop与Spark基础", score: "B+", year: "2020"}
+                        ],
+                        projects: [
+                            {name: "日志分析系统", role: "开发成员", description: "使用Spark处理TB级日志数据"}
+                        ],
+                        tools: ["Hadoop", "Spark", "Hive"]
+                    },
+                    icon: "💾"
+                },
+                
+                // 管理学分支
+                {
+                    id: "management",
+                    name: "管理学",
+                    parent: "root",
+                    type: "category",
+                    description: "组织资源实现目标的艺术与科学",
+                    icon: "👔"
+                },
+                {
+                    id: "project-management",
+                    name: "项目管理",
+                    parent: "management",
+                    type: "skill",
+                    level: "advanced",
+                    description: "规划、执行和控制项目活动以实现目标",
+                    details: {
+                        courses: [
+                            {name: "PMP认证培训", score: "通过", year: "2021"},
+                            {name: "敏捷开发实践", score: "A", year: "2020"}
+                        ],
+                        projects: [
+                            {name: "数据分析平台开发", role: "项目经理", description: "领导10人团队开发企业级数据分析平台"},
+                            {name: "CRM系统迁移", role: "项目协调员", description: "协调跨部门团队完成系统迁移"}
+                        ],
+                        certificates: [
+                            {name: "PMP认证", year: "2021"},
+                            {name: "Scrum Master认证", year: "2020"}
+                        ]
+                    },
+                    icon: "📅"
+                },
+                {
+                    id: "leadership",
+                    name: "领导力",
+                    parent: "management",
+                    type: "skill",
+                    level: "intermediate",
+                    description: "影响和指导团队实现共同目标",
+                    details: {
+                        courses: [
+                            {name: "组织领导力", score: "A-", year: "2019"}
+                        ],
+                        experiences: [
+                            {name: "数据分析社团主席", year: "2018-2019", description: "领导50人社团组织活动"},
+                            {name: "团队建设培训", year: "2020", description: "完成领导力发展计划"}
+                        ]
+                    },
+                    icon: "🌟"
+                },
+                
+                // 经济学分支
+                {
+                    id: "economics",
+                    name: "经济学",
+                    parent: "root",
+                    type: "category",
+                    description: "研究资源分配和决策的科学",
+                    icon: "💰"
+                },
+                {
+                    id: "econometrics",
+                    name: "计量经济学",
+                    parent: "economics",
+                    type: "skill",
+                    level: "advanced",
+                    description: "应用统计方法分析经济数据",
+                    details: {
+                        courses: [
+                            {name: "计量经济学基础", score: "A", year: "2018"},
+                            {name: "时间序列分析", score: "A-", year: "2019"}
+                        ],
+                        projects: [
+                            {name: "房价影响因素分析", description: "使用多元回归分析房价决定因素"}
+                        ],
+                        tools: ["Stata", "R", "EViews"]
+                    },
+                    icon: "📉"
+                },
+                {
+                    id: "behavioral-econ",
+                    name: "行为经济学",
+                    parent: "economics",
+                    type: "skill",
+                    level: "beginner",
+                    description: "心理学与经济学交叉领域",
+                    details: {
+                        courses: [
+                            {name: "行为经济学入门", score: "B+", year: "2020"}
+                        ],
+                        readings: [
+                            {name: "思考，快与慢", author: "Daniel Kahneman"},
+                            {name: "助推", author: "Thaler & Sunstein"}
+                        ]
+                    },
+                    icon: "🧠"
+                }
+            ],
+            links: [
+                {source: "root", target: "data-science"},
+                {source: "root", target: "management"},
+                {source: "root", target: "economics"},
+                
+                {source: "data-science", target: "machine-learning"},
+                {source: "data-science", target: "data-visualization"},
+                {source: "data-science", target: "big-data"},
+                
+                {source: "management", target: "project-management"},
+                {source: "management", target: "leadership"},
+                
+                {source: "economics", target: "econometrics"},
+                {source: "economics", target: "behavioral-econ"},
+                
+                // 跨学科连接
+                {source: "machine-learning", target: "econometrics", strength: 0.3},
+                {source: "project-management", target: "data-science", strength: 0.2}
+            ]
+        };
+
+        // 初始化技能树
+        document.addEventListener('DOMContentLoaded', function() {
+            const width = document.querySelector('.main-content').clientWidth;
+            const height = document.querySelector('.main-content').clientHeight;
+            
+            // 创建SVG
+            const svg = d3.select("#skill-tree")
+                .attr("width", width)
+                .attr("height", height)
+                .call(d3.zoom().on("zoom", zoomed))
+                .append("g");
+            
+            // 添加发光滤镜
+            const defs = svg.append("defs");
+            const filter = defs.append("filter")
+                .attr("id", "glow")
+                .attr("x", "-30%")
+                .attr("y", "-30%")
+                .attr("width", "160%")
+                .attr("height", "160%");
+            
+            filter.append("feGaussianBlur")
+                .attr("stdDeviation", "3.5")
+                .attr("result", "blur");
+            
+            filter.append("feComposite")
+                .attr("in", "SourceGraphic")
+                .attr("in2", "blur")
+                .attr("operator", "over");
+            
+            // 创建力导向图
+            const simulation = d3.forceSimulation(skillData.nodes)
+                .force("link", d3.forceLink(skillData.links).id(d => d.id).distance(100).strength(d => d.strength || 0.5))
+                .force("charge", d3.forceManyBody().strength(-500))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("collision", d3.forceCollide().radius(30));
+            
+            // 创建连线
+            const link = svg.append("g")
+                .selectAll("line")
+                .data(skillData.links)
+                .enter().append("line")
+                .attr("class", d => `link ${d.strength ? 'strong' : ''}`)
+                .attr("stroke-width", 2);
+            
+            // 创建节点组
+            const node = svg.append("g")
+                .selectAll(".node")
+                .data(skillData.nodes)
+                .enter().append("g")
+                .attr("class", d => `node ${d.type} ${d.level || ''}`)
+                .on("click", nodeClick)
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended));
+            
+            // 添加节点圆形
+            node.append("circle")
+                .attr("r", d => {
+                    if (d.type === "root") return 20;
+                    if (d.type === "category") return 16;
+                    return 14;
+                });
+            
+            // 添加节点文本
+            node.append("text")
+                .attr("dy", d => d.type === "root" ? 30 : 25)
+                .attr("text-anchor", "middle")
+                .text(d => d.name)
+                .attr("fill", "currentColor");
+            
+            // 添加节点图标
+            node.append("text")
+                .attr("dy", d => d.type === "root" ? 5 : 4)
+                .attr("text-anchor", "middle")
+                .text(d => d.image || d.icon || "")
+                .attr("font-size", d => d.type === "root" ? "20px" : "16px");
+            
+            // 更新函数
+            function update() {
+                node.attr("transform", d => `translate(${d.x},${d.y})`);
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+            }
+            
+            // 模拟tick
+            simulation.on("tick", update);
+            
+            // 拖拽函数
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+            
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+            
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+            
+            // 缩放函数
+            function zoomed(event) {
+                svg.attr("transform", event.transform);
+            }
+            
+            // 节点点击事件
+            function nodeClick(event, d) {
+                // 停止事件冒泡
+                event.stopPropagation();
+                
+                // 更新详情面板
+                updateDetailPanel(d);
+                
+                // 添加点击效果
+                gsap.to(event.currentTarget, {
+                    scale: 1.1,
+                    duration: 0.2,
+                    yoyo: true,
+                    repeat: 1
+                });
+            }
+            
+            // 更新详情面板
+            function updateDetailPanel(data) {
+                const panel = document.getElementById('detail-panel');
+                
+                if (data.type === "root") {
+                    panel.innerHTML = `
+                        <div class="detail-header">
+                            <div class="detail-title">
+                                <span class="detail-icon">${data.image}</span>
+                                ${data.name}
+                            </div>
+                            <div class="detail-subtitle">${data.title}</div>
+                        </div>
+                        <div class="detail-section">
+                            <p>${data.description}</p>
+                        </div>
+                        <div class="detail-section">
+                            <div class="section-title">
+                                <span class="section-icon">🌐</span>
+                                核心能力
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: 100%"></div>
+                            </div>
+                            <ul class="item-list">
+                                <li class="item">
+                                    <span class="item-icon">📊</span>
+                                    数据分析
+                                    <span class="skill-level level-expert">专家</span>
+                                </li>
+                                <li class="item">
+                                    <span class="item-icon">🤖</span>
+                                    机器学习
+                                    <span class="skill-level level-expert">专家</span>
+                                </li>
+                                <li class="item">
+                                    <span class="item-icon">📅</span>
+                                    项目管理
+                                    <span class="skill-level level-advanced">高级</span>
+                                </li>
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    let detailsHTML = '';
+                    
+                    if (data.details) {
+                        if (data.details.courses) {
+                            detailsHTML += `
+                                <div class="detail-section">
+                                    <div class="section-title">
+                                        <span class="section-icon">🎓</span>
+                                        相关课程
+                                    </div>
+                                    <ul class="item-list">
+                                        ${data.details.courses.map(course => `
+                                            <li class="item">
+                                                <span class="item-icon">📚</span>
+                                                ${course.name}
+                                                ${course.score ? `<span class="score">${course.score}</span>` : ''}
+                                                ${course.year ? `<span class="year">${course.year}</span>` : ''}
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            `;
+                        }
+                        
+                        if (data.details.projects) {
+                            detailsHTML += `
+                                <div class="detail-section">
+                                    <div class="section-title">
+                                        <span class="section-icon">💼</span>
+                                        项目经验
+                                    </div>
+                                    <ul class="item-list">
+                                        ${data.details.projects.map(project => `
+                                            <li class="item">
+                                                <span class="item-icon">🔧</span>
+                                                <strong>${project.name}</strong>
+                                                ${project.role ? `<span class="role">(${project.role})</span>` : ''}
+                                                <div class="project-desc">${project.description}</div>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            `;
+                        }
+                        
+                        if (data.details.certificates) {
+                            detailsHTML += `
+                                <div class="detail-section">
+                                    <div class="section-title">
+                                        <span class="section-icon">🏆</span>
+                                        证书认证
+                                    </div>
+                                    <ul class="item-list">
+                                        ${data.details.certificates.map(cert => `
+                                            <li class="item">
+                                                <span class="item-icon">📜</span>
+                                                ${cert.name}
+                                                ${cert.year ? `<span class="year">${cert.year}</span>` : ''}
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            `;
+                        }
+                        
+                        if (data.details.tools) {
+                            detailsHTML += `
+                                <div class="detail-section">
+                                    <div class="section-title">
+                                        <span class="section-icon">🛠️</span>
+                                        相关工具
+                                    </div>
+                                    <div class="filter-tags">
+                                        ${data.details.tools.map(tool => `
+                                            <div class="filter-tag">${tool}</div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    panel.innerHTML = `
+                        <div class="detail-header">
+                            <div class="detail-title">
+                                <span class="detail-icon">${data.icon}</span>
+                                ${data.name}
+                                ${data.level ? `<span class="skill-level level-${data.level}">${
+                                    data.level === 'beginner' ? '入门' : 
+                                    data.level === 'intermediate' ? '中级' : 
+                                    data.level === 'advanced' ? '高级' : 
+                                    data.level === 'expert' ? '专家' : '精通'
+                                }</span>` : ''}
+                            </div>
+                            <div class="detail-subtitle">${data.description}</div>
+                        </div>
+                        ${detailsHTML}
+                    `;
+                }
+            }
+            
+            // 控制按钮事件
+            document.getElementById('zoom-in').addEventListener('click', function() {
+                svg.transition().call(
+                    d3.zoom().scaleBy, 
+                    d3.select('#skill-tree'), 
+                    1.2
+                );
+            });
+            
+            document.getElementById('zoom-out').addEventListener('click', function() {
+                svg.transition().call(
+                    d3.zoom().scaleBy, 
+                    d3.select('#skill-tree'), 
+                    0.8
+                );
+            });
+            
+            document.getElementById('reset-view').addEventListener('click', function() {
+                svg.transition()
+                    .duration(750)
+                    .call(
+                        d3.zoom().transform,
+                        d3.select('#skill-tree'),
+                        d3.zoomIdentity
+                    );
+            });
+            
+            // 搜索功能
+            document.getElementById('search-input').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                
+                node.each(function(d) {
+                    const element = d3.select(this);
+                    const matches = d.name.toLowerCase().includes(searchTerm) || 
+                                  (d.description && d.description.toLowerCase().includes(searchTerm));
+                    
+                    element.classed('hidden', !matches && searchTerm.length > 0);
+                });
+                
+                link.each(function(d) {
+                    const element = d3.select(this);
+                    const sourceHidden = d.source.name.toLowerCase().includes(searchTerm);
+                    const targetHidden = d.target.name.toLowerCase().includes(searchTerm);
+                    
+                    element.classed('hidden', !(sourceHidden && targetHidden) && searchTerm.length > 0);
+                });
+            });
+            
+            // 筛选功能
+            document.querySelectorAll('.filter-tag[data-filter]').forEach(tag => {
+                tag.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // 更新active状态
+                    document.querySelectorAll('.filter-tag[data-filter]').forEach(t => 
+                        t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 应用筛选
+                    node.each(function(d) {
+                        const element = d3.select(this);
+                        const matches = filter === 'all' || 
+                                      (filter === 'data-science' && d.parent === 'data-science') || 
+                                      (filter === 'management' && d.parent === 'management') || 
+                                      (filter === 'economics' && d.parent === 'economics');
+                        
+                        element.classed('filtered', !matches);
+                    });
+                });
+            });
+            
+            // 掌握程度筛选
+            document.querySelectorAll('.filter-tag[data-level]').forEach(tag => {
+                tag.addEventListener('click', function() {
+                    const level = this.getAttribute('data-level');
+                    
+                    // 更新active状态
+                    document.querySelectorAll('.filter-tag[data-level]').forEach(t => 
+                        t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 应用筛选
+                    node.each(function(d) {
+                        const element = d3.select(this);
+                        const matches = level === 'all' || d.level === level;
+                        
+                        element.classed('level-filtered', !matches);
+                    });
+                });
+            });
+            
+            // 点击空白处重置详情面板
+            document.querySelector('.main-content').addEventListener('click', function(e) {
+                if (e.target === this || e.target.tagName === 'svg') {
+                    document.getElementById('detail-panel').innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">🔍</div>
+                            <h3>点击技能节点查看详情</h3>
+                            <p>探索我的技能树，了解我的专业能力</p>
+                        </div>
+                    `;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
