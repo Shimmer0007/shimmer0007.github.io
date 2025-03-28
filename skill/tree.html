@@ -396,7 +396,7 @@
             // Sample data for the skill tree
             const skillData = {
                 nodes: [
-                    { id: "root", name: "Shimmer", title: "数据科学家", type: "root", description: "两年半数据分析经验，擅长机器学习和商业智能" },
+                    { id: "root", name: "Shimmer", title: "冉冉升起的新星", type: "root", description: "两年半数据分析经验，擅长商业智能、神经计算、运作管理。" },
                     
                     // Data Science Branch
                     { id: "data-science", name: "数据科学", type: "category", parent: "root" },
@@ -479,6 +479,21 @@
                             description: "西方经济学理论",
                             courses: [
                                 { name: "微观经济学", source: "大学课程", score: "85%" }
+                            ]
+                        }
+                    },
+
+                    // Comprehensive Branch
+                    { id: "language", name: "语言", type: "category", parent: "root" },
+                    { id: "English", name: "英语", type: "skill", parent: "language", level: "master", 
+                        details: {
+                            description: "英语听说读写",
+                            courses: [
+                                { name: "CET-6", source: "标准化考试", score: 577 }
+                            ]
+                            projects: [
+                                { name: "NECCS", role: "全国大学生英语竞赛", technologies: "二等奖" },
+                                { name: "CUDC", role: "全国大学生英语辩论赛", technologies: "二等奖" }
                             ]
                         }
                     },
