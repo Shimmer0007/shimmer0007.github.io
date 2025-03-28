@@ -1,0 +1,263 @@
+{
+    "nodes": [
+        {
+            "id": "root",
+            "name": "Shimmer",
+            "title": "数据科学家",
+            "type": "root",
+            "description": "两年半数据分析经验，擅长机器学习和商业智能"
+        },
+        {
+            "id": "data-science",
+            "name": "数据科学",
+            "type": "category",
+            "parent": "root"
+        },
+        {
+            "id": "python",
+            "name": "Python",
+            "type": "skill",
+            "parent": "data-science",
+            "level": "master",
+            "details": {
+                "description": "熟练使用Python进行数据分析、机器学习和自动化脚本开发",
+                "experience": "2.5年",
+                "courses": [
+                    {
+                        "name": "Python程序设计",
+                        "source": "Coursera",
+                        "score": "98%"
+                    },
+                    {
+                        "name": "Python数据分析",
+                        "source": "Udemy",
+                        "score": "95%"
+                    }
+                ],
+                "projects": [
+                    {
+                        "name": "电商用户行为分析系统",
+                        "role": "首席开发",
+                        "technologies": "Pandas, Matplotlib"
+                    },
+                    {
+                        "name": "自动化报表系统",
+                        "role": "独立开发",
+                        "technologies": "Python, SQL"
+                    }
+                ],
+                "certificates": [
+                    {
+                        "name": "Python专业认证",
+                        "issuer": "Python Institute",
+                        "year": "2022"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "machine-learning",
+            "name": "机器学习",
+            "type": "skill",
+            "parent": "data-science",
+            "level": "advanced",
+            "details": {
+                "description": "掌握监督学习和无监督学习算法，熟悉TensorFlow和Scikit-learn",
+                "experience": "1.5年",
+                "courses": [
+                    {
+                        "name": "机器学习",
+                        "source": "Stanford Online",
+                        "score": "92%"
+                    },
+                    {
+                        "name": "深度学习专项课程",
+                        "source": "Coursera",
+                        "score": "89%"
+                    }
+                ],
+                "projects": [
+                    {
+                        "name": "电信用户流失预测模型",
+                        "role": "建模工程师",
+                        "technologies": "Scikit-learn, XGBoost"
+                    },
+                    {
+                        "name": "京东医疗·呼吸智能监测大赛",
+                        "role": "团队成员",
+                        "technologies": "TensorFlow, Keras"
+                    }
+                ],
+                "certificates": [
+                    {
+                        "name": "机器学习工程师",
+                        "issuer": "AWS",
+                        "year": "2023"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "sql",
+            "name": "SQL",
+            "type": "skill",
+            "parent": "data-science",
+            "level": "advanced",
+            "details": {
+                "description": "熟练编写高阶查询和优化数据库性能",
+                "experience": "2年",
+                "courses": [
+                    {
+                        "name": "SQL高级课程",
+                        "source": "Udacity",
+                        "score": "96%"
+                    }
+                ],
+                "projects": [
+                    {
+                        "name": "数据仓库设计",
+                        "role": "数据库设计师",
+                        "technologies": "PostgreSQL"
+                    },
+                    {
+                        "name": "查询优化项目",
+                        "role": "性能优化师",
+                        "technologies": "MySQL"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "management",
+            "name": "管理学",
+            "type": "category",
+            "parent": "root"
+        },
+        {
+            "id": "project-management",
+            "name": "项目管理",
+            "type": "skill",
+            "parent": "management",
+            "level": "intermediate",
+            "details": {
+                "description": "熟悉敏捷开发流程和项目管理工具",
+                "experience": "2年",
+                "courses": [
+                    {
+                        "name": "敏捷项目管理",
+                        "source": "edX",
+                        "score": "88%"
+                    }
+                ],
+                "certificates": [
+                    {
+                        "name": "PMP认证",
+                        "issuer": "PMI",
+                        "year": "2022"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "team-leadership",
+            "name": "团队领导",
+            "type": "skill",
+            "parent": "management",
+            "level": "intermediate",
+            "details": {
+                "description": "领导过5-10人的跨职能团队",
+                "experience": "3年",
+                "projects": [
+                    {
+                        "name": "数据分析团队领导",
+                        "role": "团队负责人",
+                        "duration": "2年"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "economics",
+            "name": "经济学",
+            "type": "category",
+            "parent": "root"
+        },
+        {
+            "id": "microeconomics",
+            "name": "微观经济学",
+            "type": "skill",
+            "parent": "economics",
+            "level": "beginner",
+            "details": {
+                "description": "基础西方经济学理论",
+                "courses": [
+                    {
+                        "name": "微观经济学",
+                        "source": "大学课程",
+                        "score": "85%"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "deep-learning",
+            "name": "深度学习",
+            "type": "skill",
+            "parent": "data-science",
+            "level": "locked"
+        },
+        {
+            "id": "cloud-architecture",
+            "name": "云架构",
+            "type": "skill",
+            "parent": "data-science",
+            "level": "locked"
+        }
+    ],
+    "links": [
+        {
+            "source": "root",
+            "target": "data-science"
+        },
+        {
+            "source": "root",
+            "target": "management"
+        },
+        {
+            "source": "root",
+            "target": "economics"
+        },
+        {
+            "source": "data-science",
+            "target": "python"
+        },
+        {
+            "source": "data-science",
+            "target": "machine-learning"
+        },
+        {
+            "source": "data-science",
+            "target": "sql"
+        },
+        {
+            "source": "data-science",
+            "target": "deep-learning"
+        },
+        {
+            "source": "data-science",
+            "target": "cloud-architecture"
+        },
+        {
+            "source": "management",
+            "target": "project-management"
+        },
+        {
+            "source": "management",
+            "target": "team-leadership"
+        },
+        {
+            "source": "economics",
+            "target": "microeconomics"
+        }
+    ]
+}
