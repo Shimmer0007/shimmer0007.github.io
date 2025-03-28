@@ -485,12 +485,12 @@
 
                     // Comprehensive Branch
                     { id: "language", name: "语言", type: "category", parent: "root" },
-                    { id: "English", name: "英语", type: "skill", parent: "language", level: "master", 
+                    { id: "English", name: "英语", type: "skill", parent: "language", level: "advanced", 
                         details: {
                             description: "英语听说读写",
                             courses: [
                                 { name: "CET-6", source: "标准化考试", score: 577 }
-                            ]
+                            ],
                             projects: [
                                 { name: "NECCS", role: "全国大学生英语竞赛", technologies: "二等奖" },
                                 { name: "CUDC", role: "全国大学生英语辩论赛", technologies: "二等奖" }
@@ -506,6 +506,7 @@
                     { source: "root", target: "data-science" },
                     { source: "root", target: "management" },
                     { source: "root", target: "economics" },
+                    { source: "root", target: "language" },
                     
                     { source: "data-science", target: "python" },
                     { source: "data-science", target: "machine-learning" },
@@ -516,7 +517,9 @@
                     { source: "management", target: "project-management" },
                     { source: "management", target: "team-leadership" },
                     
-                    { source: "economics", target: "microeconomics" }
+                    { source: "economics", target: "microeconomics" },
+                    
+                    { source: "language", target: "English" }
                 ]
             };
 
