@@ -1,228 +1,866 @@
+
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>个人技能树</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #111;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-    }
-    header {
-      text-align: center;
-      padding: 20px;
-      color: #fff;
-      background: linear-gradient(135deg, #1a1a1a, #333);
-    }
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-    }
-    .container {
-      position: relative;
-      width: 100%;
-      height: 80vh;
-    }
-    #canvas {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-    }
-    .node {
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      fill: #00ffff;
-    }
-    .node:hover {
-      transform: scale(1.2);
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
-    }
-    .node-label {
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      color: #fff;
-      text-anchor: middle;
-      transition: opacity 0.3s ease;
-    }
-    .node-info {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: rgba(0, 0, 0, 0.8);
-      padding: 20px;
-      border-radius: 8px;
-      color: #fff;
-      display: none;
-      width: 300px;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
-    }
-    .node-info h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-    }
-    .node-info p {
-      font-size: 1rem;
-      margin-bottom: 5px;
-    }
-    .close-info {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      cursor: pointer;
-      font-size: 20px;
-      color: #fff;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人技能树 | 互动式简历</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+            --panel-bg: #ffffff;
+            --locked-color: #cccccc;
+            --beginner-color: #8bc34a;
+            --intermediate-color: #ffc107;
+            --advanced-color: #ff9800;
+            --master-color: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            grid-template-rows: 60px 1fr;
+            height: 100vh;
+            grid-template-areas:
+                "header header"
+                "main sidebar";
+        }
+
+        header {
+            grid-area: header;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .controls button {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .controls button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 8px 15px 8px 35px;
+            border: none;
+            border-radius: 4px;
+            width: 200px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.7;
+        }
+
+        .tree-view {
+            grid-area: main;
+            position: relative;
+            overflow: hidden;
+            background-color: #f0f2f5;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        #skill-tree {
+            width: 100%;
+            height: 100%;
+        }
+
+        .detail-panel {
+            grid-area: sidebar;
+            background-color: var(--panel-bg);
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .detail-header {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .detail-subtitle {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .detail-level {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .level-beginner {
+            background-color: var(--beginner-color);
+            color: white;
+        }
+
+        .level-intermediate {
+            background-color: var(--intermediate-color);
+            color: white;
+        }
+
+        .level-advanced {
+            background-color: var(--advanced-color);
+            color: white;
+        }
+
+        .level-master {
+            background-color: var(--master-color);
+            color: white;
+        }
+
+        .detail-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: "";
+            display: block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+        }
+
+        .detail-item {
+            background-color: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .detail-item strong {
+            color: var(--primary-color);
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #999;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .empty-state img {
+            width: 100px;
+            opacity: 0.5;
+            margin-bottom: 20px;
+        }
+
+        /* Node styling */
+        .node-root circle {
+            fill: var(--primary-color);
+            stroke: white;
+            stroke-width: 3px;
+            r: 30;
+        }
+
+        .node-category circle {
+            fill: var(--secondary-color);
+            stroke: white;
+            stroke-width: 2px;
+            r: 24;
+        }
+
+        .node-skill circle {
+            fill: white;
+            stroke-width: 2px;
+            r: 20;
+        }
+
+        .node-skill.beginner circle {
+            stroke: var(--beginner-color);
+        }
+
+        .node-skill.intermediate circle {
+            stroke: var(--intermediate-color);
+        }
+
+        .node-skill.advanced circle {
+            stroke: var(--advanced-color);
+        }
+
+        .node-skill.master circle {
+            stroke: var(--master-color);
+        }
+
+        .node-locked circle {
+            fill: var(--locked-color);
+            stroke: #999;
+        }
+
+        .node text {
+            font-size: 12px;
+            font-weight: bold;
+            fill: var(--text-color);
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .node-locked text {
+            fill: #999;
+        }
+
+        .link {
+            stroke: #ccc;
+            stroke-width: 2px;
+            fill: none;
+        }
+
+        .node-highlighted circle {
+            filter: url(#glow);
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .node-master {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 60px 1fr 300px;
+                grid-template-areas:
+                    "header"
+                    "main"
+                    "sidebar";
+            }
+
+            .controls {
+                display: none;
+            }
+
+            .detail-panel {
+                border-top: 1px solid #eee;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>个人技能树</h1>
-    <p>以“科技树”的方式展示我的知识、技能与成就</p>
-  </header>
+    <div class="app-container">
+        <header>
+            <div class="logo">个人技能树</div>
+            <div class="controls">
+                <button id="zoom-in">+ 放大</button>
+                <button id="zoom-out">- 缩小</button>
+                <button id="reset-view">重置视图</button>
+                <div class="search-box">
+                    <input type="text" placeholder="搜索技能...">
+                </div>
+            </div>
+        </header>
+        
+        <div class="tree-view">
+            <svg id="skill-tree"></svg>
+        </div>
+        
+        <div class="detail-panel">
+            <div class="empty-state">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzk5OSIgZD0iTTEyLDIwQTgsOCAwIDAsMSA0LDEyQTgsOCAwIDAsMSAxMiw0QTgsOCAwIDAsMSAyMCwxMkE4LDggMCAwLDEgMTIsMjBNMTIsMkExMCwxMCAwIDAsMCAyLDEyQTEwLDEwIDAgMCwwIDEyLDIyQTEwLDEwIDAgMCwwIDIyLDEyQTEwLDEwIDAgMCwwIDEyLDJaIi8+PC9zdmc+" alt="Select icon">
+                <h3>点击技能节点查看详情</h3>
+                <p>选择左侧技能树中的节点以查看详细信息</p>
+            </div>
+        </div>
+    </div>
 
-  <div class="container">
-    <canvas id="canvas"></canvas>
-    <div id="tree" class="tree"></div>
-  </div>
+    <svg style="display: none;">
+        <defs>
+            <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+            
+            <!-- Icons for different node types -->
+            <symbol id="icon-root" viewBox="0 0 24 24">
+                <path fill="white" d="M12,3L2,12H5V20H19V12H22L12,3M12,7.7C14.1,7.7 15.8,9.4 15.8,11.5C15.8,13.6 14.1,15.3 12,15.3C9.9,15.3 8.2,13.6 8.2,11.5C8.2,9.4 9.9,7.7 12,7.7M7,17V18H17V17C17,14.3 14.7,12 12,12C9.3,12 7,14.3 7,17Z" />
+            </symbol>
+            <symbol id="icon-category" viewBox="0 0 24 24">
+                <path fill="white" d="M5,3H19A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3M7,7V9H17V7H7M7,11V13H17V11H7M7,15V17H14V15H7Z" />
+            </symbol>
+            <symbol id="icon-skill" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12,2L4,5V11.09C4,16.14 7.41,20.85 12,22C16.59,20.85 20,16.14 20,11.09V5L12,2M12,4.15L18,6.54V11.09C18,15.09 15.45,18.79 12,20C8.55,18.79 6,15.1 6,11.09V6.54L12,4.15M12,7A3,3 0 0,0 9,10A3,3 0 0,0 12,13A3,3 0 0,0 15,10A3,3 0 0,0 12,7Z" />
+            </symbol>
+            <symbol id="icon-locked" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z" />
+            </symbol>
+        </defs>
+    </svg>
 
-  <!-- 弹出信息框 -->
-  <div id="node-info" class="node-info">
-    <span class="close-info" onclick="closeNodeInfo()">×</span>
-    <h2 id="node-title">课程/活动名称</h2>
-    <p id="node-details">详细信息...</p>
-  </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample data for the skill tree
+            const skillData = {
+                nodes: [
+                    { id: "root", name: "张三", title: "数据科学家", type: "root", description: "5年数据分析经验，擅长机器学习和商业智能" },
+                    
+                    // Data Science Branch
+                    { id: "data-science", name: "数据科学", type: "category", parent: "root" },
+                    { id: "python", name: "Python", type: "skill", parent: "data-science", level: "master", 
+                        details: {
+                            description: "熟练使用Python进行数据分析、机器学习和自动化脚本开发",
+                            experience: "5年",
+                            courses: [
+                                { name: "Python高级编程", source: "Coursera", score: "98%" },
+                                { name: "Python数据分析", source: "Udemy", score: "95%" }
+                            ],
+                            projects: [
+                                { name: "电商用户行为分析系统", role: "首席开发", technologies: "Pandas, Matplotlib" },
+                                { name: "自动化报表系统", role: "独立开发", technologies: "Python, SQL" }
+                            ],
+                            certificates: [
+                                { name: "Python专业认证", issuer: "Python Institute", year: "2022" }
+                            ]
+                        }
+                    },
+                    { id: "machine-learning", name: "机器学习", type: "skill", parent: "data-science", level: "advanced", 
+                        details: {
+                            description: "掌握监督学习和无监督学习算法，熟悉TensorFlow和Scikit-learn",
+                            experience: "3年",
+                            courses: [
+                                { name: "机器学习", source: "Stanford Online", score: "92%" },
+                                { name: "深度学习专项课程", source: "Coursera", score: "89%" }
+                            ],
+                            projects: [
+                                { name: "客户流失预测模型", role: "算法工程师", technologies: "Scikit-learn, XGBoost" },
+                                { name: "图像分类系统", role: "团队成员", technologies: "TensorFlow, Keras" }
+                            ],
+                            certificates: [
+                                { name: "机器学习工程师", issuer: "AWS", year: "2021" }
+                            ]
+                        }
+                    },
+                    { id: "sql", name: "SQL", type: "skill", parent: "data-science", level: "advanced", 
+                        details: {
+                            description: "熟练编写复杂查询和优化数据库性能",
+                            experience: "4年",
+                            courses: [
+                                { name: "SQL高级课程", source: "Udacity", score: "96%" }
+                            ],
+                            projects: [
+                                { name: "数据仓库设计", role: "数据库设计师", technologies: "PostgreSQL" },
+                                { name: "查询优化项目", role: "性能优化师", technologies: "MySQL" }
+                            ]
+                        }
+                    },
+                    
+                    // Management Branch
+                    { id: "management", name: "管理学", type: "category", parent: "root" },
+                    { id: "project-management", name: "项目管理", type: "skill", parent: "management", level: "intermediate", 
+                        details: {
+                            description: "熟悉敏捷开发流程和项目管理工具",
+                            experience: "2年",
+                            courses: [
+                                { name: "敏捷项目管理", source: "edX", score: "88%" }
+                            ],
+                            certificates: [
+                                { name: "PMP认证", issuer: "PMI", year: "2020" }
+                            ]
+                        }
+                    },
+                    { id: "team-leadership", name: "团队领导", type: "skill", parent: "management", level: "intermediate", 
+                        details: {
+                            description: "领导过5-10人的跨职能团队",
+                            experience: "3年",
+                            projects: [
+                                { name: "数据分析团队领导", role: "团队负责人", duration: "2年" }
+                            ]
+                        }
+                    },
+                    
+                    // Economics Branch
+                    { id: "economics", name: "经济学", type: "category", parent: "root" },
+                    { id: "microeconomics", name: "微观经济学", type: "skill", parent: "economics", level: "beginner", 
+                        details: {
+                            description: "基础微观经济学理论",
+                            courses: [
+                                { name: "微观经济学原理", source: "大学课程", score: "85%" }
+                            ]
+                        }
+                    },
+                    
+                    // Future Skills (locked)
+                    { id: "deep-learning", name: "深度学习", type: "skill", parent: "data-science", level: "locked" },
+                    { id: "cloud-architecture", name: "云架构", type: "skill", parent: "data-science", level: "locked" }
+                ],
+                links: [
+                    { source: "root", target: "data-science" },
+                    { source: "root", target: "management" },
+                    { source: "root", target: "economics" },
+                    
+                    { source: "data-science", target: "python" },
+                    { source: "data-science", target: "machine-learning" },
+                    { source: "data-science", target: "sql" },
+                    { source: "data-science", target: "deep-learning" },
+                    { source: "data-science", target: "cloud-architecture" },
+                    
+                    { source: "management", target: "project-management" },
+                    { source: "management", target: "team-leadership" },
+                    
+                    { source: "economics", target: "microeconomics" }
+                ]
+            };
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.1/d3.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.133.0/build/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+            // Initialize the skill tree visualization
+            initSkillTree(skillData);
+            
+            // Set up event listeners for controls
+            document.getElementById('zoom-in').addEventListener('click', zoomIn);
+            document.getElementById('zoom-out').addEventListener('click', zoomOut);
+            document.getElementById('reset-view').addEventListener('click', resetView);
+            document.querySelector('.search-box input').addEventListener('input', filterNodes);
+        });
 
-  <script>
-    // 示例数据：可以从GraphQL获取动态数据
-    const data = {
-      name: "个人定位",
-      children: [
-        {
-          name: "数据科学",
-          children: [
-            { name: "Python编程", details: "Python基础编程，数据处理与分析技巧。" },
-            { name: "数据分析", details: "掌握SQL，Excel，数据可视化工具等。" },
-            { name: "机器学习", details: "学习回归模型，分类模型，聚类分析等。" }
-          ]
-        },
-        {
-          name: "管理学",
-          children: [
-            { name: "项目管理", details: "项目规划、进度管理与团队协作。" },
-            { name: "团队协作", details: "跨部门协作与团队建设。" }
-          ]
-        },
-        {
-          name: "经济学",
-          children: [
-            { name: "宏观经济学", details: "国家经济、财政政策、通货膨胀等。" },
-            { name: "微观经济学", details: "市场结构、供需关系、价格机制等。" }
-          ]
+        let zoom = d3.zoom();
+        let simulation;
+        let svg, g, link, node;
+
+        function initSkillTree(data) {
+            const width = document.querySelector('.tree-view').clientWidth;
+            const height = document.querySelector('.tree-view').clientHeight;
+            
+            // Clear previous SVG if any
+            d3.select('#skill-tree').selectAll('*').remove();
+            
+            // Create SVG
+            svg = d3.select('#skill-tree')
+                .attr('width', width)
+                .attr('height', height)
+                .attr('viewBox', [0, 0, width, height]);
+            
+            // Add zoom behavior
+            zoom = d3.zoom()
+                .scaleExtent([0.1, 8])
+                .on('zoom', zoomed);
+            
+            svg.call(zoom);
+            
+            // Create group for all elements
+            g = svg.append('g');
+            
+            // Create links
+            link = g.append('g')
+                .attr('class', 'links')
+                .selectAll('line')
+                .data(data.links)
+                .enter().append('line')
+                .attr('class', 'link')
+                .attr('stroke-width', 2);
+            
+            // Create nodes
+            node = g.append('g')
+                .attr('class', 'nodes')
+                .selectAll('.node')
+                .data(data.nodes)
+                .enter().append('g')
+                .attr('class', d => `node node-${d.type} ${d.level ? d.level : ''}`)
+                .call(d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended))
+                .on('click', nodeClicked);
+            
+            // Add circles to nodes
+            node.append('circle')
+                .attr('r', d => {
+                    if (d.type === 'root') return 30;
+                    if (d.type === 'category') return 24;
+                    return 20;
+                })
+                .attr('stroke-width', 2);
+            
+            // Add icons to nodes
+            node.each(function(d) {
+                const circle = d3.select(this).select('circle');
+                const nodeGroup = d3.select(this);
+                
+                if (d.type === 'root') {
+                    nodeGroup.append('use')
+                        .attr('xlink:href', '#icon-root')
+                        .attr('x', -12)
+                        .attr('y', -12)
+                        .attr('width', 24)
+                        .attr('height', 24);
+                } else if (d.type === 'category') {
+                    nodeGroup.append('use')
+                        .attr('xlink:href', '#icon-category')
+                        .attr('x', -10)
+                        .attr('y', -10)
+                        .attr('width', 20)
+                        .attr('height', 20);
+                } else if (d.level === 'locked') {
+                    nodeGroup.append('use')
+                        .attr('xlink:href', '#icon-locked')
+                        .attr('x', -8)
+                        .attr('y', -8)
+                        .attr('width', 16)
+                        .attr('height', 16)
+                        .attr('fill', '#999');
+                } else {
+                    nodeGroup.append('use')
+                        .attr('xlink:href', '#icon-skill')
+                        .attr('x', -8)
+                        .attr('y', -8)
+                        .attr('width', 16)
+                        .attr('height', 16)
+                        .attr('fill', () => {
+                            switch(d.level) {
+                                case 'beginner': return '#8bc34a';
+                                case 'intermediate': return '#ffc107';
+                                case 'advanced': return '#ff9800';
+                                case 'master': return '#f44336';
+                                default: return '#4a6fa5';
+                            }
+                        });
+                    
+                    // Add progress ring for skill nodes
+                    if (d.level && d.level !== 'locked') {
+                        const radius = 20;
+                        const circumference = 2 * Math.PI * radius;
+                        const progress = {
+                            beginner: 0.25,
+                            intermediate: 0.5,
+                            advanced: 0.75,
+                            master: 1
+                        }[d.level] || 0;
+                        
+                        nodeGroup.append('circle')
+                            .attr('class', 'progress-ring')
+                            .attr('r', radius + 4)
+                            .attr('stroke', () => {
+                                switch(d.level) {
+                                    case 'beginner': return '#8bc34a';
+                                    case 'intermediate': return '#ffc107';
+                                    case 'advanced': return '#ff9800';
+                                    case 'master': return '#f44336';
+                                    default: return '#4a6fa5';
+                                }
+                            })
+                            .attr('stroke-width', 3)
+                            .attr('stroke-dasharray', circumference)
+                            .attr('stroke-dashoffset', circumference * (1 - progress))
+                            .attr('fill', 'none');
+                    }
+                }
+            });
+            
+            // Add text labels
+            node.append('text')
+                .attr('dy', d => d.type === 'root' ? 40 : d.type === 'category' ? 32 : 28)
+                .text(d => d.name)
+                .attr('class', 'node-label');
+            
+            // Set up force simulation
+            simulation = d3.forceSimulation(data.nodes)
+                .force('link', d3.forceLink(data.links).id(d => d.id).distance(100))
+                .force('charge', d3.forceManyBody().strength(-500))
+                .force('center', d3.forceCenter(width / 2, height / 2))
+                .force('x', d3.forceX(width / 2).strength(0.05))
+                .force('y', d3.forceY(height / 2).strength(0.05))
+                .on('tick', ticked);
+            
+            // Highlight connected nodes on hover
+            node.on('mouseover', function(event, d) {
+                // Highlight connected links
+                link.attr('stroke', l => (l.source === d || l.target === d) ? '#4fc3f7' : '#ccc')
+                    .attr('stroke-width', l => (l.source === d || l.target === d) ? 3 : 2);
+                
+                // Highlight connected nodes
+                node.classed('node-highlighted', n => {
+                    return n === d || data.links.some(l => 
+                        (l.source === d && l.target === n) || 
+                        (l.source === n && l.target === d)
+                    );
+                });
+            })
+            .on('mouseout', function() {
+                link.attr('stroke', '#ccc')
+                    .attr('stroke-width', 2);
+                
+                node.classed('node-highlighted', false);
+            });
+            
+            function ticked() {
+                link
+                    .attr('x1', d => d.source.x)
+                    .attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x)
+                    .attr('y2', d => d.target.y);
+                
+                node
+                    .attr('transform', d => `translate(${d.x},${d.y})`);
+            }
+            
+            function zoomed(event) {
+                g.attr('transform', event.transform);
+            }
+            
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+            
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+            
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+            
+            function nodeClicked(event, d) {
+                // Center the clicked node
+                if (d.type !== 'locked') {
+                    const transform = d3.zoomTransform(svg.node());
+                    const x = -d.x * transform.k + width / 2;
+                    const y = -d.y * transform.k + height / 2;
+                    
+                    svg.transition()
+                        .duration(750)
+                        .call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(transform.k));
+                }
+                
+                // Update detail panel
+                updateDetailPanel(d);
+            }
+            
+            // Initial zoom to fit
+            setTimeout(() => {
+                const bounds = g.node().getBBox();
+                const fullWidth = bounds.width + 100;
+                const fullHeight = bounds.height + 100;
+                const midX = bounds.x + bounds.width / 2;
+                const midY = bounds.y + bounds.height / 2;
+                
+                const scale = 0.9 / Math.max(fullWidth / width, fullHeight / height);
+                const translate = [width / 2 - scale * midX, height / 2 - scale * midY];
+                
+                svg.call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+            }, 100);
         }
-      ]
-    };
-
-    // 使用D3.js绘制技能树
-    const width = 960, height = 600;
-
-    const svg = d3.select("#tree").append("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .style("background-color", "#111");
-
-    const root = d3.hierarchy(data);
-    const treeLayout = d3.tree().size([width, height - 100]);
-    treeLayout(root);
-
-    const links = svg.selectAll(".link")
-      .data(root.links())
-      .enter().append("line")
-      .attr("class", "link")
-      .attr("x1", d => d.source.x)
-      .attr("y1", d => d.source.y)
-      .attr("x2", d => d.target.x)
-      .attr("y2", d => d.target.y)
-      .style("stroke", "#555")
-      .style("stroke-width", "2px");
-
-    const nodes = svg.selectAll(".node")
-      .data(root.descendants())
-      .enter().append("circle")
-      .attr("class", "node")
-      .attr("cx", d => d.x)
-      .attr("cy", d => d.y)
-      .attr("r", 10)
-      .style("fill", "#00ffff")
-      .on("click", (event, d) => showNodeInfo(d.data));
-
-    svg.selectAll(".node-label")
-      .data(root.descendants())
-      .enter().append("text")
-      .attr("class", "node-label")
-      .attr("x", d => d.x)
-      .attr("y", d => d.y)
-      .attr("dy", -15)
-      .attr("text-anchor", "middle")
-      .style("opacity", 0.8)
-      .text(d => d.data.name)
-      .transition()
-      .duration(500)
-      .style("opacity", 1);
-
-    // Three.js 动态背景效果
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("canvas") });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-
-    const geometry = new THREE.SphereGeometry(1, 32, 32);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ffff });
-    const sphere = new THREE.Mesh(geometry, material);
-    scene.add(sphere);
-
-    camera.position.z = 5;
-
-    function animate() {
-      requestAnimationFrame(animate);
-      sphere.rotation.x += 0.01;
-      sphere.rotation.y += 0.01;
-      renderer.render(scene, camera);
-    }
-
-    animate();
-
-    window.addEventListener('resize', () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-    });
-
-    // 显示节点信息
-    function showNodeInfo(nodeData) {
-      const nodeInfo = document.getElementById("node-info");
-      const nodeTitle = document.getElementById("node-title");
-      const nodeDetails = document.getElementById("node-details");
-
-      nodeTitle.textContent = nodeData.name;
-      nodeDetails.textContent = nodeData.details;
-
-      nodeInfo.style.display = "block";
-      gsap.fromTo(nodeInfo, { scale: 0 }, { scale: 1, duration: 0.5, ease: "elastic.out(1, 0.75)" });
-    }
-
-    // 关闭节点信息
-   
+        
+        function updateDetailPanel(node) {
+            const panel = document.querySelector('.detail-panel');
+            
+            if (!node.details) {
+                panel.innerHTML = `
+                    <div class="empty-state">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzk5OSIgZD0iTTEyLDIwQTgsOCAwIDAsMSA0LDEyQTgsOCAwIDAsMSAxMiw0QTgsOCAwIDAsMSAyMCwxMkE4LDggMCAwLDEgMTIsMjBNMTIsMkExMCwxMCAwIDAsMCAyLDEyQTEwLDEwIDCAwLDAsIDEyLDIyQTEwLDEwIDAgMCwwIDIyLDEyQTEwLDEwIDAgMCwwIDEyLDJaIi8+PC9zdmc+" alt="Select icon">
+                        <h3>${node.name}</h3>
+                        <p>${node.description || '暂无详细信息'}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let levelBadge = '';
+            if (node.level && node.level !== 'locked') {
+                const levelText = {
+                    beginner: '初级',
+                    intermediate: '中级',
+                    advanced: '高级',
+                    master: '精通'
+                }[node.level] || node.level;
+                
+                levelBadge = `<span class="detail-level level-${node.level}">${levelText}</span>`;
+            }
+            
+            let html = `
+                <div class="detail-header">
+                    <h1 class="detail-title">${node.name}</h1>
+                    ${node.details.description ? `<p class="detail-subtitle">${node.details.description}</p>` : ''}
+                    ${levelBadge}
+                    ${node.details.experience ? `<p>经验: ${node.details.experience}</p>` : ''}
+                </div>
+            `;
+            
+            // Add courses section if available
+            if (node.details.courses && node.details.courses.length > 0) {
+                html += `
+                    <div class="detail-section">
+                        <h3 class="section-title">相关课程</h3>
+                        ${node.details.courses.map(course => `
+                            <div class="detail-item">
+                                <strong>${course.name}</strong><br>
+                                <em>${course.source}</em>${course.score ? ` · 成绩: ${course.score}` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            // Add projects section if available
+            if (node.details.projects && node.details.projects.length > 0) {
+                html += `
+                    <div class="detail-section">
+                        <h3 class="section-title">项目经验</h3>
+                        ${node.details.projects.map(project => `
+                            <div class="detail-item">
+                                <strong>${project.name}</strong><br>
+                                角色: ${project.role}${project.technologies ? ` · 技术: ${project.technologies}` : ''}${project.duration ? ` · 时长: ${project.duration}` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            // Add certificates section if available
+            if (node.details.certificates && node.details.certificates.length > 0) {
+                html += `
+                    <div class="detail-section">
+                        <h3 class="section-title">证书与认证</h3>
+                        ${node.details.certificates.map(cert => `
+                            <div class="detail-item">
+                                <strong>${cert.name}</strong><br>
+                                颁发机构: ${cert.issuer}${cert.year ? ` · 年份: ${cert.year}` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            panel.innerHTML = html;
+        }
+        
+        function zoomIn() {
+            svg.transition()
+                .call(zoom.scaleBy, 1.2);
+        }
+        
+        function zoomOut() {
+            svg.transition()
+                .call(zoom.scaleBy, 0.8);
+        }
+        
+        function resetView() {
+            const width = document.querySelector('.tree-view').clientWidth;
+            const height = document.querySelector('.tree-view').clientHeight;
+            
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(0, 0).scale(1));
+        }
+        
+        function filterNodes() {
+            const searchTerm = document.querySelector('.search-box input').value.toLowerCase();
+            
+            node.each(function(d) {
+                const nodeElement = d3.select(this);
+                const isMatch = d.name.toLowerCase().includes(searchTerm) || 
+                              (d.details && d.details.description && d.details.description.toLowerCase().includes(searchTerm));
+                
+                nodeElement.classed('node-hidden', !isMatch && searchTerm.length > 0);
+                nodeElement.classed('node-highlighted', isMatch && searchTerm.length > 0);
+            });
+        }
+    </script>
+</body>
+</html>
