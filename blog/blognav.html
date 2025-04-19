@@ -3,306 +3,378 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人博客导航</title>
+    <title>微光博客 | Shimmer</title>
     <link href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-100-M/font-awesome/6.0.0/css/all.min.css"  rel="stylesheet">
     <link href="https://s2.ssl.qhres2.com/static/56662140ef7d5d03.css"  rel="stylesheet">
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #34495e;
-            --accent: #3498db;
-            --text: #ecf0f1;
-            --highlight: #e74c3c;
+            --moonlight: #F0F4F8;
+            --dusk-blue: #2C3E50;
+            --amber-glow: #FFBE0B;
+            --graphite: #333333;
+            --mist: #E5E9F0;
         }
         
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
+            background-color: var(--moonlight);
+            color: var(--graphite);
             margin: 0;
             padding: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏样式 */
+        .nav-container {
+            position: relative;
+            height: 80px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: var(--primary);
-            opacity: 0;
-            animation: fadeIn 1s ease-out forwards;
+            margin-bottom: 60px;
         }
         
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-        
-        .nav-container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .nav-container::before {
-            content: '';
+        .nav-divider {
             position: absolute;
-            top: 0;
-            left: 0;
+            height: 1px;
             width: 100%;
-            height: 8px;
-            background: linear-gradient(90deg, var(--accent), var(--highlight));
-        }
-        
-        .nav-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 3rem;
-        }
-        
-        .logo {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -1px;
-            color: var(--primary);
-            position: relative;
-            padding-left: 1rem;
-        }
-        
-        .logo::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 80%;
-            background: var(--accent);
-            border-radius: 2px;
-        }
-        
-        .nav-main {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
+            background: linear-gradient(90deg, transparent 0%, var(--dusk-blue) 20%, var(--dusk-blue) 80%, transparent 100%);
+            opacity: 0.2;
+            bottom: 0;
         }
         
         .nav-item {
-            flex: 1;
-            min-width: 200px;
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
             position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 12px 24px;
+            margin: 0 8px;
+            font-size: 16px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            color: var(--dusk-blue);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 1px;
+            background-color: var(--amber-glow);
+            transition: width 0.3s ease;
         }
         
         .nav-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            border-color: rgba(0, 0, 0, 0.1);
+            color: var(--amber-glow);
         }
         
-        .nav-item::after {
+        .nav-item:hover::before {
+            width: 60%;
+        }
+        
+        .nav-item.active  {
+            font-weight: 400;
+            color: var(--amber-glow);
+        }
+        
+        .nav-item.active::before  {
+            width: 80%;
+            background-color: var(--amber-glow);
+        }
+        
+        /* 主标题样式 */
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+        
+        .site-title {
+            font-size: 48px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            margin: 0;
+            color: var(--dusk-blue);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .site-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, var(--amber-glow) 30%, var(--amber-glow) 70%, transparent 100%);
+        }
+        
+        .site-subtitle {
+            font-size: 14px;
+            letter-spacing: 6px;
+            color: var(--dusk-blue);
+            opacity: 0.6;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+        
+        /* 内容区域样式 */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.6s ease;
+        }
+        
+        .content-section.active  {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 300;
+            color: var(--dusk-blue);
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title::after {
             content: '';
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--accent);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
+            width: 40px;
+            height: 1px;
+            background-color: var(--amber-glow);
         }
         
-        .nav-item:hover::after {
-            transform: scaleX(1);
+        /* 卡片样式 */
+        .card {
+            background-color: white;
+            border-radius: 2px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         
-        .nav-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--accent);
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
-        .nav-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            color: var(--primary);
-        }
-        
-        .nav-desc {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: var(--secondary);
-            margin-bottom: 1.5rem;
-        }
-        
-        .nav-link {
-            display: inline-flex;
-            align-items: center;
-            color: var(--accent);
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-link i {
-            margin-left: 0.5rem;
-            transition: transform 0.3s ease;
-        }
-        
-        .nav-link:hover {
-            color: var(--highlight);
-        }
-        
-        .nav-link:hover i {
-            transform: translateX(3px);
-        }
-        
-        .home-link {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 60px;
-            height: 60px;
-            background: var(--accent);
-            border-radius: 50%;
+        .card-title {
+            font-size: 18px;
+            font-weight: 400;
+            color: var(--dusk-blue);
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-            transition: all 0.3s ease;
-            z-index: 100;
         }
         
-        .home-link:hover {
-            transform: scale(1.1) translateY(-5px);
-            background: var(--highlight);
-            box-shadow: 0 10px 20px rgba(231, 76, 60, 0.4);
+        .card-icon {
+            margin-right: 10px;
+            color: var(--amber-glow);
+            font-size: 14px;
         }
         
+        .card-content {
+            color: var(--graphite);
+            font-weight: 300;
+            line-height: 1.8;
+        }
+        
+        .card-meta {
+            font-size: 12px;
+            color: var(--dusk-blue);
+            opacity: 0.6;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-meta i {
+            margin-right: 5px;
+        }
+        
+        /* 页脚样式 */
+        .footer {
+            text-align: center;
+            padding: 60px 0;
+            margin-top: 80px;
+            color: var(--dusk-blue);
+            opacity: 0.6;
+            font-size: 12px;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 1px;
+            background-color: var(--dusk-blue);
+            opacity: 0.2;
+        }
+        
+        /* 响应式调整 */
         @media (max-width: 768px) {
-            .nav-container {
-                padding: 1.5rem;
-            }
-            
-            .nav-header {
-                flex-direction: column;
-                align-items: flex-start;
-                margin-bottom: 2rem;
-            }
-            
             .nav-item {
-                min-width: 100%;
+                padding: 10px 15px;
+                font-size: 14px;
             }
             
-            .home-link {
-                width: 50px;
-                height: 50px;
-                font-size: 1.25rem;
-                bottom: 1rem;
-                right: 1rem;
+            .site-title {
+                font-size: 36px;
+            }
+            
+            .section-title {
+                font-size: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="nav-container">
-        <div class="nav-header">
-            <div class="logo">LUMINOUS</div>
+    <div class="container">
+        <!-- 导航栏 -->
+        <div class="nav-container">
+            <div class="nav-item" data-section="starlight">星辉集</div>
+            <div class="nav-item" data-section="firefly">萤火录</div>
+            <div class="nav-item active" data-section="prism">棱镜台</div>
+            <div class="nav-item" data-section="lantern">灯语廊</div>
+            <div class="nav-item" data-section="origin">溯光</div>
+            <div class="nav-item" data-section="search">拾光</div>
+            <div class="nav-divider"></div>
         </div>
         
-        <div class="nav-main">
-            <div class="nav-item">
-                <div class="nav-icon">
-                    <i class="fas fa-home"></i>
+        <!-- 主标题 -->
+        <div class="header">
+            <h1 class="site-title">SHIMMER</h1>
+            <div class="site-subtitle">LUMIÈRE BLOGUE</div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="content-section active" id="prism">
+            <h2 class="section-title">棱镜台</h2>
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-camera card-icon"></i> 摄影作品</h3>
+                <div class="card-content">
+                    透过镜头捕捉光的轨迹，记录下那些转瞬即逝的美丽瞬间。每一张照片都是光线与情感的对话。
                 </div>
-                <h3 class="nav-title">首页</h3>
-                <p class="nav-desc">探索我的最新文章和精选内容</p>
-                <!-- 添加示例内容 -->
-                <p style="font-size: 0.9em; color: var(--secondary); margin-top: -1rem; margin-bottom: 1.5rem;">
-                    最新发布：<a href="#" style="color: var(--accent); text-decoration: none;">我的编程学习之旅</a>
-                </p>
-                <a href="../index" class="nav-link">
-                    前往首页 <i class="fas fa-arrow-right"></i>
-                </a>
+                <div class="card-meta"><i class="far fa-calendar-alt"></i> 2025年4月</div>
             </div>
-            
-            <div class="nav-item">
-                <div class="nav-icon">
-                    <i class="fas fa-book"></i>
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-pencil-ruler card-icon"></i> 设计作品</h3>
+                <div class="card-content">
+                    设计是光的另一种语言，通过形状、色彩和空间的组合，创造出视觉的诗篇。
                 </div>
-                <h3 class="nav-title">文章</h3>
-                <p class="nav-desc">浏览我的全部文章和深度思考</p>
-                <!-- 添加示例内容 -->
-                <ul style="list-style: none; padding-left: 0; font-size: 0.9em; color: var(--secondary); margin-top: -1rem; margin-bottom: 1.5rem;">
-                    <li><a href="#" style="color: var(--accent); text-decoration: none;">技术分享：CSS 动画技巧</a></li>
-                    <li style="margin-top: 0.5rem;"><a href="#" style="color: var(--accent); text-decoration: none;">生活随笔：一次难忘的旅行</a></li>
-                </ul>
-                <a href="#" class="nav-link">
-                    查看全部 <i class="fas fa-arrow-right"></i>
-                </a>
+                <div class="card-meta"><i class="far fa-calendar-alt"></i> 2025年3月</div>
             </div>
-            
-            <div class="nav-item">
-                <div class="nav-icon">
-                    <i class="fas fa-tags"></i>
+        </div>
+        
+        <div class="content-section" id="starlight">
+            <h2 class="section-title">星辉集</h2>
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-star card-icon"></i> 关于时间的思考</h3>
+                <div class="card-content">
+                    时间如同夜空中的星辰，看似静止实则永恒流动。我们站在此刻，既是过去的终点，也是未来的起点。在这无尽的流动中，如何找到自己的位置，成为每个思考者永恒的命题。
                 </div>
-                <h3 class="nav-title">分类</h3>
-                <p class="nav-desc">按主题探索我的创作内容</p>
-                <!-- 添加示例内容 -->
-                <div style="font-size: 0.9em; color: var(--secondary); margin-top: -1rem; margin-bottom: 1.5rem;">
-                    <a href="#" style="color: var(--accent); text-decoration: none; margin-right: 10px; background: #ecf0f1; padding: 3px 8px; border-radius: 4px;">#编程</a>
-                    <a href="#" style="color: var(--accent); text-decoration: none; margin-right: 10px; background: #ecf0f1; padding: 3px 8px; border-radius: 4px;">#设计</a>
-                    <a href="#" style="color: var(--accent); text-decoration: none; background: #ecf0f1; padding: 3px 8px; border-radius: 4px;">#生活</a>
-                </div>
-                <a href="#" class="nav-link">
-                    浏览分类 <i class="fas fa-arrow-right"></i>
-                </a>
+                <div class="card-meta"><i class="far fa-calendar-alt"></i> 2025年2月</div>
             </div>
-            
-            <div class="nav-item">
-                <div class="nav-icon">
-                    <i class="fas fa-user"></i>
+        </div>
+        
+        <div class="content-section" id="firefly">
+            <h2 class="section-title">萤火录</h2>
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-lightbulb card-icon"></i> 晨间随想</h3>
+                <div class="card-content">
+                    清晨的第一缕阳光穿过窗帘，在地板上画出一道金色的线。这一刻的宁静，比任何音乐都更动听。
                 </div>
-                <h3 class="nav-title">关于</h3>
-                <p class="nav-desc">了解我和这个博客的创作理念</p>
-                <!-- 添加示例内容 -->
-                <p style="font-size: 0.9em; color: var(--secondary); margin-top: -1rem; margin-bottom: 1.5rem;">
-                    你好！我是一名热爱分享的开发者，欢迎来到我的数字花园。
-                </p>
-                <a href="#" class="nav-link">
-                    认识作者 <i class="fas fa-arrow-right"></i>
-                </a>
+                <div class="card-meta"><i class="far fa-calendar-alt"></i> 2025年4月18日</div>
             </div>
+        </div>
+        
+        <div class="content-section" id="lantern">
+            <h2 class="section-title">灯语廊</h2>
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-comments card-icon"></i> 读者留言</h3>
+                <div class="card-content">
+                    这里是与读者交流的空间，每一盏点亮的灯都代表一次思想的碰撞。期待听到您的声音。
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section" id="origin">
+            <h2 class="section-title">溯光</h2>
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-user card-icon"></i> 关于我</h3>
+                <div class="card-content">
+                    我是shimmer，一个追寻微光的记录者。我相信，即使是最微弱的光，也能在黑暗中指引方向。这个博客是我思考、创作和分享的空间，希望能与志同道合的人一起探索世界的美丽与复杂。
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section" id="search">
+            <h2 class="section-title">拾光</h2>
+            <div class="card">
+                <h3 class="card-title"><i class="fas fa-search card-icon"></i> 搜索</h3>
+                <div class="card-content">
+                    在这里，您可以快速找到感兴趣的内容。就像在光的缝隙中寻找那些被忽略的细节。
+                </div>
+            </div>
+        </div>
+        
+        <!-- 页脚 -->
+        <div class="footer">
+            © 2025 SHIMMER'S LUMIÈRE BLOGUE. ALL RIGHTS RESERVED.
         </div>
     </div>
     
-    <a href="../index" class="home-link">
-        <i class="fas fa-home"></i>
-    </a>
-    
     <script>
-        // 添加微妙的交互效果 
-        document.querySelectorAll('.nav-item').forEach(item  => {
-            item.addEventListener('mouseenter',  function() {
-                this.querySelector('.nav-icon').style.transform  = 'rotate(5deg) scale(1.1)';
+        document.addEventListener('DOMContentLoaded',  function() {
+            // 导航切换功能 
+            const navItems = document.querySelectorAll('.nav-item'); 
+            const contentSections = document.querySelectorAll('.content-section'); 
+            
+            navItems.forEach(item  => {
+                item.addEventListener('click',  function() {
+                    // 移除所有active类 
+                    navItems.forEach(nav  => nav.classList.remove('active')); 
+                    contentSections.forEach(section  => section.classList.remove('active')); 
+                    
+                    // 添加active类到当前点击项 
+                    this.classList.add('active'); 
+                    
+                    // 显示对应内容区域 
+                    const sectionId = this.getAttribute('data-section'); 
+                    document.getElementById(sectionId).classList.add('active'); 
+                });
             });
             
-            item.addEventListener('mouseleave',  function() {
-                this.querySelector('.nav-icon').style.transform  = 'rotate(0) scale(1)';
-            });
+            // 页面加载动画 
+            setTimeout(() => {
+                document.body.style.opacity  = '1';
+            }, 100);
         });
     </script>
 </body>
