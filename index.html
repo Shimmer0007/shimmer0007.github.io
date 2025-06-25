@@ -4,108 +4,240 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shimmer的小站</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'PixelFont';
+            src: url('https://cdn.jsdelivr.net/npm/zpix/dist/Zpix.ttf') format('truetype');
+        }
+
+        :root {
+            --bg-color: #2c2137;
+            --main-color: #433555;
+            --text-color: #e0d1f0;
+            --highlight-color: #ffcc00;
+            --shadow-color: #1e1726;
+            --accent-color: #8b59a9;
+            --cursor-url: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAzElEQVRYR+2WwQoAIAgE8f+f9h6KQi1BEK3i2EuyyU7v2ddt2wF4AAbAAdABqAAPwA0Mh9D4pG1rG5cxmH0eBvADzprpY8C6a5Cba2bTwB2gT0B4c4FsC0Mprt1A2gj41FxFwFr8gI9gD8DNaQBDAH0hQzQEwA+oR6g2B9BIAD+hvM1AAH0F3QZ0EDfAFY+ighAZzGEA6gkzFCAfQd4BaACyA6cAjwJgA14BdgFwA/gC4p/QFX+MMPgC4BDAD8gfgp4BngA0gHMAfAX8ASYAXYD7AbbBGYD/gBdgD9AALACcgTzAY5kAAAAASUVORK5CYII=');
+        }
+
         body {
-            background: linear-gradient(to bottom, #f0f4ff, #e6e9ff);
-            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'PixelFont', 'Courier New', monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
             overflow: hidden;
+            image-rendering: pixelated;
+            cursor: var(--cursor-url), auto;
         }
-        h1 {
-            font-family: 'Playfair Display', serif;
-        }
-        .button {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(78, 205, 196, 0.4);
-        }
-        canvas {
-            position: absolute;
+
+        #particleCanvas {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: 0;
         }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pixel-window {
+            background-color: rgba(44, 33, 55, 0.85);
+            backdrop-filter: blur(4px);
+            padding: 2rem;
+            border-top: 4px solid var(--accent-color);
+            border-left: 4px solid var(--accent-color);
+            border-right: 4px solid var(--shadow-color);
+            border-bottom: 4px solid var(--shadow-color);
+            box-shadow: 
+                inset 4px 4px 0px var(--main-color),
+                inset -4px -4px 0px var(--main-color),
+                10px 10px 0px rgba(0,0,0,0.3);
+        }
+
+        .title {
+            font-size: 3.5rem;
+            color: var(--highlight-color);
+            text-shadow: 4px 4px 0px var(--shadow-color);
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            min-height: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: var(--text-color);
+            transition: transform 0.2s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .nav-item:hover {
+            transform: scale(1.1) translateY(-4px);
+        }
+
+        .icon-container {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--shadow-color);
+            margin-bottom: 0.5rem;
+            border-top: 3px solid var(--main-color);
+            border-left: 3px solid var(--main-color);
+            border-right: 3px solid #111;
+            border-bottom: 3px solid #111;
+            transition: background-color 0.2s;
+        }
+        
+        .nav-item:hover .icon-container {
+            background-color: var(--accent-color);
+        }
+
+        .pixel-icon {
+            width: 48px;
+            height: 48px;
+        }
+
+        .icon-blog { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZmlsbD0iIzE5MTMxNCIgZD0iTTIgM2gxdjExSDJ6TTQgMmgydjFoLTJ6TTQgNGgxdjFoLTF6TTQgNmgxMHYxaC0xek00IDhoMTB2MWgtMTB6TTQgMTBoMTB2MWgtMTB6TTQgMTRoLTR2MWg0eiIvPjxwYXRoIGZpbGw9IiM1NTM4NzkiIGQ9Ik0zIDNoMTB2MUgzek0zIDVoMTB2MUgzek0zIDdoMTB2MUgzek0zIDloMTB2MUgzek0zIDExaDEwdjFIM3pNMyAxM2gxdjFoLTF6Ii8+PHBhdGggZmlsbD0iI2Q0YmE4MSIgZD0iTTEyIDJoMXYxSDEyek0zIDJoMXYxSDN6TTIgMmgyVjFoM3YxaDV2MWgxdjloLTFWNWgtOHY4SDR2M0gyVjJ6bTEgMGgxdjFoLTF6bTEwIDBoMXYxaC0xek0yIDEzaDF2MUgyem0xMSAwaDF2MUgxM3oiLz48cGF0aCBmaWxsPSIjOTQ2NDM4IiBkPSJNMiAxaDN2MWg1di0xaDF2MUgxdi0xaDF6Ii8+PC9zdmc+'); }
+        .icon-notes { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZmlsbD0iIzVlNDIzNiIgZD0iTTggMmgzdjFoLTN6TTUgNGgxdjFoLTF6TTUgNmg2djFoLTZ6TTUgOGg2djFoLTZ6TTIgOWgxdjFoLTF6TTIgMTFoMnYyaDJ2MWgtNnptMy0yaDF2MWgtMXoiLz48cGF0aCBmaWxsPSIjOWU4MzU5IiBkPSJNMyAzaDEwVjJoMVYxaDF2MTRoLTJ2LTNoLTN2M0g4djFoMHYtMWgtOHYtOUgzVjNoOVYyeiIvPjxwYXRoIGZpbGw9IiNlMWRmYmYiIGQ9Ik0xMyAwaDF2MWgtMXpNMTEgMmgtMXYxMWgxdi0xaDF2LTloLTF6TTQgM2g3djFoLTd6TTQgNWg3djFoLTd6TTQgN2g3djFoLTd6bTAtMmgxdjFoLTF6bTcgMmgxdjFoLTF6bS04IDJoMnYyaDF2LTNIM3ptNSA1aDJ2MWgtMnoiLz48cGF0aCBmaWxsPSIjYzk5ZDY5IiBkPSJNOSAySDh2MWgtMVYySDZWNWgyVjdIOFY5aDNWOGgtMVY2aDFWNEg5VjJ6bTEtMWg1djJoLTJ2MWgtMXYyaDF2MWgydjJoLTF2MWgtMXYxaC0ydi0zaDF2MWgxVjloLTJWN2g0VjVIOVYzaDFWMXpNMiAzaDF2MWgydjFIM3YxSDR2MUgzVjdoNHYySDR2MWg0djFIM3YxSDR2MWgyVjloLTJWN0gyVjVIMXYtMmgxMHYySDVWM0gyeiIvPjwvc3ZnPg=='); }
+        .icon-box { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZmlsbD0iIzk1NzU0NCIgZD0iTTQgNWg4djZINHoiLz48cGF0aCBmaWxsPSIjY2I5YzU5IiBkPSJNMyA0aDEwdjZIM3ptNSAzaDJ2MWgtMnoiLz48cGF0aCBmaWxsPSIjZmVjYzMwIiBkPSJNNCA0aDEwdjFINHptNC0xaDF2M0g4VjN6bTMgNmgxdjFoLTF6Ii8+PHBhdGggZmlsbD0iIzU2MzczOSIgZD0iTTEzIDNoMXYxMGgtMnYxSDR2LTFIMlYzVjJoMVYxaDEwVjJoMnYxek0zIDNoMTB2MUgzek0zIDExaDEwdjFIM3ptMS0xaDh2MUg0em0tMS0xaDEwdjFINHptLTEgOWgxdjJIM1YxM3oiLz48L3N2Zz4='); }
+        .icon-tree { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZmlsbD0iIzQ2MmUxOCIgZD0iTTcgMTBoMnY1SDd6Ii8+PHBhdGggZmlsbD0iI2I2NmYyMSIgZD0iTTcgOWgxdjFoLTF6bTAtMmgydjJIN3oiLz48cGF0aCBmaWxsPSIjZmZjYzMwIiBkPSJNNiA0aDF2MWgtMXptMyAwaDF2MWgtMXpNOSAzaDF2MWgtMXptLTYgMmgxdjJoLTJWMXptMiAwaDF2MWgtMXpNMiAzaDF2MWgtMXptMSAyaDF2MWgtMXptOCAwaDF2MWgtMXptMy0zaDJ2MmgxdjJoLTNWMXptLTIgMWgxdjFoLTF6bTAgM2gxdjFoLTF6Ii8+PHBhdGggZmlsbD0iIzZlYTQxZSIgZD0iTTggMTBoMXY1SDh6Ii8+PHBhdGggZmlsbD0iIzM5ODUyOCIgZD0iTTMgOGgxdjFIM3ptNSAwaDF2MUg4ek0xIDdoNHYtM0gzVjNoLTJWNmgxdjF6bTEwIDBoNHYtNEgxMHYxSDR2Mmg3djFoMVY3aDR2MWgtM3oiLz48cGF0aCBmaWxsPSIjNzRmNDI3IiBkPSJNNyAzaDVWNGgxVjZoMVY4aC0xVjdoLTFWNkg1VjRIOGwzLTFoM3YtMWgtN2wtMy0xSDV6Ii8+PHBhdGggZmlsbD0iIzUxYjU0ZCIgZD0iTTYgOGg0djFoMHYxaC0xVjloLTNWOGgxdjFIMVY5SDVWOGgtM2wzLTJIMFY3aDJ2MWgxVjdoMVY2aDFWNEgzVjNIMXYyaDF2MmgxVjhoMVY3aDFWNmgydjFIMHYxaDN2ek04IDBoMVYxaDFWMmgxdjFoMVYyaDFWMGgtM2wtMi0xaDF2MWgtMVYwaDF6Ii8+PC9zdmc+'); }
+
+        .nav-label {
+            background: var(--main-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            box-shadow: 
+                inset 2px 2px 0px var(--accent-color),
+                inset -2px -2px 0px var(--shadow-color);
+        }
+
+        footer {
+            margin-top: 4rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            position: relative;
+            z-index: 1;
+        }
+
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen text-center relative">
+<body>
 
-    
     <canvas id="particleCanvas"></canvas>
-    <h1 class="text-4xl sm:text-5xl font-bold mb-4">日安，欢迎来到Shimmer的小站</h1>
-    <p class="text-lg text-gray-600 mb-6">好日子在后头，我们要向前看</p>
-    <div class="grid grid-cols-2 gap-6 sm:flex sm:space-x-6">
-        <a href="blog/blognav.html" class="button bg-white bg-opacity-80 px-6 py-3 rounded-lg shadow-lg">微光博客</a>
-        <a href="note/notenav.html" class="button bg-white bg-opacity-80 px-6 py-3 rounded-lg shadow-lg">课业笔记</a>
-        <a href="https://shimmer0007.github.io/wonderbox/" class="button bg-white bg-opacity-80 px-6 py-3 rounded-lg shadow-lg">小收藏夹</a>
-        <a href="skill/tree.html" class="button bg-white bg-opacity-80 px-6 py-3 rounded-lg shadow-lg">技能树（点亮中）</a>
-    </div>
-    <footer class="absolute bottom-4 text-gray-500 text-sm">
-        脚踏实地，稳扎稳打，抓紧时间不放松 © 2025 Shimmer的二月计划
-    </footer>
-    <script>
-        document.querySelectorAll('.button').forEach(button => {
-            button.addEventListener('click', (e) => {
-                let ripple = document.createElement('span');
-                ripple.classList.add('ripple');
-                ripple.style.left = `${e.clientX - button.offsetLeft}px`;
-                ripple.style.top = `${e.clientY - button.offsetTop}px`;
-                button.appendChild(ripple);
-                setTimeout(() => ripple.remove(), 600);
-            });
-        });
 
+    <div class="container">
+        <div class="pixel-window">
+            <h1 class="title">Shimmer的小站</h1>
+            <p class="subtitle"></p>
+
+            <div class="navigation">
+                <a href="blog/blognav.html" class="nav-item">
+                    <div class="icon-container"><div class="pixel-icon icon-blog"></div></div>
+                    <span class="nav-label">微光博客</span>
+                </a>
+                <a href="note/notenav.html" class="nav-item">
+                    <div class="icon-container"><div class="pixel-icon icon-notes"></div></div>
+                    <span class="nav-label">课业笔记</span>
+                </a>
+                <a href="https://shimmer0007.github.io/wonderbox/" class="nav-item">
+                    <div class="icon-container"><div class="pixel-icon icon-box"></div></div>
+                    <span class="nav-label">小收藏夹</span>
+                </a>
+                <a href="skill/tree.html" class="nav-item">
+                    <div class="icon-container"><div class="pixel-icon icon-tree"></div></div>
+                    <span class="nav-label">技能树</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer id="footer">
+        <p>© 2025 Shimmer的二月计划 - 16-bit 魔法之夜</p>
+    </footer>
+
+    <script>
         const canvas = document.getElementById("particleCanvas");
         const ctx = canvas.getContext("2d");
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         let particles = [];
-        let mouse = { x: null, y: null };
+        let mouse = { x: null, y: null, radius: 100 };
+
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.clientX;
+            mouse.y = event.clientY;
+        });
 
         class Particle {
-            constructor(x, y, size, speedX, speedY) {
+            constructor(x, y, size, speedX, speedY, layer) {
                 this.x = x;
                 this.y = y;
                 this.size = size;
                 this.speedX = speedX;
                 this.speedY = speedY;
+                this.layer = layer; // 1: foreground, 2: midground, 3: background
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = (Math.random() * 30) + 1;
             }
             update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
-                if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
-                
-                let dx = this.x - mouse.x;
-                let dy = this.y - mouse.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < 100) {
-                    this.x += dx * -0.02;
-                    this.y += dy * -0.02;
-                }
+                // Parallax effect
+                let dx = mouse.x - canvas.width / 2;
+                let dy = mouse.y - canvas.height / 2;
+                this.x = this.baseX + (dx / (this.layer * 20));
+                this.y = this.baseY + (dy / (this.layer * 20));
             }
             draw() {
-                ctx.fillStyle = "rgba(78, 205, 196, 0.5)";
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.fillStyle = `rgba(255, 204, 0, ${1 / this.layer * 0.5})`;
+                ctx.fillRect(this.x, this.y, this.size, this.size);
             }
         }
+
         function initParticles() {
             particles = [];
-            for (let i = 0; i < 50; i++) {
-                let size = Math.random() * 3 + 1;
+            for (let i = 0; i < 150; i++) {
+                let layer = Math.floor(Math.random() * 3) + 1;
+                let size = (4 - layer); // Closer layers have bigger stars
                 let x = Math.random() * canvas.width;
                 let y = Math.random() * canvas.height;
-                let speedX = (Math.random() - 0.5) * 2;
-                let speedY = (Math.random() - 0.5) * 2;
-                particles.push(new Particle(x, y, size, speedX, speedY));
+                particles.push(new Particle(x, y, size, 0, 0, layer));
             }
         }
+
         function animateParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach(p => {
@@ -114,31 +246,31 @@
             });
             requestAnimationFrame(animateParticles);
         }
+        
         initParticles();
         animateParticles();
         
-        window.addEventListener("mousemove", (event) => {
-            mouse.x = event.clientX;
-            mouse.y = event.clientY;
-            
-            const trail = document.createElement("div");
-            trail.style.position = "absolute";
-            trail.style.width = "6px";
-            trail.style.height = "6px";
-            trail.style.background = "linear-gradient(45deg, rgba(78, 205, 196, 0.6), rgba(46, 134, 222, 0.6), rgba(142, 68, 173, 0.6))";
-            trail.style.borderRadius = "50%";
-            trail.style.left = `${mouse.x}px`;
-            trail.style.top = `${mouse.y}px`;
-            trail.style.pointerEvents = "none";
-            trail.style.opacity = "1";
-            trail.style.transition = "opacity 0.5s ease-out";
-            document.body.appendChild(trail);
-            
-            setTimeout(() => {
-                trail.style.opacity = "0";
-                setTimeout(() => trail.remove(), 500);
-            }, 50);
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
         });
+
+        const subtitle = document.querySelector('.subtitle');
+        const text = "好日子在后头，我们要向前看";
+        subtitle.textContent = '';
+        let i = 0;
+
+        function typingEffect() {
+            if (i < text.length) {
+                subtitle.textContent += text.charAt(i);
+                i++;
+                setTimeout(typingEffect, 120);
+            }
+        }
+        
+        setTimeout(typingEffect, 500);
+
     </script>
 </body>
 </html>
