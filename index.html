@@ -16,6 +16,7 @@
             --window-title-bg: #000080;
             --text-color: #000000;
             --font-family: 'Press Start 2P', cursive;
+            font-family: 'Zpix', 'Press Start 2P', sans-serif;
             --white: #ffffff;
             --highlight: #3aef64;
         }
@@ -30,6 +31,13 @@
             image-rendering: pixelated; /* 保证像素风格不模糊 */
             cursor: default; /* 使用默认鼠标指针 */
         }
+
+        /* --- 字体样式 --- */
+@font-face {
+        font-family: 'Zpix';
+        src: url('https://cdn.jsdelivr.net/gh/SolidZORO/zpix-pixel-font@master/dist/zpix.woff2') format('woff2');
+    }
+
         
         #welcome-message {
     position: fixed;
@@ -163,6 +171,11 @@
             background: var(--white);
             margin: 4px;
             overflow-y: auto;
+        }
+        
+        #about-window .window-body {
+            font-family: 'Zpix', 'Press Start 2P', sans-serif;
+            font-size: 16px; /* Zpix 需要较大字号 */
         }
 
         /* --- 终端/时钟 小工具样式 --- */
@@ -359,7 +372,7 @@
             <div class="title-bar-controls"><div class="control-button close-btn">X</div></div>
         </div>
         <div class="window-body" style="padding:0;">
-             <p style="padding: 10px;">这里是关于我的介绍... 可以在这里写你的个人简介。</p>
+             <p style="padding: 10px;">一名具备完善技术基础与商业洞察力的数据分析新人。擅长综合运用Python、SQL与BI工具，将复杂业务问题转化为可执行的数据分析方案，已在多项数学建模与商业分析竞赛中取得成绩。具备出色的逻辑思辨与快速学习能力，并能独立思考、快速学习和完成从0到1的技术项目。渴望在真实的业务场景中不断明确目标、挑战自我，用数据为决策创造价值。</p>
         </div>
     </div>
 
