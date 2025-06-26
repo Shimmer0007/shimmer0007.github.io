@@ -1,35 +1,46 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shimmer的小站 - 16bit星夜版 (响应式)</title>
+    <title>Shimmer的小站</title>
     <style>
-        @font-face {
-            font-family: 'PixelFont';
-            src: url('https://cdn.jsdelivr.net/npm/zpix/dist/Zpix.ttf') format('truetype');
-        }
+        /* --- 字体引入 --- */
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
+        /* --- CSS 变量定义 (融合后的新调色板) --- */
         :root {
-            --bg-deep-purple: #2c2137;
-            --ui-gray-purple: #44475a;
-            --text-moon-white: #f8f8f2;
-            --accent-pink: #ff79c6;
-            --accent-cyan: #8be9fd;
-            --accent-yellow: #f1fa8c;
-            --shadow-dark: #211a29;
+            --font-pixel: 'Press Start 2P', cursive;
+            --font-body: 'Verdana', 'Geneva', sans-serif;
+            
+            --color-bg: #2c2137; /* 来自你的设计：深紫色背景 */
+            --color-window-bg: #44475a; /* 来自你的设计：灰紫色窗口 */
+            --color-window-border: #f8f8f2; /* 来自你的设计：月光白边框/文字 */
+            --color-text: #f8f8f2;
+            --color-shadow: #211a29; /* 来自你的设计：深色阴影 */
+
+            --color-accent-pink: #ff79c6; /* 来自你的设计：粉色高亮 */
+            --color-accent-cyan: #8be9fd; /* 来自你的-设计：青色高亮 */
+            --color-accent-yellow: #f1fa8c; /* 来自你的设计：黄色高亮 */
+            
+            --border-width: 4px;
+            /* 使用你的月光白色作为边框颜色 */
+            --border-image-source: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0 V8 H8 V0 H0Z M8 8 V16 H16 V8 H8Z M16 16 V24 H24 V16 H16Z M16 0 V8 H24 V0 H16Z M8 16 V24 H0 V16 H8Z" fill="%23f8f8f2"/></svg>');
         }
 
+        /* --- 全局与星空背景样式 --- */
         body {
-            background-color: var(--bg-deep-purple);
-            color: var(--text-moon-white);
-            font-family: 'PixelFont', 'Courier New', monospace;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-body);
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             min-height: 100vh;
+            padding: 20px;
             margin: 0;
-            overflow-x: hidden; /* 防止水平滚动 */
+            box-sizing: border-box;
+            overflow: hidden;
             image-rendering: pixelated;
         }
 
@@ -39,147 +50,121 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
+            z-index: 0; /* 确保在最底层 */
         }
 
+        /* --- 主容器 --- */
         .container {
-            text-align: center;
-            padding: 1rem; /* 调整内边距以适应小屏幕 */
-            width: 95%; /* 使用百分比宽度 */
-            max-width: 800px;
             position: relative;
             z-index: 1;
-            box-sizing: border-box; /* 确保 padding 不会撑大宽度 */
-        }
-
-        /* 16-bit 风格窗口 */
-        .pixel-window {
-            background-color: var(--ui-gray-purple);
-            border: 2px solid var(--text-moon-white);
-            box-shadow: 
-                inset 0 0 0 2px var(--shadow-dark),
-                6px 6px 0 var(--shadow-dark);
-            position: relative;
-        }
-
-        .window-header {
-            background-color: var(--shadow-dark);
-            padding: 4px 8px;
-            text-align: left;
-            color: var(--accent-yellow);
-            border-bottom: 2px solid var(--text-moon-white);
-            font-size: 1rem;
-        }
-
-        .window-content {
-            padding: 1.5rem;
-        }
-
-        .title {
-            font-size: 2.5rem;
-            color: var(--accent-pink);
-            text-shadow: 3px 3px 0px var(--shadow-dark);
-            margin: 0 0 1rem 0;
-            animation: float 3s ease-in-out infinite;
+            width: 95%;
+            max-width: 800px;
+            text-align: center;
         }
         
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+        h1, h2, h3, a, button, .subtitle {
+            font-family: var(--font-pixel);
+        }
+
+        /* --- 核心UI组件：ShimmerOS 像素窗口 --- */
+        .pixel-window {
+            background-color: var(--color-window-bg);
+            padding: 1rem;
+            box-shadow: 8px 8px 0px var(--color-shadow);
+            /* 应用我的边框设计 */
+            border-style: solid;
+            border-width: var(--border-width);
+            border-image-slice: 8;
+            border-image-width: 8;
+            border-image-repeat: repeat;
+            border-image-source: var(--border-image-source);
+        }
+        
+        .pixel-window-header {
+            background-color: var(--color-shadow);
+            color: var(--color-accent-yellow);
+            padding: 0.5rem 1rem;
+            margin: -1rem -1rem 1.5rem -1rem; /* 顶部对齐，并增加与内容的间距 */
+            border-bottom: var(--border-width) solid var(--color-window-border);
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        
+        /* --- 内容区域样式 (融合你的标题和副标题) --- */
+        .title {
+            font-size: 2rem;
+            color: var(--color-accent-pink);
+            text-shadow: 3px 3px 0px var(--color-shadow);
+            margin: 0 0 1rem 0;
         }
 
         .subtitle {
-            font-size: 1.1rem;
+            font-size: 1rem;
             margin: 0 0 2rem 0;
-            color: var(--accent-cyan);
-            min-height: 1.5rem;
+            color: var(--color-accent-cyan);
+            min-height: 1.5rem; /* 为打字机效果保留空间 */
         }
-
+        
+        /* --- 导航区域 (采用我的图标导航样式) --- */
         .navigation {
             display: flex;
-            justify-content: center;
-            gap: 1.5rem;
             flex-wrap: wrap;
-        }
-
-        .nav-item {
-            text-decoration: none;
-            color: var(--text-moon-white);
-            transition: transform 0.2s ease-in-out;
-            width: 100%; /* 为移动端垂直布局准备 */
-            max-width: 220px; /* 桌面端按钮最大宽度 */
-        }
-
-        .nav-item:hover {
-            transform: translateY(-4px);
-        }
-
-        /* 16-bit 风格按钮 */
-        .pixel-button {
-            background-color: var(--ui-gray-purple);
-            border: 2px solid var(--text-moon-white);
-            box-shadow: inset 0 -4px 0 var(--shadow-dark);
-            padding: 0.8rem 1rem;
-            cursor: pointer;
-            transition: all 0.1s ease-in-out;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .nav-item:hover .pixel-button {
-            background-color: var(--accent-pink);
-            color: var(--shadow-dark);
+            gap: 1.5rem;
+            justify-content: center;
         }
         
-        .nav-item:active .pixel-button {
-            transform: translateY(2px);
-            box-shadow: inset 0 -2px 0 var(--shadow-dark);
-        }
-        
-        .nav-icon {
-            font-size: 1.5rem;
-            margin-right: 0.5rem;
-            vertical-align: middle;
-        }
-
-        footer {
-            margin-top: 2rem; /* 使用 margin-top 代替 absolute 定位 */
-            width: 100%;
+        .icon-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
-            font-size: 0.8rem;
-            opacity: 0.5;
-            padding-bottom: 1rem;
+            text-decoration: none;
+            color: var(--color-text);
+            min-width: 110px;
+            padding: 10px;
+            transition: transform 0.2s, background-color 0.2s;
         }
 
-        /* --- 移动端适配媒体查询 --- */
-        @media (max-width: 768px) {
-            .title {
-                font-size: 2rem; /* 缩小标题字体 */
-            }
-            .subtitle {
-                font-size: 1rem; /* 缩小副标题字体 */
-            }
-            .navigation {
-                flex-direction: column; /* 导航按钮垂直排列 */
-                align-items: center;   /* 居中对齐 */
-                gap: 1rem;             /* 调整垂直间距 */
-            }
-            .nav-item {
-                 /* 确保按钮宽度适应父容器 */
-                max-width: 100%;
-            }
-            .window-content {
-                padding: 1.5rem 1rem; /* 调整内容区域边距 */
-            }
+        .icon-link:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
         }
         
-        @media (min-width: 769px) {
-            .navigation {
-                flex-direction: row; /* 确保桌面端是水平排列 */
-            }
-            .nav-item {
-                width: auto; /* 桌面端恢复自动宽度 */
-            }
+        .icon-link .icon {
+            font-size: 3rem; /* 使用emoji作为图标，调整大小 */
+            margin-bottom: 1rem;
+        }
+        
+        .icon-link span {
+            font-size: 0.8rem;
+        }
+        
+        /* --- 16-Bit 粒子尾迹效果 --- */
+        .particle {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 0;
+            pointer-events: none;
+            z-index: 9999;
+            animation: fade-out 1s forwards;
+        }
+
+        @keyframes fade-out {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0); }
+        }
+        
+        /* --- 响应式设计 --- */
+        @media (max-width: 768px) {
+            .title { font-size: 1.8rem; }
+            .subtitle { font-size: 0.9rem; }
+            .navigation { gap: 1rem; }
+            .icon-link { min-width: 100px; }
+            .icon-link .icon { font-size: 2.5rem; }
         }
 
     </style>
@@ -190,117 +175,138 @@
 
     <div class="container">
         <div class="pixel-window">
-            <div class="window-header">
-                ShimmerOS v1.0
-            </div>
-            <div class="window-content">
-                <h1 class="title">微光小站</h1>
-                <p class="subtitle"></p>
+            <header class="pixel-window-header">
+                ShimmerOS - V0.2.0
+            </header>
+            
+            <h1 class="title">欢迎来到微光小站</h1>
+            <p class="subtitle"></p>
 
-                <div class="navigation">
-                    <a href="blog/blognav.html" class="nav-item">
-                        <div class="pixel-button">
-                            <span class="nav-icon">📖</span>微光博客
-                        </div>
-                    </a>
-                    <a href="note/notenav.html" class="nav-item">
-                        <div class="pixel-button">
-                           <span class="nav-icon">📜</span>课业笔记
-                        </div>
-                    </a>
-                    <a href="https://shimmer0007.github.io/wonderbox/" class="nav-item">
-                        <div class="pixel-button">
-                           <span class="nav-icon">📦</span>小收藏夹
-                        </div>
-                    </a>
-                    <a href="skill/tree.html" class="nav-item">
-                        <div class="pixel-button">
-                           <span class="nav-icon">🌳</span>技能树
-                        </div>
-                    </a>
-                </div>
+            <div class="navigation">
+                <a href="blog/blognav.html" class="icon-link">
+                    <div class="icon">📖</div>
+                    <span>微光博客</span>
+                </a>
+                <a href="note/notenav.html" class="icon-link">
+                    <div class="icon">📜</div>
+                    <span>课业笔记</span>
+                </a>
+                <a href="https://shimmer0007.github.io/wonderbox/" class="icon-link">
+                    <div class="icon">📦</div>
+                    <span>小收藏夹</span>
+                </a>
+                <a href="skill/tree.html" class="icon-link">
+                    <div class="icon">🌳</div>
+                    <span>技能树</span>
+                </a>
             </div>
         </div>
-        
-        <footer>
-            <p>Copyright © 2025 Shimmer</p>
-        </footer>
     </div>
     
     <script>
-        // --- 16-bit 星空背景 ---
-        const canvas = document.getElementById('star-bg');
-        const ctx = canvas.getContext('2d');
-        let stars = [];
-        let numStars = 200; // 减少星星数量以优化移动端性能
+        // --- 你的 Canvas 星空背景脚本 (完全保留) ---
+        (function() {
+            const canvas = document.getElementById('star-bg');
+            const ctx = canvas.getContext('2d');
+            let stars = [];
+            let numStars = 200;
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            stars = [];
-            for(let i = 0; i < numStars; i++) {
-                stars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    radius: Math.random() * 1.5 + 0.5,
-                    speed: (Math.random() + 0.1) * 0.5 / (Math.random() * 1.5 + 0.5),
-                    color: `rgba(248, 248, 242, ${Math.random() * 0.5 + 0.3})`
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                stars = [];
+                for(let i = 0; i < numStars; i++) {
+                    stars.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        radius: Math.random() * 1.5 + 0.5,
+                        speed: (Math.random() + 0.1) * 0.5 / (Math.random() * 1.5 + 0.5),
+                        color: `rgba(248, 248, 242, ${Math.random() * 0.5 + 0.3})`
+                    });
+                }
+            }
+
+            function drawStars() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                stars.forEach(star => {
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = star.color;
+                    ctx.fill();
                 });
             }
-        }
 
-        function drawStars() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            stars.forEach(star => {
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                ctx.fillStyle = star.color;
-                ctx.fill();
+            function updateStars() {
+                stars.forEach(star => {
+                    star.y += star.speed;
+                    if(star.y > canvas.height) {
+                        star.y = 0;
+                        star.x = Math.random() * canvas.width;
+                    }
+                });
+            }
+            
+            let animationFrameId;
+            function animate() {
+                drawStars();
+                updateStars();
+                animationFrameId = requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', () => {
+                cancelAnimationFrame(animationFrameId);
+                resizeCanvas();
+                animate();
             });
-        }
-
-        function updateStars() {
-            stars.forEach(star => {
-                star.y += star.speed;
-                if(star.y > canvas.height) {
-                    star.y = 0;
-                    star.x = Math.random() * canvas.width;
-                }
-            });
-        }
-        
-        let animationFrameId;
-        function animate() {
-            drawStars();
-            updateStars();
-            animationFrameId = requestAnimationFrame(animate);
-        }
-
-        window.addEventListener('resize', () => {
-            cancelAnimationFrame(animationFrameId);
+            
             resizeCanvas();
             animate();
-        });
-        
-        resizeCanvas();
-        animate();
+        })();
 
+        // --- 你的打字机效果脚本 (完全保留) ---
+        (function() {
+            const subtitle = document.querySelector('.subtitle');
+            if (!subtitle) return;
+            const text = "好日子在后头，我们要向前看";
+            subtitle.textContent = '';
+            let i = 0;
 
-        // --- 打字机效果 ---
-        const subtitle = document.querySelector('.subtitle');
-        const text = "脚踏实地，稳扎稳打，抓紧时间不放松";
-        subtitle.textContent = '';
-        let i = 0;
-
-        function typingEffect() {
-            if (i < text.length) {
-                subtitle.textContent += text.charAt(i);
-                i++;
-                setTimeout(typingEffect, 120);
+            function typingEffect() {
+                if (i < text.length) {
+                    subtitle.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typingEffect, 120);
+                }
             }
-        }
-        
-        setTimeout(typingEffect, 500);
+            setTimeout(typingEffect, 500);
+        })();
+
+        // --- 我的粒子尾迹脚本 (颜色已适配你的新调色板) ---
+        (function() {
+            const accentColors = ['#ff79c6', '#8be9fd', '#f1fa8c'];
+
+            window.addEventListener('mousemove', function(e) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                document.body.appendChild(particle);
+                
+                const randomColor = accentColors[Math.floor(Math.random() * accentColors.length)];
+                particle.style.background = randomColor;
+
+                particle.style.left = e.clientX + 'px';
+                particle.style.top = e.clientY + 'px';
+                
+                const randomSize = Math.random() * 5 + 4;
+                particle.style.width = randomSize + 'px';
+                particle.style.height = randomSize + 'px';
+
+                particle.addEventListener('animationend', function() {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                });
+            });
+        })();
     </script>
 </body>
 </html>
