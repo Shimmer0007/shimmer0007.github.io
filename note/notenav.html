@@ -1,192 +1,315 @@
 <!DOCTYPE html>
 <html lang="zh">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>课程笔记</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>ShimmerOS - Course Select</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        /* 自定义颜色 */
-        .status-starting {
-            background-color: #7de1f3; /* 待开始-蓝色 */
+        :root {
+            --bg-color: #1a1a2d;
+            --primary-color: #ff00ff; /* 霓虹粉 */
+            --secondary-color: #00ffff; /* 霓虹青 */
+            --text-color: #f0f0f0;
+            --border-color: #555;
+            --border-highlight: #fff;
         }
 
-        .status-progress {
-            background-color: #f59e0b; /* 进行中-黄色 */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Press Start 2P', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            background-image:
+                linear-gradient(rgba(0, 0, 0, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.3) 1px, transparent 1px);
+            background-size: 4px 4px;
         }
 
-        .status-completed {
-            background-color: #10b981; /* 已完成-绿色 */
+        /* 模拟CRT屏幕扫描线效果 */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 2;
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
         }
 
-        /* 响应式 */
-        @media (max-width: 640px) {
-            .card {
-                width: 100%;
+        @keyframes scanline {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
+        }
+
+        .arcade-container {
+            width: 100%;
+            max-width: 900px;
+            padding: 2rem;
+            border: 4px solid var(--border-color);
+            border-right-color: var(--border-highlight);
+            border-bottom-color: var(--border-highlight);
+            background-color: rgba(30, 30, 45, 0.8);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5), 0 0 20px var(--secondary-color);
+            /* 将flicker动画替换为更柔和的glow动画 */
+            animation: glow 2s infinite alternate ease-in-out;
+        }
+        
+        @keyframes glow {
+            from {
+                box-shadow: inset 0 0 15px rgba(0,0,0,0.5), 0 0 15px var(--secondary-color);
             }
+            to {
+                box-shadow: inset 0 0 15px rgba(0,0,0,0.5), 0 0 25px var(--secondary-color);
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--secondary-color);
+            text-shadow: 0 0 5px var(--secondary-color);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .controls-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .search-bar input {
+            background-color: #333;
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            padding: 10px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            width: 250px;
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        .filters button {
+            background-color: #444;
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            border-right-color: var(--border-highlight);
+            border-bottom-color: var(--border-highlight);
+            padding: 10px 15px;
+            font-family: inherit;
+            cursor: pointer;
+            font-size: 0.7rem;
+            margin-left: 5px;
+            box-shadow: inset -2px -2px 0 0 #222;
+        }
+        
+        .filters button:active, .filters button.active {
+            border: 2px solid var(--border-highlight);
+            border-right-color: var(--border-color);
+            border-bottom-color: var(--border-color);
+            box-shadow: inset 2px 2px 0 0 #222;
+            background-color: #333;
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .note-card {
+            background-color: #2a2a3d;
+            border: 2px solid var(--border-color);
+            padding: 1rem;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease-in-out;
+            box-shadow: inset -4px -4px 0 0 #222230;
+        }
+        
+        .note-card:hover {
+            background-color: #3a3a4d;
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.4), inset -2px -2px 0 0 #222230;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-category {
+            color: var(--primary-color);
+            font-size: 0.7rem;
+        }
+        
+        .card-status {
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 0;
+            text-transform: uppercase;
+        }
+
+        .status-progress { background-color: #f59e0b; color: #111; }
+        .status-completed { background-color: #10b981; color: #111; }
+        .status-starting { background-color: #7de1f3; color: #111; }
+        
+        .card-title {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        .card-meta {
+            font-size: 0.6rem;
+            color: #aaa;
+            margin-bottom: 1rem;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .card-tags span {
+            background-color: #444;
+            padding: 3px 6px;
+            font-size: 0.6rem;
         }
     </style>
 </head>
+<body>
+    <div class="arcade-container">
+        <header>
+            <h1>// COURSE SELECT //</h1>
+            <p>> Choose your mission</p>
+        </header>
 
-<body class="bg-gray-50">
-
-    <!-- 顶部导航区 -->
-    <header class="flex justify-between items-center p-4 bg-blue-600 text-white">
-        <h1 class="text-xl font-bold">课程笔记</h1>
-        <div class="relative w-1/4">
-            <input type="text" id="searchInput" placeholder="搜索笔记..." class="w-full px-4 py-2 rounded-lg bg-white text-gray-700 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <div class="controls-panel">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search mission...">
+            </div>
+            <div class="filters">
+                <button class="category-filter active" data-category="all">ALL</button>
+                <button class="category-filter" data-category="编程">CODE</button>
+                <button class="category-filter" data-category="数学">MATH</button>
+                <button class="category-filter" data-category="设计">DESIGN</button>
+            </div>
         </div>
-    </header>
 
-    <!-- 分类过滤栏 -->
-    <div class="flex space-x-4 p-4">
-        <div class="flex space-x-2">
-            <button class="category-filter px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200" data-category="编程">编程</button>
-            <button class="category-filter px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200" data-category="数学">数学</button>
-            <button class="category-filter px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200" data-category="设计">设计</button>
-        </div>
-        <div class="flex space-x-2 ml-auto">
-            <button class="status-filter px-4 py-2 rounded-lg bg-blue-200 hover:bg-blue-300" data-status="待开始">进行中</button>
-            <button class="status-filter px-4 py-2 rounded-lg bg-yellow-200 hover:bg-yellow-300" data-status="进行中">进行中</button>
-            <button class="status-filter px-4 py-2 rounded-lg bg-green-200 hover:bg-green-300" data-status="已完成">已完成</button>
-        </div>
-    </div>
-
-    <!-- 笔记展示区 -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4" id="notesContainer">
-        <!-- 卡片内容将通过 JavaScript 动态渲染 -->
+        <div class="notes-grid" id="notesContainer">
+            </div>
     </div>
 
     <script>
-        // 模拟数据
         const notes = [
-            {
-                id: 1,
-                category: "编程",
-                title: "Python程序设计",
-                lastUpdated: "2025-03-04",
-                status: "进行中",
-                tags: ["变量", "函数", "数据类型"]
-            },
-            {
-                id: 2,
-                category: "数学",
-                title: "机器学习理论",
-                lastUpdated: "2025-01-05",
-                status: "已完成",
-                tags: ["决策树", "SVM", "贝叶斯", "神经网络"]
-            },
-            {
-                id: 3,
-                category: "设计",
-                title: "社会网络分析",
-                lastUpdated: "2025-02-20",
-                status: "进行中",
-                tags: ["界面", "用户体验", "交互设计"]
-            },
-            {
-                id: 4,
-                category: "编程",
-                title: "大数据治理",
-                lastUpdated: "2025-03-14",
-                status: "待开始",
-                tags: ["Spark", "Hadoop", "State"]
-            },
-            {
-                id: 5,
-                category: "设计",
-                title: "商务数据可视化",
-                lastUpdated: "2025-02-25",
-                status: "进行中",
-                tags: ["配色", "色轮", "对比度"]
-            },
-            {
-                id: 6,
-                category: "编程",
-                title: "金融大数据分析",
-                lastUpdated: "2025-02-18",
-                status: "进行中",
-                tags: ["矩阵", "行列式", "特征值"]
-            }
+            { id: 1, category: "编程", title: "Python 程序设计", lastUpdated: "2025-03-04", status: "进行中", tags: ["变量", "函数", "数据类型"] },
+            { id: 2, category: "数学", title: "机器学习理论", lastUpdated: "2025-01-05", status: "已完成", tags: ["决策树", "SVM", "贝叶斯"] },
+            { id: 3, category: "设计", title: "社会网络分析", lastUpdated: "2025-02-20", status: "进行中", tags: ["界面", "UX", "交互"] },
+            { id: 4, category: "编程", title: "大数据治理", lastUpdated: "2025-03-14", status: "待开始", tags: ["Spark", "Hadoop", "State"] },
+            { id: 5, category: "设计", title: "商务数据可视化", lastUpdated: "2025-02-25", status: "进行中", tags: ["配色", "色轮", "对比度"] },
+            { id: 6, category: "编程", title: "金融大数据分析", lastUpdated: "2025-02-18", status: "进行中", tags: ["矩阵", "行列式", "特征值"] }
         ];
 
         const specialLinks = {
-            6: 'https://viuamoowxq7.feishu.cn/drive/folder/XG01fwnKdluQK6dVw2eczsCjnod?from=from_copylink',
-            // 可以在此添加更多特殊跳转：id: 'url'
+            6: 'https://viuamoowxq7.feishu.cn/drive/folder/XG01fwnKdluQK6dVw2eczsCjnod?from=from_copylink'
         };
 
+        let activeCategory = 'all';
 
-        // 动态渲染笔记卡片
         function renderNotes(filteredNotes) {
             const notesContainer = document.getElementById('notesContainer');
-            notesContainer.innerHTML = ''; // 清空容器
+            notesContainer.innerHTML = '';
 
             filteredNotes.forEach(note => {
                 const card = document.createElement('div');
-                card.classList.add('card', 'bg-white', 'p-4', 'rounded-lg', 'shadow-lg', 'hover:scale-105', 'transition-all', 'cursor-pointer');
+                card.className = 'note-card';
+                
+                const statusClass = note.status === '待开始' ? 'status-starting' : 
+                                    note.status === '进行中' ? 'status-progress' : 'status-completed';
+
                 card.innerHTML = `
-                    <div class="flex items-center mb-4">
-                        <span class="text-blue-600 font-semibold">${note.category}</span>
+                    <div class="card-header">
+                        <span class="card-category">>${note.category}</span>
+                        <span class="card-status ${statusClass}">${note.status.replace('进行中', 'IN-PROGRESS').replace('已完成', 'COMPLETED').replace('待开始', 'STANDBY')}</span>
                     </div>
-                    <h2 class="text-xl font-semibold">${note.title}</h2>
-                    <p class="text-sm text-gray-500 mt-2">最后更新：${note.lastUpdated}</p>
-                    <div class="flex space-x-2 mt-3">
-                        <span class="px-2 py-1 text-xs text-white rounded-full ${
-                            note.status === '待开始' ? 'status-starting' : 
-                            note.status === '进行中' ? 'status-progress' : 'status-completed'}">${note.status}</span>
-                    </div>
-                    <div class="flex space-x-2 mt-2">
-                        ${note.tags.map(tag => `<span class="text-xs bg-gray-200 px-2 py-1 rounded-full">${tag}</span>`).join('')}
+                    <h2 class="card-title">${note.title}</h2>
+                    <p class="card-meta">LAST SAVE: ${note.lastUpdated}</p>
+                    <div class="card-tags">
+                        ${note.tags.map(tag => `<span>#${tag}</span>`).join('')}
                     </div>
                 `;
+
                 card.addEventListener('click', () => {
-                    window.location.href = specialLinks[note.id] || `/notes/${note.id}`; // 点击卡片跳转网页
+                    setTimeout(() => {
+                        window.location.href = specialLinks[note.id] || `/notes/${note.id}`;
+                    }, 150);
                 });
+                
                 notesContainer.appendChild(card);
             });
         }
 
-        // 初次渲染所有笔记
-        renderNotes(notes);
+        function filterAndRender() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            let filteredNotes = notes;
 
-        // 搜索框过滤
-        document.getElementById('searchInput').addEventListener('input', function () {
-            const searchTerm = this.value.toLowerCase();
-            const filteredNotes = notes.filter(note =>
-                note.title.toLowerCase().includes(searchTerm) ||
-                note.category.toLowerCase().includes(searchTerm) ||
-                note.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-            );
+            if (activeCategory !== 'all') {
+                filteredNotes = filteredNotes.filter(note => note.category === activeCategory);
+            }
+
+            if (searchTerm) {
+                filteredNotes = filteredNotes.filter(note =>
+                    note.title.toLowerCase().includes(searchTerm) ||
+                    note.category.toLowerCase().includes(searchTerm) ||
+                    note.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+                );
+            }
+
             renderNotes(filteredNotes);
-        });
+        }
 
-        // 分类过滤
+        document.getElementById('searchInput').addEventListener('input', filterAndRender);
+
         document.querySelectorAll('.category-filter').forEach(button => {
             button.addEventListener('click', function () {
-                const category = this.getAttribute('data-category');
-                const filteredNotes = notes.filter(note => note.category === category);
-                renderNotes(filteredNotes);
-                document.querySelectorAll('.category-filter').forEach(btn => btn.classList.remove('bg-blue-100'));
-                this.classList.add('bg-blue-100');
+                document.querySelectorAll('.category-filter').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                activeCategory = this.getAttribute('data-category');
+                filterAndRender();
             });
         });
 
-        // 状态过滤
-        document.querySelectorAll('.status-filter').forEach(button => {
-            button.addEventListener('click', function () {
-                const status = this.getAttribute('data-status');
-                const filteredNotes = notes.filter(note => note.status === status);
-                renderNotes(filteredNotes);
-                document.querySelectorAll('.status-filter').forEach(btn => btn.classList.remove('bg-blue-100'));
-                this.classList.add('bg-blue-100');
-            });
-        });
+        // 初始渲染
+        renderNotes(notes);
+
     </script>
-
 </body>
-
 </html>
-
-
-
