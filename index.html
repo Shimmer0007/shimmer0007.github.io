@@ -3,13 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShimmerOS</title>
-    
+    <title>ShimmerOS - Modern Desktop Experience</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
+    <style>
+        /* --- Modern Theme & Color Scheme --- */
+        :root {
+            --bg-color: #1a1d24;
+            --window-bg: rgba(44, 48, 58, 0.6);
+            --dock-bg: rgba(44, 48, 58, 0.4);
+            --title-bar-bg: rgba(30, 33, 40, 0.7);
+            --primary-accent: #007aff; /* 默认: 珂朵莉蓝 */
+            --secondary-accent: #ff3b30;
+            --text-light: #f0f0f0;
+            --text-medium: #a0a0b0;
+            --text-dark: #1a1d24;
+            --font-main: 'Manrope', 'Noto Sans SC', sans-serif;
+            --border-color: rgba(255, 255, 255, 0.15);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --success-green: #34c759;
+            --border-radius-main: 12px;
+            --border-radius-small: 8px;
+            --input-bg: rgba(255, 255, 255, 0.05);
+        }
 
+        [data-theme="light"] {
+            --bg-color: #f0f2f5;
+            --window-bg: rgba(255, 255, 255, 0.6);
+            --dock-bg: rgba(255, 255, 255, 0.4);
+            --title-bar-bg: rgba(235, 237, 240, 0.7);
+            --text-light: #1d1d1f;
+            --text-medium: #6e6e73;
+            --text-dark: #f0f0f0;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.15);
+            --success-green: #28a745;
+            --input-bg: rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- Global & Background --- */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            font-family: var(--font-main);
+            overflow: hidden;
+            margin: 0;
+            cursor: default;
+            user-select: none;
+            -webkit-user-select: none; /* For Safari */
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+            background: radial-gradient(circle at 15% 25%, hsla(217, 71%, 35%, 0.3), transparent 40%),
+                        radial-gradient(circle at 85% 65%, hsla(263, 64%, 42%, 0.25), transparent 50%);
+            animation: move-glow 25s linear infinite alternate;
+            opacity: 1;
+        }
+        [data-theme="light"]::before { opacity: 0; }
+        @keyframes move-glow { from { transform: translate(-5%, -5%) scale(1); } to { transform: translate(5%, 5%) scale(1.2); } }
+
+        /* --- Boot Sequence --- */
+        #shimmer-boot-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-color); z-index: 10000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+            transition: opacity 0.8s ease-in-out, visibility 0.8s;
+        }
+        #shimmer-boot-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .shimmer-logo { font-size: 48px; font-weight: bold; letter-spacing: 2px; }
+        .shimmer-logo span { color: var(--primary-accent); }
+        .progress-bar { width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+        .progress-bar-inner { width: 0; height: 100%; background: var(--primary-accent); transition: width 2s ease-out; }
+
+        /* --- Desktop Icons --- */
+        #desktop {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 20px;
+            padding: 40px; height: calc(100vh - 120px); align-content: start; opacity: 0; transition: opacity 0.5s ease-in;
+        }
+        #desktop.loaded { opacity: 1; }
+        .desktop-icon {
+            display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; cursor: pointer;
+            padding: 10px; border-radius: var(--border-radius-small); transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        .desktop-icon:hover { background-color: rgba(120, 120, 120, 0.1); transform: translateY(-4px); }
+        .desktop-icon .icon-image { font-size: 48px; }
+        .desktop-icon .icon-label { font-size: 14px; color: var(--text-light); text-shadow: 0 1px 3px var(--shadow-color); word-break: keep-all; }
+
+        /* --- Window Style (Glassmorphism) --- */
+        .window {
+            display: none; position: absolute; background: var(--window-bg); border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px var(--shadow-color); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+            min-width: 350px; min-height: 220px; resize: both; overflow: hidden; flex-direction: column;
+            border-radius: var(--border-radius-main); animation: open-window 0.4s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: center;
+            transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        @keyframes open-window { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .window.active { z-index: 100; border-color: var(--primary-accent); box-shadow: 0 0 25px color-mix(in srgb, var(--primary-accent) 30%, transparent); }
+
+        .title-bar {
+            background: var(--title-bar-bg); color: var(--text-light); padding: 0 12px; height: 40px; font-size: 14px;
+            font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: move;
+            flex-shrink: 0; border-bottom: 1px solid var(--border-color); touch-action: none; transition: background-color 0.4s, border-color 0.4s;
+        }
+        .title-bar-controls { display: flex; gap: 8px; }
+        .control-button { width: 14px; height: 14px; border-radius: 50%; border: none; cursor: pointer; transition: transform 0.1s ease; }
+        .control-button:active { transform: scale(0.9); }
+        .close-btn { background-color: var(--secondary-accent); }
+        
+        .window-body { padding: 20px; flex-grow: 1; overflow: auto; font-size: 16px; line-height: 1.7; }
+        .window-body::-webkit-scrollbar { width: 8px; }
+        .window-body::-webkit-scrollbar-track { background: transparent; }
+        .window-body::-webkit-scrollbar-thumb { background: rgba(120, 120, 120, 0.4); border-radius: 4px; }
+        
+        /* --- Specific Window Styles --- */
+        #terminal-output { white-space: pre-wrap; word-break: break-word; }
+        #terminal-window .window-body { background: rgba(0,0,0,0.5); color: var(--success-green); font-family: 'SF Mono', 'Menlo', 'Consolas', monospace; font-size: 14px; }
+        [data-theme="light"] #terminal-window .window-body { background: rgba(255,255,255,0.5); color: #006400;}
+        .terminal-prompt::before { content: 'shimmer ~ % '; color: var(--primary-accent); }
+        .cursor { display: inline-block; background: var(--success-green); width: 8px; height: 1.2em; animation: blink 1.2s step-end infinite; margin-left: 4px; vertical-align: middle; }
+        @keyframes blink { 50% { opacity: 0; } }
+        
+        #about-window .player-stats dt { color: var(--primary-accent); float: left; width: 100px; font-weight: bold; transition: color 0.4s ease; }
+        #about-window .player-stats dd { margin-left: 110px; margin-bottom: 1.2em; color: var(--text-medium); }
+        
+        #skills-window .skill-tree, .file-tree { list-style: none; padding-left: 10px; }
+        #skills-window .skill-tree li, .file-tree li { position: relative; padding: 8px 0 8px 30px; }
+        #skills-window .skill-tree li::before, .file-tree li::before { content: ''; position: absolute; left: 10px; top: 0; border-left: 2px solid color-mix(in srgb, var(--primary-accent) 20%, transparent); height: 100%; transition: border-color 0.4s ease; }
+        #skills-window .skill-tree li:last-child::before, .file-tree li:last-child::before { height: 22px; }
+        #skills-window .skill-tree li::after, .file-tree li::after { content: ''; position: absolute; left: 10px; top: 22px; border-top: 2px solid color-mix(in srgb, var(--primary-accent) 20%, transparent); width: 15px; transition: border-color 0.4s ease;}
+        #skills-window .skill-tree strong, .file-tree strong { color: var(--primary-accent); transition: color 0.4s ease; }
+        .file-icon { margin-right: 8px; }
+
+        /* --- Project Browser Styles --- */
+        .project-card { background: var(--input-bg); padding: 15px 20px; border-radius: var(--border-radius-small); margin-bottom: 15px; cursor: pointer; border-left: 4px solid transparent; transition: background-color 0.2s, border-left-color 0.2s; }
+        .project-card:hover { background-color: color-mix(in srgb, var(--primary-accent) 10%, transparent); border-left-color: var(--primary-accent); }
+        .project-card h4 { margin: 0 0 5px 0; font-size: 16px; color: var(--text-light); }
+        .project-card p { font-size: 14px; color: var(--text-medium); margin: 0 0 10px 0; }
+        .project-tags span { display: inline-block; background-color: color-mix(in srgb, var(--primary-accent) 20%, transparent); color: var(--primary-accent); padding: 3px 8px; border-radius: 4px; font-size: 12px; margin-right: 8px; }
+        #project-detail-view { display: none; }
+        .back-to-projects-btn { font-size: 14px; color: var(--primary-accent); cursor: pointer; margin-bottom: 15px; display: inline-block; }
+        .back-to-projects-btn:hover { text-decoration: underline; }
+
+        #clock-widget { font-size: 48px; text-align: center; padding: 20px 10px; color: var(--text-light); font-weight: bold; }
+        
+        .settings-section { margin-bottom: 25px; }
+        .settings-section h3 { margin-top: 0; margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+        .theme-switcher, .accent-colors { display: flex; gap: 15px; align-items: center; }
+        .theme-button { padding: 8px 15px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-light); border-radius: var(--border-radius-small); cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
+        .theme-button.active { background-color: var(--primary-accent); color: white; border-color: var(--primary-accent); }
+        [data-theme="light"] .theme-button.active { color: var(--text-dark); }
+        .color-swatch { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: border-color 0.2s, transform 0.2s; }
+        .color-swatch:hover { transform: scale(1.1); }
+        .color-swatch.active { border-color: var(--text-light); }
+
+        /* --- API Window Styles (GitHub Fetcher) --- */
+        #api-window .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        #api-window input { flex-grow: 1; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-light); padding: 10px; border-radius: var(--border-radius-small); font-family: var(--font-main); }
+        #api-window button { background-color: var(--primary-accent); color: white; border: none; padding: 10px 20px; border-radius: var(--border-radius-small); cursor: pointer; transition: background-color 0.2s; font-weight: bold; }
+        [data-theme="light"] #api-window button { color: var(--text-dark); }
+        
+        #github-response-area { margin-top: 15px; padding: 15px; background: var(--input-bg); border-radius: var(--border-radius-small); min-height: 150px; }
+        .github-user-profile { display: flex; align-items: flex-start; gap: 20px; animation: fade-in 0.5s ease; }
+        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .github-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--border-color); }
+        .github-user-info { flex-grow: 1; }
+        .github-user-info h3 { margin: 0 0 8px 0; font-size: 20px; color: var(--text-light); }
+        .github-user-info h3 a { color: var(--primary-accent); text-decoration: none; font-size: 16px; font-weight: normal; }
+        .github-user-info h3 a:hover { text-decoration: underline; }
+        .github-bio { font-size: 14px; color: var(--text-medium); margin: 0 0 15px 0; font-style: italic; }
+        .github-user-stats { display: flex; gap: 20px; border-top: 1px solid var(--border-color); padding-top: 10px; font-size: 14px; }
+        .github-user-stats span .stat-value { font-weight: bold; color: var(--text-light); margin-right: 5px; }
+
+
+        /* --- Context Menu --- */
+        #context-menu {
+            display: none; position: fixed; z-index: 1000;
+            background: var(--dock-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color); border-radius: var(--border-radius-small);
+            padding: 8px; box-shadow: 0 4px 15px var(--shadow-color);
+            min-width: 150px;
+        }
+        .context-menu-item {
+            padding: 8px 12px; border-radius: 4px; cursor: pointer; color: var(--text-light);
+            font-size: 14px;
+        }
+        .context-menu-item:hover { background-color: var(--primary-accent); }
+        
+        /* --- Dock --- */
+        .dock {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--dock-bg);
+            border: 1px solid var(--border-color); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 10px; display: flex; gap: 15px; z-index: 200; border-radius: var(--border-radius-main);
+            box-shadow: 0 5px 20px var(--shadow-color);
+            transition: background-color 0.4s ease, border-color 0.4s ease;
+        }
+        .nav-button {
+            width: 52px; height: 52px; font-size: 26px; display: flex; align-items: center; justify-content: center;
+            background: transparent; border: none; color: var(--text-medium); cursor: pointer; transition: all 0.2s ease;
+            border-radius: var(--border-radius-small);
+        }
+        .nav-button:hover { transform: scale(1.1) translateY(-5px); background: var(--primary-accent); color: var(--text-light); box-shadow: 0 0 15px var(--primary-accent); }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            body { font-size: 15px; }
+            #desktop { grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 20px; }
+            .desktop-icon { gap: 8px; }
+            .desktop-icon .icon-image { font-size: 40px; }
+            .window {
+                left: 2.5vw !important; top: 5vh !important; width: 95vw !important; height: 85vh !important;
+                resize: none; /* Disable resizing on mobile */
+            }
+            .dock { bottom: 15px; }
+            #clock-widget { font-size: 40px; }
+            .github-user-profile { flex-direction: column; align-items: center; text-align: center; }
+        }
+    </style>
 </head>
 <body data-theme="dark">
 
@@ -41,13 +251,7 @@
     </div>
     <div id="terminal-window" class="window" style="top: 40%; left: 40%; width: 550px; height: 380px;">
         <div class="title-bar"><span>ShimmerCMD</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body" id="terminal-body" tabindex="-1">
-            <div id="terminal-output"></div>
-            <div id="terminal-input-line">
-                <span class="terminal-prompt"></span><span id="terminal-input-display"></span><span class="cursor"></span>
-            </div>
-            <input type="text" id="hidden-terminal-input" autocapitalize="off" autocorrect="off" spellcheck="false" />
-        </div>
+        <div class="window-body" id="terminal-body" tabindex="0"><div id="terminal-output"></div><div id="terminal-input-line"><span class="terminal-prompt"></span><span id="terminal-input"></span><span class="cursor"></span></div></div>
     </div>
     <div id="clock-window" class="window" style="top: 10%; left: 65%; width: 350px; height: 220px;">
         <div class="title-bar"><span>Clock</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
@@ -55,10 +259,12 @@
     </div>
     <div id="blog-window" class="window" style="top: 15%; left: 20%; width: 60%; height: 70%;"><div class="title-bar"><span>微光博客 (Blog)</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div><div class="window-body" style="padding:0; overflow:hidden;"><iframe src="blog/blognav.html" style="width:100%; height:100%; border:0;"></iframe></div></div>
     <div id="notes-window" class="window" style="top: 20%; left: 25%; width: 60%; height: 70%;"><div class="title-bar"><span>课业笔记 (Notes)</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div><div class="window-body" style="padding:0; overflow:hidden;"><iframe src="note/notenav.html" style="width:100%; height:100%; border:0;"></iframe></div></div>
+
     <div id="project-window" class="window" style="top: 20%; left: 15%; width: 600px; height: 600px;">
         <div class="title-bar"><span>Project Browser</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
         <div class="window-body">
-            <div id="project-list-view"></div>
+            <div id="project-list-view">
+                </div>
             <div id="project-detail-view">
                 <span class="back-to-projects-btn">&larr; 返回项目列表</span>
                 <div id="project-detail-content"></div>
@@ -99,12 +305,14 @@
             </div>
         </div>
     </div>
+
     <div id="travel-window" class="window" style="top: 15%; left: 15%; width: 70vw; height: 75vh;">
         <div class="title-bar"><span>Travel Footprints</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
         <div class="window-body" style="padding:0; overflow:hidden;">
             <iframe src="travelmap/map.html" style="width:100%; height:100%; border:0;"></iframe>
         </div>
     </div>
+
     <div id="links-window" class="window" style="top: 30%; left: 40%; width: 380px; height: 420px;">
         <div class="title-bar"><span>Friend Links</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
         <div class="window-body">
@@ -113,7 +321,7 @@
                 <li style="margin-bottom: 15px;"><a href="https://hyacehila.github.io/" target="_blank" style="color: var(--primary-accent); text-decoration: none;">🌍 Hyacehila的博客</a></li>
                 <li style="margin-bottom: 15px;"><a href="#" target="_blank" style="color: var(--primary-accent); text-decoration: none;">🎨 B的博客</a></li>
                 <li style="margin-bottom: 15px;"><a href="#" target="_blank" style="color: var(--primary-accent); text-decoration: none;">💡 C的空间</a></li>
-            </ul>
+                </ul>
         </div>
     </div>
 
@@ -122,8 +330,428 @@
         <div class="nav-button" title="返回" onclick="window.history.back()">←</div>
         <div class="nav-button" title="主页" onclick="window.location.reload()">⌂</div>
     </div>
+    
     <div id="context-menu"></div>
 
-    <script src="/script.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- Boot Sequence ---
+    const bootScreen = document.getElementById('shimmer-boot-screen');
+    const progressBar = document.getElementById('progress-bar-inner');
+    const desktop = document.getElementById('desktop');
+    setTimeout(() => {
+        progressBar.style.width = '100%';
+        setTimeout(() => {
+            bootScreen.classList.add('hidden');
+            desktop.classList.add('loaded');
+        }, 2200);
+    }, 100);
+
+    // --- Window Management ---
+    const windows = document.querySelectorAll('.window');
+    let activeWindow = null;
+    let maxZIndex = 100;
+
+    function activateWindow(win) {
+        if (activeWindow === win) return;
+        if (activeWindow) activeWindow.classList.remove('active');
+        maxZIndex++;
+        win.style.zIndex = maxZIndex;
+        win.classList.add('active');
+        activeWindow = win;
+        if (win.id === 'terminal-window') win.querySelector('#terminal-body').focus();
+    }
+
+    function openOrActivateWindow(windowId) {
+        const win = document.getElementById(windowId);
+        if (win) {
+            if (win.style.display !== 'flex') {
+                win.style.display = 'flex';
+                if (windowId === 'terminal-window') {
+                    const output = win.querySelector('#terminal-output');
+                    output.innerHTML = 'ShimmerOS [Version 1.5.0]\n(c) 2025 Shimmer. All rights reserved.\nType "help" for a list of commands.\n';
+                }
+            }
+            activateWindow(win);
+        }
+    }
+
+    windows.forEach(win => {
+        const titleBar = win.querySelector('.title-bar');
+        win.addEventListener('mousedown', () => activateWindow(win));
+        
+        const startDrag = (e) => {
+            if (e.target.closest('.control-button') || win.closest('.no-drag')) return;
+            if (window.innerWidth <= 768) return; // Disable drag on mobile
+            e.preventDefault();
+            activateWindow(win);
+            
+            const isTouchEvent = e.type.startsWith('touch');
+            const startX = isTouchEvent ? e.touches[0].clientX : e.clientX;
+            const startY = isTouchEvent ? e.touches[0].clientY : e.clientY;
+            const startLeft = win.offsetLeft;
+            const startTop = win.offsetTop;
+            
+            const onDrag = (moveEvent) => {
+                const moveX = isTouchEvent ? moveEvent.touches[0].clientX : moveEvent.clientX;
+                const moveY = isTouchEvent ? moveEvent.touches[0].clientY : moveEvent.clientY;
+                win.style.left = `${startLeft + moveX - startX}px`;
+                win.style.top = `${startTop + moveY - startY}px`;
+            };
+            
+            const endDrag = () => {
+                document.removeEventListener(isTouchEvent ? 'touchmove' : 'mousemove', onDrag);
+                document.removeEventListener(isTouchEvent ? 'touchend' : 'mouseup', endDrag);
+            };
+            
+            document.addEventListener(isTouchEvent ? 'touchmove' : 'mousemove', onDrag);
+            document.addEventListener(isTouchEvent ? 'touchend' : 'mouseup', endDrag);
+        };
+
+        if (titleBar) {
+            titleBar.addEventListener('mousedown', startDrag);
+            titleBar.addEventListener('touchstart', startDrag, { passive: false });
+        }
+        
+        const closeBtn = win.querySelector('.close-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                win.style.animation = 'close-window 0.3s ease-out forwards';
+                setTimeout(() => {
+                    win.style.display = 'none';
+                    win.style.animation = 'open-window 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+                    // Reset project browser view if closing it
+                    if (win.id === 'project-window') {
+                        document.getElementById('project-list-view').style.display = 'block';
+                        document.getElementById('project-detail-view').style.display = 'none';
+                    }
+                }, 300);
+            });
+        }
+    });
+
+    const styleSheet = document.createElement("style");
+    styleSheet.type = "text/css";
+    styleSheet.innerText = `@keyframes close-window { from { transform: scale(1); opacity: 1; } to { transform: scale(0.95); opacity: 0; } }`;
+    document.head.appendChild(styleSheet);
+
+    // --- Context Menu Logic ---
+    const contextMenu = document.getElementById('context-menu');
+    let longPressTimer;
+    let longPressTriggered = false;
+
+    const showContextMenu = (e, targetIcon) => {
+        e.preventDefault();
+        hideContextMenu();
+        
+        const windowId = targetIcon ? targetIcon.getAttribute('data-window-id') : null;
+        let menuItems = '';
+
+        if (windowId) {
+            menuItems = `<div class="context-menu-item" data-action="open" data-window-id="${windowId}">打开</div>`;
+        } else {
+            menuItems = `<div class="context-menu-item" data-action="settings">显示设置</div>`;
+        }
+        contextMenu.innerHTML = menuItems;
+        
+        const posX = e.touches ? e.touches[0].clientX : e.clientX;
+        const posY = e.touches ? e.touches[0].clientY : e.clientY;
+        contextMenu.style.left = `${posX}px`;
+        contextMenu.style.top = `${posY}px`;
+        contextMenu.style.display = 'block';
+
+        document.addEventListener('click', hideContextMenu, { once: true });
+    };
+
+    const hideContextMenu = () => contextMenu.style.display = 'none';
+
+    contextMenu.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target.matches('.context-menu-item')) {
+            const action = target.dataset.action;
+            const windowId = target.dataset.windowId;
+            if (action === 'open' && windowId) {
+                openOrActivateWindow(windowId);
+            } else if (action === 'settings') {
+                openOrActivateWindow('settings-window');
+            }
+            hideContextMenu();
+        }
+    });
+
+    // --- Event Binding ---
+    function setupIconEvents(icon) {
+        icon.addEventListener('click', (e) => {
+            if (!longPressTriggered) openOrActivateWindow(icon.getAttribute('data-window-id'));
+        });
+        icon.addEventListener('contextmenu', (e) => showContextMenu(e, icon));
+        icon.addEventListener('touchstart', (e) => {
+            longPressTriggered = false;
+            longPressTimer = setTimeout(() => {
+                longPressTriggered = true;
+                showContextMenu(e, icon);
+            }, 500);
+        });
+        icon.addEventListener('touchend', () => clearTimeout(longPressTimer));
+        icon.addEventListener('touchmove', () => clearTimeout(longPressTimer));
+    }
+
+    document.querySelectorAll('.desktop-icon').forEach(setupIconEvents);
+    desktop.addEventListener('contextmenu', (e) => { if(e.target === desktop) showContextMenu(e, null); });
+    document.querySelectorAll('.nav-button[data-window-id]').forEach(button => {
+        button.addEventListener('click', () => openOrActivateWindow(button.getAttribute('data-window-id')));
+    });
+
+    // --- Interactive Terminal (with sudo easter egg) ---
+    const terminalBody = document.getElementById('terminal-body');
+    const terminalOutput = document.getElementById('terminal-output');
+    const terminalInput = document.getElementById('terminal-input');
+
+    const commands = {
+        help: () => `Available commands:\n  help      - Shows this help message\n  ls        - Lists all desktop apps\n  open <app>- Opens an application (e.g., open blog)\n  date      - Displays the current date and time\n  about     - Shows the player profile\n  clear     - Clears the terminal screen\n  reboot    - Reboots the system`,
+        ls: () => 'Desktop Items:\n' + [...document.querySelectorAll('.desktop-icon .icon-label')].map(i => `  - ${i.textContent}`).join('\n'),
+        open: (args) => {
+            const appName = args[0];
+            if (!appName) return 'Usage: open <app_name>';
+            const nameMap = { blog: '微光博客', notes: '课业笔记', skills: '技能树', about: '关于我', projects: '项目浏览', travel: '出行足迹', links: '友情链接', api: 'GitHub查询', settings: '设置', clock: '时钟' };
+            const targetName = Object.keys(nameMap).find(k => appName.toLowerCase() === k) || appName;
+            const icon = [...document.querySelectorAll('.desktop-icon')].find(i => i.querySelector('.icon-label').textContent.toLowerCase().includes(targetName.toLowerCase()));
+            if (icon) {
+                openOrActivateWindow(icon.dataset.windowId);
+                return `Opening ${icon.querySelector('.icon-label').textContent}...`;
+            }
+            return `Error: Application "${appName}" not found.`;
+        },
+        date: () => new Date().toLocaleString('ja-JP'),
+        about: () => `-- Player Profile --\n${document.querySelector('#about-window .window-body').innerText.trim()}`,
+        clear: () => { terminalOutput.innerHTML = ''; return ''; },
+        reboot: () => { window.location.reload(); return 'Rebooting system...'; }
+    };
+
+    terminalBody.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key.toLowerCase() === 'c') {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
+            const fullCommand = terminalInput.textContent;
+            const [command, ...args] = fullCommand.trim().split(' ').filter(Boolean);
+            
+            terminalOutput.innerHTML += `\n<span class="terminal-prompt"></span>${fullCommand}`;
+            
+            // --- SUDO EASTER EGG ---
+            if (fullCommand.toLowerCase().includes('sudo')) {
+                const sudoResponses = [
+                    "User is not in the sudoers file. This incident will be reported.",
+                    "检测到越权操作，ShimmerOS觉得你有点可爱并驳回了你的请求。",
+                    "诶捧右，阿达西的探索精神值得鼓励，但这可不是真正的Linux呢！",
+                    "[SECURITY ALERT] Unauthorized privilege escalation attempt detected. System integrity is safe.",
+                    "ShimmerOS是个温柔的系统，不需要sudo喵！",
+                ];
+                const response = sudoResponses[Math.floor(Math.random() * sudoResponses.length)];
+                terminalOutput.innerHTML += `\n${response}`;
+            } else if (command) {
+                const response = commands[command] ? commands[command](args) : `Command not found: ${command}`;
+                if(response) terminalOutput.innerHTML += `\n${response}`;
+            }
+            
+            terminalInput.textContent = '';
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+
+        } else if (e.key === 'Backspace') {
+            e.preventDefault();
+            e.stopPropagation();
+            terminalInput.textContent = terminalInput.textContent.slice(0, -1);
+        } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            e.preventDefault();
+            e.stopPropagation();
+            terminalInput.textContent += e.key;
+        }
+    });
+    
+    terminalBody.addEventListener('click', () => terminalBody.focus());
+
+    // --- Clock Widget ---
+    const clockElement = document.getElementById('clock-widget');
+    function updateClock() {
+        clockElement.textContent = new Date().toLocaleTimeString('ja-JP');
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // --- Settings Logic ---
+    const settingsWindow = document.getElementById('settings-window');
+    settingsWindow.querySelectorAll('.theme-button').forEach(button => {
+        button.addEventListener('click', () => {
+            const theme = button.dataset.theme;
+            document.body.dataset.theme = theme;
+            settingsWindow.querySelector('.theme-button.active').classList.remove('active');
+            button.classList.add('active');
+        });
+    });
+
+    settingsWindow.querySelectorAll('.color-swatch').forEach(swatch => {
+        swatch.addEventListener('click', () => {
+            const color = swatch.dataset.color;
+            document.documentElement.style.setProperty('--primary-accent', color);
+            settingsWindow.querySelector('.color-swatch.active').classList.remove('active');
+            swatch.classList.add('active');
+        });
+    });
+
+    // --- GitHub API Fetcher Logic ---
+    const githubQueryBtn = document.getElementById('github-query-btn');
+    const githubUsernameInput = document.getElementById('github-username-input');
+    const githubResponseArea = document.getElementById('github-response-area');
+
+    const fetchGitHubUser = async () => {
+        const username = githubUsernameInput.value.trim();
+        if (!username) {
+            githubResponseArea.innerHTML = `<p style="color: var(--secondary-accent);">请输入一个用户名。</p>`;
+            return;
+        }
+        
+        githubResponseArea.innerHTML = `<p>正在查询...</p>`;
+
+        try {
+            const response = await fetch(`https://api.github.com/users/${username}`);
+            if (!response.ok) {
+                if(response.status === 404) throw new Error(`用户 "${username}" 未找到。`);
+                throw new Error(`网络错误, 状态: ${response.status}`);
+            }
+            const data = await response.json();
+            
+            githubResponseArea.innerHTML = `
+                <div class="github-user-profile">
+                    <img src="${data.avatar_url}" alt="${data.login} avatar" class="github-avatar">
+                    <div class="github-user-info">
+                        <h3>${data.name || data.login} 
+                            <a href="${data.html_url}" target="_blank" title="访问GitHub主页">(@${data.login})</a>
+                        </h3>
+                        <p class="github-bio">${data.bio || '这个用户很神秘，什么也没留下...'}</p>
+                        <div class="github-user-stats">
+                            <span><span class="stat-value">${data.public_repos}</span> 公开仓库</span>
+                            <span><span class="stat-value">${data.followers}</span> 关注者</span>
+                            <span><span class="stat-value">${data.following}</span> 正在关注</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+        } catch (error) {
+            githubResponseArea.innerHTML = `<p style="color: var(--secondary-accent);">${error.message}</p>`;
+        }
+    };
+
+    githubQueryBtn.addEventListener('click', fetchGitHubUser);
+    githubUsernameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            fetchGitHubUser();
+        }
+    });
+
+    // --- Project Browser Logic ---
+    const projectsData = {
+        'textmining': {
+            name: 'Textmining Project',
+            description: '《统计机器学习与文本挖掘》实验材料。基于银发经济领域研究内容的多维度分析项目。',
+            tags: ['Python', 'Data Mining', 'NLP'],
+            contentHTML: `
+                <p>一个基于文章摘要的情感分析、主题建模和可视化的数据科学项目。</p>
+                <ul class="file-tree">
+                    <li><span class="file-icon">📁</span><strong>src</strong>
+                        <ul class="file-tree">
+                            <li><span class="file-icon">🐍</span>data_collection.py</li>
+                            <li><span class="file-icon">🐍</span>data_preprocessing.py</li>
+                            <li><span class="file-icon">🐍</span>sentiment_analysis.py</li>
+                            <li><span class="file-icon">🐍</span>topic_modeling.py</li>
+                            <li><span class="file-icon">🐍</span>visualization.py</li>
+                        </ul>
+                    </li>
+                    <li><span class="file-icon">📁</span><strong>data</strong>
+                        <ul class="file-tree">
+                            <li><span class="file-icon">📄</span>news_articles.csv</li>
+                            <li><span class="file-icon">📄</span>stock_prices.csv</li>
+                        </ul>
+                    </li>
+                     <li><span class="file-icon">📄</span>README.md</li>
+                </ul>
+            `
+        },
+        'personal-os': {
+            name: 'Personal OS Homepage',
+            description: '您当前正在浏览的这个交互式个人主页。一个使用原生JS构建的仿操作系统界面。',
+            tags: ['JavaScript', 'HTML5', 'CSS3', 'UI/UX'],
+            contentHTML: `
+                <p>一个使用原生JS、HTML和CSS构建的，模拟桌面操作系统的交互式个人主页，所有代码都在一个文件内。</p>
+                <ul class="file-tree">
+                    <li><span class="file-icon">📄</span><strong>index.html</strong>
+                        <ul class="file-tree">
+                             <li><span class="file-icon">🎨</span>style.css (Embedded)</li>
+                             <li><span class="file-icon">📜</span>script.js (Embedded)</li>
+                        </ul>
+                    </li>
+                    <li><span class="file-icon">📁</span><strong>assets</strong>
+                        <ul class="file-tree">
+                            <li><span class="file-icon">🖼️</span>(background-gradients)</li>
+                            <li><span class="file-icon">✒️</span>(google-fonts)</li>
+                        </ul>
+                    </li>
+                </ul>
+            `
+        }
+    };
+
+    const projectListView = document.getElementById('project-list-view');
+    const projectDetailView = document.getElementById('project-detail-view');
+    const projectDetailContent = document.getElementById('project-detail-content');
+    const backToProjectsBtn = document.querySelector('.back-to-projects-btn');
+
+    // Populate project list
+    for (const projectId in projectsData) {
+        const project = projectsData[projectId];
+        const card = document.createElement('div');
+        card.className = 'project-card';
+        card.dataset.projectId = projectId;
+        
+        let tagsHTML = '';
+        project.tags.forEach(tag => {
+            tagsHTML += `<span>${tag}</span>`;
+        });
+
+        card.innerHTML = `
+            <h4>${project.name}</h4>
+            <p>${project.description}</p>
+            <div class="project-tags">${tagsHTML}</div>
+        `;
+        projectListView.appendChild(card);
+    }
+
+    // Add click listeners
+    projectListView.addEventListener('click', (e) => {
+        const card = e.target.closest('.project-card');
+        if (card) {
+            const projectId = card.dataset.projectId;
+            const projectData = projectsData[projectId];
+
+            projectDetailContent.innerHTML = projectData.contentHTML;
+            projectListView.style.display = 'none';
+            projectDetailView.style.display = 'block';
+        }
+    });
+
+    backToProjectsBtn.addEventListener('click', () => {
+        projectDetailView.style.display = 'none';
+        projectListView.style.display = 'block';
+    });
+
+});
+</script>
 </body>
 </html>
