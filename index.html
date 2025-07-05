@@ -36,36 +36,20 @@
             margin: 0;
             cursor: default;
             user-select: none;
+            -webkit-user-select: none; /* For Safari */
         }
-
-        /* Subtle Animated Gradient Background */
         body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -2;
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
             background: radial-gradient(circle at 15% 25%, hsla(217, 71%, 35%, 0.3), transparent 40%),
                         radial-gradient(circle at 85% 65%, hsla(263, 64%, 42%, 0.25), transparent 50%);
             animation: move-glow 25s linear infinite alternate;
         }
-
-        @keyframes move-glow {
-            from { transform: translate(-5%, -5%) scale(1); }
-            to { transform: translate(5%, 5%) scale(1.2); }
-        }
+        @keyframes move-glow { from { transform: translate(-5%, -5%) scale(1); } to { transform: translate(5%, 5%) scale(1.2); } }
 
         /* --- Boot Sequence --- */
         #shimmer-boot-screen {
-            position: fixed; top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: var(--bg-color);
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-color); z-index: 10000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
             transition: opacity 0.8s ease-in-out, visibility 0.8s;
         }
         #shimmer-boot-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -76,142 +60,92 @@
 
         /* --- Desktop Icons --- */
         #desktop {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            gap: 20px;
-            padding: 40px;
-            height: calc(100vh - 120px);
-            align-content: start;
-            opacity: 0;
-            transition: opacity 0.5s ease-in;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 20px;
+            padding: 40px; height: calc(100vh - 120px); align-content: start; opacity: 0; transition: opacity 0.5s ease-in;
         }
         #desktop.loaded { opacity: 1; }
         .desktop-icon {
-            display: flex; flex-direction: column; align-items: center;
-            text-align: center; gap: 12px; cursor: pointer;
-            padding: 10px; border-radius: var(--border-radius-small);
-            transition: transform 0.2s ease, background-color 0.2s ease;
+            display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; cursor: pointer;
+            padding: 10px; border-radius: var(--border-radius-small); transition: transform 0.2s ease, background-color 0.2s ease;
         }
-        .desktop-icon:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            transform: translateY(-4px);
-        }
+        .desktop-icon:hover { background-color: rgba(255, 255, 255, 0.05); transform: translateY(-4px); }
         .desktop-icon .icon-image { font-size: 48px; }
         .desktop-icon .icon-label { font-size: 14px; color: var(--text-light); text-shadow: 0 1px 3px var(--shadow-color); word-break: keep-all; }
 
         /* --- Window Style (Glassmorphism) --- */
         .window {
-            display: none; /* 默认隐藏窗口 */
-            position: absolute;
-            background: var(--window-bg);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 10px 30px var(--shadow-color);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            min-width: 350px; min-height: 220px;
-            resize: both; overflow: hidden;
-            flex-direction: column;
-            border-radius: var(--border-radius-main);
-            animation: open-window 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            transform-origin: center;
+            display: none; position: absolute; background: var(--window-bg); border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px var(--shadow-color); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+            min-width: 350px; min-height: 220px; resize: both; overflow: hidden; flex-direction: column;
+            border-radius: var(--border-radius-main); animation: open-window 0.4s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: center;
         }
-        @keyframes open-window {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
+        @keyframes open-window { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .window.active { z-index: 100; border-color: var(--primary-accent); box-shadow: 0 0 25px rgba(0, 122, 255, 0.3); }
 
         .title-bar {
-            background: var(--title-bar-bg);
-            color: var(--text-light);
-            padding: 0 12px;
-            height: 40px;
-            font-size: 14px; font-weight: bold;
-            display: flex; justify-content: space-between; align-items: center;
-            cursor: move;
-            flex-shrink: 0;
-            border-bottom: 1px solid var(--border-color);
+            background: var(--title-bar-bg); color: var(--text-light); padding: 0 12px; height: 40px; font-size: 14px;
+            font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: move;
+            flex-shrink: 0; border-bottom: 1px solid var(--border-color); touch-action: none; /* For mobile dragging */
         }
         
         .title-bar-controls { display: flex; gap: 8px; }
-        .control-button {
-            width: 14px; height: 14px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 9px; line-height: 14px; font-weight: bold;
-            transition: transform 0.1s ease;
-        }
+        .control-button { width: 14px; height: 14px; border-radius: 50%; border: none; cursor: pointer; transition: transform 0.1s ease; }
         .control-button:active { transform: scale(0.9); }
-        .close-btn { background-color: var(--secondary-accent); color: #5c120f; }
+        .close-btn { background-color: var(--secondary-accent); }
         
-        .window-body {
-            padding: 20px; flex-grow: 1;
-            overflow: auto;
-            font-size: 16px;
-            line-height: 1.7;
-        }
+        .window-body { padding: 20px; flex-grow: 1; overflow: auto; font-size: 16px; line-height: 1.7; }
         .window-body::-webkit-scrollbar { width: 8px; }
         .window-body::-webkit-scrollbar-track { background: transparent; }
         .window-body::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
-        .window-body::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
         
-
         /* --- Specific Window Styles --- */
-        #about-window .player-stats dt { color: var(--primary-accent); float: left; width: 100px; font-weight: bold; }
-        #about-window .player-stats dd { margin-left: 110px; margin-bottom: 1.2em; color: var(--text-medium); }
-        
+        #terminal-output {
+            white-space: pre-wrap;   /* 核心：保持格式并自动换行 */
+            word-break: break-word;  /* 核心：在单词边界换行，避免长字符串溢出 */
+        }
         #terminal-window .window-body { background: rgba(0,0,0,0.5); color: var(--success-green); font-family: 'SF Mono', 'Menlo', 'Consolas', monospace; font-size: 14px; }
         .terminal-prompt::before { content: 'shimmer ~ % '; color: var(--primary-accent); }
-        .cursor { 
-            display: inline-block; 
-            background: var(--success-green); 
-            width: 8px; /* 光标宽度 */
-            height: 1.2em; /* 光标高度 */
-            animation: blink 1.2s step-end infinite; 
-            margin-left: 4px;
-            vertical-align: middle; /* 核心：确保光标与文字垂直对齐 */
-        }
+        .cursor { display: inline-block; background: var(--success-green); width: 8px; height: 1.2em; animation: blink 1.2s step-end infinite; margin-left: 4px; vertical-align: middle; }
         @keyframes blink { 50% { opacity: 0; } }
         
+        /* Other specific styles */
+        #about-window .player-stats dt { color: var(--primary-accent); float: left; width: 100px; font-weight: bold; }
+        #about-window .player-stats dd { margin-left: 110px; margin-bottom: 1.2em; color: var(--text-medium); }
         #skills-window .skill-tree { list-style: none; padding-left: 10px; }
         #skills-window .skill-tree li { position: relative; padding: 8px 0 8px 30px; }
         #skills-window .skill-tree li::before { content: ''; position: absolute; left: 10px; top: 0; border-left: 2px solid rgba(0, 122, 255, 0.2); height: 100%; }
         #skills-window .skill-tree li:last-child::before { height: 22px; }
         #skills-window .skill-tree li::after { content: ''; position: absolute; left: 10px; top: 22px; border-top: 2px solid rgba(0, 122, 255, 0.2); width: 15px; }
-        #skills-window .skill-tree strong { color: var(--primary-accent); font-weight: bold; }
-        #skills-window .skill-tree ul { padding-top: 8px; }
-
+        #skills-window .skill-tree strong { color: var(--primary-accent); }
         #clock-widget { font-size: 48px; text-align: center; padding: 20px 10px; color: var(--text-light); font-weight: bold; }
+
+        /* --- Context Menu --- */
+        #context-menu {
+            display: none; position: fixed; z-index: 1000;
+            background: var(--dock-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color); border-radius: var(--border-radius-small);
+            padding: 8px; box-shadow: 0 4px 15px var(--shadow-color);
+            min-width: 150px;
+        }
+        .context-menu-item {
+            padding: 8px 12px; border-radius: 4px; cursor: pointer; color: var(--text-light);
+            font-size: 14px;
+        }
+        .context-menu-item:hover { background-color: var(--primary-accent); }
         
         /* --- Dock --- */
         .dock {
-            position: fixed; bottom: 20px; left: 50%;
-            transform: translateX(-50%);
-            background: var(--dock-bg);
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            padding: 10px; display: flex;
-            gap: 15px; z-index: 200;
-            border-radius: var(--border-radius-main);
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--dock-bg);
+            border: 1px solid var(--border-color); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 10px; display: flex; gap: 15px; z-index: 200; border-radius: var(--border-radius-main);
             box-shadow: 0 5px 20px var(--shadow-color);
         }
         .nav-button {
-            width: 52px; height: 52px; font-size: 26px;
-            display: flex; align-items: center; justify-content: center;
-            background: transparent; border: none;
-            color: var(--text-medium);
-            cursor: pointer; transition: all 0.2s ease;
+            width: 52px; height: 52px; font-size: 26px; display: flex; align-items: center; justify-content: center;
+            background: transparent; border: none; color: var(--text-medium); cursor: pointer; transition: all 0.2s ease;
             border-radius: var(--border-radius-small);
         }
-        .nav-button:hover {
-            transform: scale(1.1) translateY(-5px);
-            background: var(--primary-accent);
-            color: var(--text-light);
-            box-shadow: 0 0 15px var(--primary-accent);
-        }
+        .nav-button:hover { transform: scale(1.1) translateY(-5px); background: var(--primary-accent); color: var(--text-light); box-shadow: 0 0 15px var(--primary-accent); }
 
         /* --- Responsive Design --- */
         @media (max-width: 768px) {
@@ -220,9 +154,8 @@
             .desktop-icon { gap: 8px; }
             .desktop-icon .icon-image { font-size: 40px; }
             .window {
-                left: 2.5vw !important; top: 5vh !important;
-                width: 95vw !important; height: 85vh !important;
-                resize: none;
+                left: 2.5vw !important; top: 5vh !important; width: 95vw !important; height: 85vh !important;
+                resize: none; /* Disable resizing on mobile */
             }
             .dock { bottom: 15px; }
             #clock-widget { font-size: 40px; }
@@ -232,105 +165,51 @@
 <body>
     <div id="shimmer-boot-screen">
         <div class="shimmer-logo">Shimmer<span>OS</span></div>
-        <div class="progress-bar">
-            <div id="progress-bar-inner" class="progress-bar-inner"></div>
-        </div>
+        <div class="progress-bar"><div id="progress-bar-inner" class="progress-bar-inner"></div></div>
     </div>
     
     <div id="desktop">
-        <div class="desktop-icon" data-window-id="blog-window">
-            <div class="icon-image">📝</div>
-            <span class="icon-label">微光博客</span>
-        </div>
-        <div class="desktop-icon" data-window-id="notes-window">
-            <div class="icon-image">📚</div>
-            <span class="icon-label">课业笔记</span>
-        </div>
-        <div class="desktop-icon" data-window-id="skills-window">
-            <div class="icon-image">🌱</div>
-            <span class="icon-label">技能树</span>
-        </div>
-        <div class="desktop-icon" data-window-id="about-window">
-            <div class="icon-image">🧑‍🚀</div>
-            <span class="icon-label">关于我</span>
-        </div>
-         <div class="desktop-icon" data-window-id="clock-window">
-            <div class="icon-image">⏱️</div>
-            <span class="icon-label">时钟</span>
-        </div>
+        <div class="desktop-icon" data-window-id="blog-window"><div class="icon-image">📝</div><span class="icon-label">微光博客</span></div>
+        <div class="desktop-icon" data-window-id="notes-window"><div class="icon-image">📚</div><span class="icon-label">课业笔记</span></div>
+        <div class="desktop-icon" data-window-id="skills-window"><div class="icon-image">🌱</div><span class="icon-label">技能树</span></div>
+        <div class="desktop-icon" data-window-id="about-window"><div class="icon-image">🧑‍🚀</div><span class="icon-label">关于我</span></div>
+        <div class="desktop-icon" data-window-id="clock-window"><div class="icon-image">⏱️</div><span class="icon-label">时钟</span></div>
     </div>
 
     <div id="about-window" class="window" style="top: 15%; left: 30%;">
         <div class="title-bar"><span>Player Profile</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body">
-            <dl class="player-stats">
-                <dt>身份</dt><dd>数据分析师 (新人)</dd>
-                <dt>专长</dt><dd>Python, SQL, BI工具</dd>
-                <dt>能力</dt><dd>业务洞察力、逻辑思辨、快速学习</dd>
-                <dt>特质</dt><dd>将复杂业务问题转化为可执行的数据分析方案。</dd>
-                <dt>成就</dt><dd>在多项数学建模与商业分析竞赛中取得优良战绩。</dd>
-                <dt>信条</dt><dd>渴望在真实场景中挑战自我，用数据为决策创造价值。</dd>
-            </dl>
-        </div>
+        <div class="window-body"><dl class="player-stats"><dt>身份</dt><dd>数据分析师 (新人)</dd><dt>专长</dt><dd>Python, SQL, BI工具</dd><dt>能力</dt><dd>业务洞察力、逻辑思辨、快速学习</dd><dt>特质</dt><dd>将复杂业务问题转化为可执行的数据分析方案。</dd><dt>成就</dt><dd>在多项数学建模与商业分析竞赛中取得优良战绩。</dd><dt>信条</dt><dd>渴望在真实场景中挑战自我，用数据为决策创造价值。</dd></dl></div>
     </div>
-
     <div id="skills-window" class="window" style="top: 25%; left: 10%;">
         <div class="title-bar"><span>Skill Tree</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body">
-            <ul class="skill-tree">
-                <li><strong>数据分析 & 可视化</strong>
-                    <ul class="skill-tree"><li>Python (Pandas, NumPy)</li><li>SQL (MySQL, PostgreSQL)</li><li>BI Tools (Tableau, Power BI)</li></ul>
-                </li>
-                <li><strong>编程 & 开发</strong>
-                    <ul class="skill-tree"><li>Web (HTML, CSS, JS)</li><li>后端 (Flask)</li></ul>
-                </li>
-                <li><strong>数学 & 建模</strong>
-                    <ul class="skill-tree"><li>统计学</li><li>机器学习 (Scikit-learn)</li></ul>
-                </li>
-            </ul>
-        </div>
+        <div class="window-body"><ul class="skill-tree"><li><strong>数据分析 & 可视化</strong><ul class="skill-tree"><li>Python (Pandas, NumPy)</li><li>SQL (MySQL, PostgreSQL)</li><li>BI Tools (Tableau, Power BI)</li></ul></li><li><strong>编程 & 开发</strong><ul class="skill-tree"><li>Web (HTML, CSS, JS)</li><li>后端 (Flask)</li></ul></li><li><strong>数学 & 建模</strong><ul class="skill-tree"><li>统计学</li><li>机器学习 (Scikit-learn)</li></ul></li></ul></div>
     </div>
-
     <div id="terminal-window" class="window" style="top: 40%; left: 40%; width: 550px; height: 380px;">
         <div class="title-bar"><span>ShimmerCMD</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body" id="terminal-body" tabindex="0">
-            <div id="terminal-output"></div>
-            <div id="terminal-input-line">
-                <span class="terminal-prompt"></span>
-                <span id="terminal-input"></span>
-                <span class="cursor"></span>
-            </div>
-        </div>
+        <div class="window-body" id="terminal-body" tabindex="0"><div id="terminal-output"></div><div id="terminal-input-line"><span class="terminal-prompt"></span><span id="terminal-input"></span><span class="cursor"></span></div></div>
     </div>
-
     <div id="clock-window" class="window" style="top: 10%; left: 65%; width: 350px; height: 220px;">
         <div class="title-bar"><span>Clock</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
         <div class="window-body" style="display:flex; align-items:center; justify-content:center;"><div id="clock-widget">--:--:--</div></div>
     </div>
-    
-    <div id="blog-window" class="window" style="top: 15%; left: 20%; width: 60%; height: 70%;">
-        <div class="title-bar"><span>微光博客 (Blog)</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body" style="padding:0; overflow:hidden;"><iframe src="blog/blognav.html" style="width:100%; height:100%; border:0;"></iframe></div>
-    </div>
-    <div id="notes-window" class="window" style="top: 20%; left: 25%; width: 60%; height: 70%;">
-        <div class="title-bar"><span>课业笔记 (Notes)</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body" style="padding:0; overflow:hidden;"><iframe src="note/notenav.html" style="width:100%; height:100%; border:0;"></iframe></div>
-    </div>
+    <div id="blog-window" class="window" style="top: 15%; left: 20%; width: 60%; height: 70%;"><div class="title-bar"><span>微光博客 (Blog)</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div><div class="window-body" style="padding:0; overflow:hidden;"><iframe src="blog/blognav.html" style="width:100%; height:100%; border:0;"></iframe></div></div>
+    <div id="notes-window" class="window" style="top: 20%; left: 25%; width: 60%; height: 70%;"><div class="title-bar"><span>课业笔记 (Notes)</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div><div class="window-body" style="padding:0; overflow:hidden;"><iframe src="note/notenav.html" style="width:100%; height:100%; border:0;"></iframe></div></div>
 
     <div class="dock">
         <div class="nav-button" title="终端" data-window-id="terminal-window">📟</div>
         <div class="nav-button" title="返回" onclick="window.history.back()">←</div>
         <div class="nav-button" title="主页" onclick="window.location.reload()">⌂</div>
     </div>
+    
+    <div id="context-menu"></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- Modern Boot Sequence ---
+    // --- Boot Sequence ---
     const bootScreen = document.getElementById('shimmer-boot-screen');
     const progressBar = document.getElementById('progress-bar-inner');
     const desktop = document.getElementById('desktop');
-    
     setTimeout(() => {
         progressBar.style.width = '100%';
         setTimeout(() => {
@@ -347,15 +226,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function activateWindow(win) {
         if (activeWindow === win) return;
         if (activeWindow) activeWindow.classList.remove('active');
-        
         maxZIndex++;
         win.style.zIndex = maxZIndex;
         win.classList.add('active');
         activeWindow = win;
-
-        if (win.id === 'terminal-window') {
-            win.querySelector('#terminal-body').focus();
-        }
+        if (win.id === 'terminal-window') win.querySelector('#terminal-body').focus();
     }
 
     function openOrActivateWindow(windowId) {
@@ -365,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 win.style.display = 'flex';
                 if (windowId === 'terminal-window') {
                     const output = win.querySelector('#terminal-output');
-                    output.innerHTML = 'ShimmerOS [Version 1.0.0]\n(c) 2025 Shimmer. All rights reserved.\nType "help" for a list of commands.\n';
+                    output.innerHTML = 'ShimmerOS [Version 1.2.0]\n(c) 2025 Shimmer. All rights reserved.\nType "help" for a list of commands.\n';
                 }
             }
             activateWindow(win);
@@ -376,26 +251,47 @@ document.addEventListener('DOMContentLoaded', () => {
         const titleBar = win.querySelector('.title-bar');
         win.addEventListener('mousedown', () => activateWindow(win));
         
+        // --- Dragging Logic for both Mouse and Touch ---
+        const startDrag = (e) => {
+            if (e.target.closest('.control-button')) return;
+            e.preventDefault();
+            activateWindow(win);
+            
+            const isTouchEvent = e.type.startsWith('touch');
+            const startX = isTouchEvent ? e.touches[0].clientX : e.clientX;
+            const startY = isTouchEvent ? e.touches[0].clientY : e.clientY;
+            const startLeft = win.offsetLeft;
+            const startTop = win.offsetTop;
+            
+            const onDrag = (moveEvent) => {
+                const moveX = isTouchEvent ? moveEvent.touches[0].clientX : moveEvent.clientX;
+                const moveY = isTouchEvent ? moveEvent.touches[0].clientY : moveEvent.clientY;
+                win.style.left = `${startLeft + moveX - startX}px`;
+                win.style.top = `${startTop + moveY - startY}px`;
+            };
+            
+            const endDrag = () => {
+                if (isTouchEvent) {
+                    document.removeEventListener('touchmove', onDrag);
+                    document.removeEventListener('touchend', endDrag);
+                } else {
+                    document.removeEventListener('mousemove', onDrag);
+                    document.removeEventListener('mouseup', endDrag);
+                }
+            };
+            
+            if (isTouchEvent) {
+                document.addEventListener('touchmove', onDrag);
+                document.addEventListener('touchend', endDrag);
+            } else {
+                document.addEventListener('mousemove', onDrag);
+                document.addEventListener('mouseup', endDrag);
+            }
+        };
+
         if (titleBar) {
-            titleBar.addEventListener('mousedown', (e) => {
-                if (e.target.closest('.control-button')) return;
-                e.preventDefault();
-                activateWindow(win);
-                
-                let startX = e.clientX, startY = e.clientY;
-                let startLeft = win.offsetLeft, startTop = win.offsetTop;
-                
-                function onMouseMove(e) {
-                    win.style.left = `${startLeft + e.clientX - startX}px`;
-                    win.style.top = `${startTop + e.clientY - startY}px`;
-                }
-                function onMouseUp() {
-                    document.removeEventListener('mousemove', onMouseMove);
-                    document.removeEventListener('mouseup', onMouseUp);
-                }
-                document.addEventListener('mousemove', onMouseMove);
-                document.addEventListener('mouseup', onMouseUp);
-            });
+            titleBar.addEventListener('mousedown', startDrag);
+            titleBar.addEventListener('touchstart', startDrag, { passive: false });
         }
         
         const closeBtn = win.querySelector('.close-btn');
@@ -417,70 +313,111 @@ document.addEventListener('DOMContentLoaded', () => {
     document.head.appendChild(styleSheet);
 
 
-    // --- Event Binding ---
-    document.querySelectorAll('.desktop-icon').forEach(icon => {
-        icon.addEventListener('dblclick', () => {
-            openOrActivateWindow(icon.getAttribute('data-window-id'));
-        });
+    // --- Context Menu Logic (Right-click & Long-press) ---
+    const contextMenu = document.getElementById('context-menu');
+    let longPressTimer;
+    let longPressTriggered = false;
+
+    const showContextMenu = (e, targetIcon) => {
+        e.preventDefault();
+        hideContextMenu();
+        
+        const windowId = targetIcon ? targetIcon.getAttribute('data-window-id') : null;
+        let menuItems = '';
+
+        if (windowId) {
+            menuItems = `<div class="context-menu-item" data-action="open" data-window-id="${windowId}">打开</div>`;
+            // 未来可在此处添加更多选项, 如:
+            // menuItems += `<div class="context-menu-item">查看属性</div>`;
+        } else {
+            menuItems = `<div class="context-menu-item" data-action="theme">切换主题 (TBD)</div>`;
+        }
+        contextMenu.innerHTML = menuItems;
+        
+        const posX = e.touches ? e.touches[0].clientX : e.clientX;
+        const posY = e.touches ? e.touches[0].clientY : e.clientY;
+        contextMenu.style.left = `${posX}px`;
+        contextMenu.style.top = `${posY}px`;
+        contextMenu.style.display = 'block';
+
+        document.addEventListener('click', hideContextMenu, { once: true });
+    };
+
+    const hideContextMenu = () => {
+        contextMenu.style.display = 'none';
+    };
+
+    contextMenu.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target.matches('.context-menu-item')) {
+            const action = target.dataset.action;
+            const windowId = target.dataset.windowId;
+            if (action === 'open' && windowId) {
+                openOrActivateWindow(windowId);
+            }
+            hideContextMenu();
+        }
     });
 
-    document.querySelectorAll('.nav-button[data-window-id]').forEach(button => {
-        button.addEventListener('click', () => {
-            openOrActivateWindow(button.getAttribute('data-window-id'));
+    // --- Event Binding (Click, Long-press, Right-click) ---
+    function setupIconEvents(icon) {
+        // 单击打开
+        icon.addEventListener('click', (e) => {
+            if (!longPressTriggered) { // 只有在不是长按之后才执行单击
+                openOrActivateWindow(icon.getAttribute('data-window-id'));
+            }
         });
+
+        // 电脑端右键
+        icon.addEventListener('contextmenu', (e) => showContextMenu(e, icon));
+        
+        // 移动端长按
+        icon.addEventListener('touchstart', (e) => {
+            longPressTriggered = false;
+            longPressTimer = setTimeout(() => {
+                longPressTriggered = true;
+                showContextMenu(e, icon);
+            }, 500); // 500毫秒算长按
+        });
+        icon.addEventListener('touchend', () => clearTimeout(longPressTimer));
+        icon.addEventListener('touchmove', () => clearTimeout(longPressTimer));
+    }
+
+    document.querySelectorAll('.desktop-icon').forEach(setupIconEvents);
+    desktop.addEventListener('contextmenu', (e) => { if(e.target === desktop) showContextMenu(e, null); });
+
+    document.querySelectorAll('.nav-button[data-window-id]').forEach(button => {
+        button.addEventListener('click', () => openOrActivateWindow(button.getAttribute('data-window-id')));
     });
 
     // --- Interactive Terminal ---
-    const terminalWindow = document.getElementById('terminal-window');
     const terminalBody = document.getElementById('terminal-body');
     const terminalOutput = document.getElementById('terminal-output');
     const terminalInput = document.getElementById('terminal-input');
 
     const commands = {
         help: () => `Available commands:\n  help      - Shows this help message\n  ls        - Lists all desktop apps\n  open <app>- Opens an application (e.g., open blog)\n  date      - Displays the current date and time\n  about     - Shows the player profile\n  clear     - Clears the terminal screen\n  reboot    - Reboots the system`,
-        ls: () => {
-            const icons = [...document.querySelectorAll('.desktop-icon .icon-label')];
-            return 'Desktop Items:\n' + icons.map(icon => `  - ${icon.textContent}`).join('\n');
-        },
-        open: (args) => {
-            const appName = args[0];
-            if (!appName) return 'Usage: open <app_name>';
-            const icon = [...document.querySelectorAll('.desktop-icon')].find(i => 
-                i.querySelector('.icon-label').textContent.toLowerCase().includes(appName.toLowerCase())
-            );
-            if (icon) {
-                openOrActivateWindow(icon.dataset.windowId);
-                return `Opening ${appName}...`;
-            }
-            return `Error: Application "${appName}" not found.`;
-        },
-        date: () => new Date().toLocaleString(),
-        about: () => {
-            const aboutText = document.querySelector('#about-window .window-body').innerText;
-            return `\n-- Player Profile --\n${aboutText.trim()}`;
-        },
+        ls: () => { const icons = [...document.querySelectorAll('.desktop-icon .icon-label')]; return 'Desktop Items:\n' + icons.map(icon => `  - ${icon.textContent}`).join('\n'); },
+        open: (args) => { const appName = args[0]; if (!appName) return 'Usage: open <app_name>'; const icon = [...document.querySelectorAll('.desktop-icon')].find(i => i.querySelector('.icon-label').textContent.toLowerCase().includes(appName.toLowerCase())); if (icon) { openOrActivateWindow(icon.dataset.windowId); return `Opening ${appName}...`; } return `Error: Application "${appName}" not found.`; },
+        date: () => new Date().toLocaleString('ja-JP'),
+        about: () => `\n-- Player Profile --\n${document.querySelector('#about-window .window-body').innerText.trim()}`,
         clear: () => { terminalOutput.innerHTML = ''; return ''; },
         reboot: () => { window.location.reload(); return 'Rebooting system...'; }
     };
 
     terminalBody.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 'c') { return; }
-        
+        if (e.ctrlKey && e.key === 'c') return;
         if (e.key === 'Enter') {
             e.preventDefault();
             const fullCommand = terminalInput.textContent;
             const [command, ...args] = fullCommand.trim().split(' ').filter(Boolean);
-            
             terminalOutput.innerHTML += `\n<span class="terminal-prompt"></span>${fullCommand}`;
-            
             if (command) {
                 const response = commands[command] ? commands[command](args) : `Command not found: ${command}`;
                 if(response) terminalOutput.innerHTML += `\n${response}`;
             }
-
             terminalInput.textContent = '';
             terminalBody.scrollTop = terminalBody.scrollHeight;
-
         } else if (e.key === 'Backspace') {
             e.preventDefault();
             terminalInput.textContent = terminalInput.textContent.slice(0, -1);
@@ -495,10 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const clockElement = document.getElementById('clock-widget');
     function updateClock() {
         const now = new Date();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const seconds = String(now.getSeconds()).padStart(2, '0');
-        clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+        clockElement.textContent = now.toLocaleTimeString('ja-JP');
     }
     setInterval(updateClock, 1000);
     updateClock();
