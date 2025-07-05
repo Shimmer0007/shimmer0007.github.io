@@ -14,7 +14,7 @@
             --window-bg: rgba(44, 48, 58, 0.6);
             --dock-bg: rgba(44, 48, 58, 0.4);
             --title-bar-bg: rgba(30, 33, 40, 0.7);
-            --primary-accent: #007aff;
+            --primary-accent: #007aff; /* 默认: 珂朵莉蓝 */
             --secondary-accent: #ff3b30;
             --text-light: #f0f0f0;
             --text-medium: #a0a0b0;
@@ -25,6 +25,21 @@
             --success-green: #34c759;
             --border-radius-main: 12px;
             --border-radius-small: 8px;
+            --input-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f0f2f5;
+            --window-bg: rgba(255, 255, 255, 0.6);
+            --dock-bg: rgba(255, 255, 255, 0.4);
+            --title-bar-bg: rgba(235, 237, 240, 0.7);
+            --text-light: #1d1d1f;
+            --text-medium: #6e6e73;
+            --text-dark: #f0f0f0;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.15);
+            --success-green: #28a745;
+            --input-bg: rgba(0, 0, 0, 0.05);
         }
 
         /* --- Global & Background --- */
@@ -37,13 +52,16 @@
             cursor: default;
             user-select: none;
             -webkit-user-select: none; /* For Safari */
+            transition: background-color 0.4s ease, color 0.4s ease;
         }
         body::before {
             content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
             background: radial-gradient(circle at 15% 25%, hsla(217, 71%, 35%, 0.3), transparent 40%),
                         radial-gradient(circle at 85% 65%, hsla(263, 64%, 42%, 0.25), transparent 50%);
             animation: move-glow 25s linear infinite alternate;
+            opacity: 1;
         }
+        [data-theme="light"]::before { opacity: 0; }
         @keyframes move-glow { from { transform: translate(-5%, -5%) scale(1); } to { transform: translate(5%, 5%) scale(1.2); } }
 
         /* --- Boot Sequence --- */
@@ -68,7 +86,7 @@
             display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; cursor: pointer;
             padding: 10px; border-radius: var(--border-radius-small); transition: transform 0.2s ease, background-color 0.2s ease;
         }
-        .desktop-icon:hover { background-color: rgba(255, 255, 255, 0.05); transform: translateY(-4px); }
+        .desktop-icon:hover { background-color: rgba(120, 120, 120, 0.1); transform: translateY(-4px); }
         .desktop-icon .icon-image { font-size: 48px; }
         .desktop-icon .icon-label { font-size: 14px; color: var(--text-light); text-shadow: 0 1px 3px var(--shadow-color); word-break: keep-all; }
 
@@ -78,16 +96,16 @@
             box-shadow: 0 10px 30px var(--shadow-color); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
             min-width: 350px; min-height: 220px; resize: both; overflow: hidden; flex-direction: column;
             border-radius: var(--border-radius-main); animation: open-window 0.4s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: center;
+            transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
         }
         @keyframes open-window { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .window.active { z-index: 100; border-color: var(--primary-accent); box-shadow: 0 0 25px rgba(0, 122, 255, 0.3); }
+        .window.active { z-index: 100; border-color: var(--primary-accent); box-shadow: 0 0 25px color-mix(in srgb, var(--primary-accent) 30%, transparent); }
 
         .title-bar {
             background: var(--title-bar-bg); color: var(--text-light); padding: 0 12px; height: 40px; font-size: 14px;
             font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: move;
-            flex-shrink: 0; border-bottom: 1px solid var(--border-color); touch-action: none; /* For mobile dragging */
+            flex-shrink: 0; border-bottom: 1px solid var(--border-color); touch-action: none; transition: background-color 0.4s, border-color 0.4s;
         }
-        
         .title-bar-controls { display: flex; gap: 8px; }
         .control-button { width: 14px; height: 14px; border-radius: 50%; border: none; cursor: pointer; transition: transform 0.1s ease; }
         .control-button:active { transform: scale(0.9); }
@@ -96,28 +114,67 @@
         .window-body { padding: 20px; flex-grow: 1; overflow: auto; font-size: 16px; line-height: 1.7; }
         .window-body::-webkit-scrollbar { width: 8px; }
         .window-body::-webkit-scrollbar-track { background: transparent; }
-        .window-body::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
+        .window-body::-webkit-scrollbar-thumb { background: rgba(120, 120, 120, 0.4); border-radius: 4px; }
         
         /* --- Specific Window Styles --- */
-        #terminal-output {
-            white-space: pre-wrap;   /* 核心：保持格式并自动换行 */
-            word-break: break-word;  /* 核心：在单词边界换行，避免长字符串溢出 */
-        }
+        #terminal-output { white-space: pre-wrap; word-break: break-word; }
         #terminal-window .window-body { background: rgba(0,0,0,0.5); color: var(--success-green); font-family: 'SF Mono', 'Menlo', 'Consolas', monospace; font-size: 14px; }
+        [data-theme="light"] #terminal-window .window-body { background: rgba(255,255,255,0.5); color: #006400;}
         .terminal-prompt::before { content: 'shimmer ~ % '; color: var(--primary-accent); }
         .cursor { display: inline-block; background: var(--success-green); width: 8px; height: 1.2em; animation: blink 1.2s step-end infinite; margin-left: 4px; vertical-align: middle; }
         @keyframes blink { 50% { opacity: 0; } }
         
-        /* Other specific styles */
-        #about-window .player-stats dt { color: var(--primary-accent); float: left; width: 100px; font-weight: bold; }
+        #about-window .player-stats dt { color: var(--primary-accent); float: left; width: 100px; font-weight: bold; transition: color 0.4s ease; }
         #about-window .player-stats dd { margin-left: 110px; margin-bottom: 1.2em; color: var(--text-medium); }
-        #skills-window .skill-tree { list-style: none; padding-left: 10px; }
-        #skills-window .skill-tree li { position: relative; padding: 8px 0 8px 30px; }
-        #skills-window .skill-tree li::before { content: ''; position: absolute; left: 10px; top: 0; border-left: 2px solid rgba(0, 122, 255, 0.2); height: 100%; }
-        #skills-window .skill-tree li:last-child::before { height: 22px; }
-        #skills-window .skill-tree li::after { content: ''; position: absolute; left: 10px; top: 22px; border-top: 2px solid rgba(0, 122, 255, 0.2); width: 15px; }
-        #skills-window .skill-tree strong { color: var(--primary-accent); }
+        
+        #skills-window .skill-tree, #project-window .file-tree { list-style: none; padding-left: 10px; }
+        #skills-window .skill-tree li, #project-window .file-tree li { position: relative; padding: 8px 0 8px 30px; }
+        #skills-window .skill-tree li::before, #project-window .file-tree li::before { content: ''; position: absolute; left: 10px; top: 0; border-left: 2px solid color-mix(in srgb, var(--primary-accent) 20%, transparent); height: 100%; transition: border-color 0.4s ease; }
+        #skills-window .skill-tree li:last-child::before, #project-window .file-tree li:last-child::before { height: 22px; }
+        #skills-window .skill-tree li::after, #project-window .file-tree li::after { content: ''; position: absolute; left: 10px; top: 22px; border-top: 2px solid color-mix(in srgb, var(--primary-accent) 20%, transparent); width: 15px; transition: border-color 0.4s ease;}
+        #skills-window .skill-tree strong, #project-window .file-tree strong { color: var(--primary-accent); transition: color 0.4s ease; }
+        #project-window .file-icon { margin-right: 8px; }
+
         #clock-widget { font-size: 48px; text-align: center; padding: 20px 10px; color: var(--text-light); font-weight: bold; }
+        
+        .settings-section { margin-bottom: 25px; }
+        .settings-section h3 { margin-top: 0; margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+        .theme-switcher, .accent-colors { display: flex; gap: 15px; align-items: center; }
+        .theme-button { padding: 8px 15px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-light); border-radius: var(--border-radius-small); cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
+        .theme-button.active { background-color: var(--primary-accent); color: white; border-color: var(--primary-accent); }
+        [data-theme="light"] .theme-button.active { color: var(--text-dark); }
+        .color-swatch { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: border-color 0.2s, transform 0.2s; }
+        .color-swatch:hover { transform: scale(1.1); }
+        .color-swatch.active { border-color: var(--text-light); }
+
+        #dashboard-window .grid-container { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: auto auto; gap: 20px; }
+        .chart-card { background: var(--input-bg); padding: 15px; border-radius: var(--border-radius-small); }
+        .chart-card h4 { margin: 0 0 15px 0; font-size: 14px; }
+        .bar-chart { display: flex; justify-content: space-around; align-items: flex-end; height: 120px; }
+        .bar { width: 20%; background-color: var(--primary-accent); animation: rise 1s ease-out; }
+        @keyframes rise { from { height: 0; } }
+        .kpi { text-align: center; }
+        .kpi .value { font-size: 2.5em; font-weight: bold; color: var(--primary-accent); }
+        .kpi .label { font-size: 0.9em; color: var(--text-medium); }
+
+        /* --- API Window Styles (GitHub Fetcher) --- */
+        #api-window .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        #api-window input { flex-grow: 1; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-light); padding: 10px; border-radius: var(--border-radius-small); font-family: var(--font-main); }
+        #api-window button { background-color: var(--primary-accent); color: white; border: none; padding: 10px 20px; border-radius: var(--border-radius-small); cursor: pointer; transition: background-color 0.2s; font-weight: bold; }
+        [data-theme="light"] #api-window button { color: var(--text-dark); }
+        
+        #github-response-area { margin-top: 15px; padding: 15px; background: var(--input-bg); border-radius: var(--border-radius-small); min-height: 150px; }
+        .github-user-profile { display: flex; align-items: flex-start; gap: 20px; animation: fade-in 0.5s ease; }
+        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .github-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--border-color); }
+        .github-user-info { flex-grow: 1; }
+        .github-user-info h3 { margin: 0 0 8px 0; font-size: 20px; color: var(--text-light); }
+        .github-user-info h3 a { color: var(--primary-accent); text-decoration: none; font-size: 16px; font-weight: normal; }
+        .github-user-info h3 a:hover { text-decoration: underline; }
+        .github-bio { font-size: 14px; color: var(--text-medium); margin: 0 0 15px 0; font-style: italic; }
+        .github-user-stats { display: flex; gap: 20px; border-top: 1px solid var(--border-color); padding-top: 10px; font-size: 14px; }
+        .github-user-stats span .stat-value { font-weight: bold; color: var(--text-light); margin-right: 5px; }
+
 
         /* --- Context Menu --- */
         #context-menu {
@@ -139,6 +196,7 @@
             border: 1px solid var(--border-color); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             padding: 10px; display: flex; gap: 15px; z-index: 200; border-radius: var(--border-radius-main);
             box-shadow: 0 5px 20px var(--shadow-color);
+            transition: background-color 0.4s ease, border-color 0.4s ease;
         }
         .nav-button {
             width: 52px; height: 52px; font-size: 26px; display: flex; align-items: center; justify-content: center;
@@ -159,11 +217,12 @@
             }
             .dock { bottom: 15px; }
             #clock-widget { font-size: 40px; }
+            #dashboard-window .grid-container { grid-template-columns: 1fr; }
+            .github-user-profile { flex-direction: column; align-items: center; text-align: center; }
         }
     </style>
 </head>
-<body>
-    <div id="shimmer-boot-screen">
+<body data-theme="dark"> <div id="shimmer-boot-screen">
         <div class="shimmer-logo">Shimmer<span>OS</span></div>
         <div class="progress-bar"><div id="progress-bar-inner" class="progress-bar-inner"></div></div>
     </div>
@@ -173,6 +232,10 @@
         <div class="desktop-icon" data-window-id="notes-window"><div class="icon-image">📚</div><span class="icon-label">课业笔记</span></div>
         <div class="desktop-icon" data-window-id="skills-window"><div class="icon-image">🌱</div><span class="icon-label">技能树</span></div>
         <div class="desktop-icon" data-window-id="about-window"><div class="icon-image">🧑‍🚀</div><span class="icon-label">关于我</span></div>
+        <div class="desktop-icon" data-window-id="project-window"><div class="icon-image">📂</div><span class="icon-label">项目浏览器</span></div>
+        <div class="desktop-icon" data-window-id="dashboard-window"><div class="icon-image">📊</div><span class="icon-label">数据仪表盘</span></div>
+        <div class="desktop-icon" data-window-id="api-window"><div class="icon-image">🛰️</div><span class="icon-label">GitHub查询</span></div>
+        <div class="desktop-icon" data-window-id="settings-window"><div class="icon-image">⚙️</div><span class="icon-label">设置</span></div>
         <div class="desktop-icon" data-window-id="clock-window"><div class="icon-image">⏱️</div><span class="icon-label">时钟</span></div>
     </div>
 
@@ -194,6 +257,98 @@
     </div>
     <div id="blog-window" class="window" style="top: 15%; left: 20%; width: 60%; height: 70%;"><div class="title-bar"><span>微光博客 (Blog)</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div><div class="window-body" style="padding:0; overflow:hidden;"><iframe src="blog/blognav.html" style="width:100%; height:100%; border:0;"></iframe></div></div>
     <div id="notes-window" class="window" style="top: 20%; left: 25%; width: 60%; height: 70%;"><div class="title-bar"><span>课业笔记 (Notes)</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div><div class="window-body" style="padding:0; overflow:hidden;"><iframe src="note/notenav.html" style="width:100%; height:100%; border:0;"></iframe></div></div>
+
+    <div id="project-window" class="window" style="top: 20%; left: 15%; width: 500px; height: 600px;">
+        <div class="title-bar"><span>Project: Textmining</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
+        <div class="window-body">
+            <p>基于新闻文本和财经数据的多维度分析项目。</p>
+            <ul class="file-tree">
+                <li><span class="file-icon">📁</span><strong>src</strong>
+                    <ul class="file-tree">
+                        <li><span class="file-icon">🐍</span>data_collection.py</li>
+                        <li><span class="file-icon">🐍</span>data_preprocessing.py</li>
+                        <li><span class="file-icon">🐍</span>sentiment_analysis.py</li>
+                        <li><span class="file-icon">🐍</span>topic_modeling.py</li>
+                        <li><span class="file-icon">🐍</span>visualization.py</li>
+                    </ul>
+                </li>
+                <li><span class="file-icon">📁</span><strong>data</strong>
+                    <ul class="file-tree">
+                        <li><span class="file-icon">📄</span>news_articles.csv</li>
+                        <li><span class="file-icon">📄</span>stock_prices.csv</li>
+                    </ul>
+                </li>
+                <li><span class="file-icon">📁</span><strong>notebooks</strong>
+                    <ul class="file-tree">
+                        <li><span class="file-icon">📒</span>01_eda.ipynb</li>
+                        <li><span class="file-icon">📒</span>02_modeling.ipynb</li>
+                    </ul>
+                </li>
+                <li><span class="file-icon">📄</span>README.md</li>
+                <li><span class="file-icon">📄</span>requirements.txt</li>
+            </ul>
+        </div>
+    </div>
+    <div id="dashboard-window" class="window" style="top: 10%; left: 25%; width: 700px; height: 450px;">
+        <div class="title-bar"><span>Data Dashboard</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
+        <div class="window-body">
+            <div class="grid-container">
+                <div class="chart-card" style="grid-column: 1 / 2; grid-row: 1 / 2;">
+                    <h4>用户月活 (MAU)</h4>
+                    <div class="bar-chart">
+                        <div class="bar" style="height: 60%;" title="一月: 12k"></div>
+                        <div class="bar" style="height: 75%;" title="二月: 15k"></div>
+                        <div class="bar" style="height: 70%;" title="三月: 14k"></div>
+                        <div class="bar" style="height: 90%;" title="四月: 18k"></div>
+                    </div>
+                </div>
+                <div class="chart-card" style="grid-column: 2 / 3; grid-row: 1 / 2;">
+                    <div class="kpi">
+                        <div class="value">7.8%</div>
+                        <div class="label">本月增长率</div>
+                    </div>
+                </div>
+                <div class="chart-card" style="grid-column: 1 / 3; grid-row: 2 / 3;">
+                    <h4>项目进度</h4>
+                    <p>数据清洗: 100%<br>特征工程: 85%<br>模型训练: 60%<br>报告撰写: 40%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="api-window" class="window" style="top: 30%; left: 35%; width: 550px; height: auto; min-height: 350px;">
+        <div class="title-bar"><span>GitHub User Fetcher</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
+        <div class="window-body">
+            <div class="input-group">
+                <input type="text" id="github-username-input" placeholder="输入GitHub用户名 (e.g., torvalds)">
+                <button id="github-query-btn">查询</button>
+            </div>
+            <div id="github-response-area">
+                <p style="color: var(--text-medium);">请输入一个GitHub用户名进行查询。</p>
+            </div>
+        </div>
+    </div>
+    <div id="settings-window" class="window" style="top: 20%; left: 30%; width: 450px; height: 400px;">
+        <div class="title-bar"><span>Settings</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
+        <div class="window-body">
+            <div class="settings-section">
+                <h3>外观主题</h3>
+                <div class="theme-switcher">
+                    <button class="theme-button active" data-theme="dark">深邃暗色</button>
+                    <button class="theme-button" data-theme="light">简洁亮色</button>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h3>强调色</h3>
+                <div class="accent-colors">
+                    <div class="color-swatch active" style="background-color: #007aff;" data-color="#007aff" title="珂朵莉蓝"></div>
+                    <div class="color-swatch" style="background-color: #7b5ea7;" data-color="#7b5ea7" title="初号机紫"></div>
+                    <div class="color-swatch" style="background-color: #c82a2a;" data-color="#c82a2a" title="龙族红"></div>
+                    <div class="color-swatch" style="background-color: #34c759;" data-color="#34c759" title="翡翠绿"></div>
+                    <div class="color-swatch" style="background-color: #e0e0e0;" data-color="#e0e0e0" title="银白"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="dock">
         <div class="nav-button" title="终端" data-window-id="terminal-window">📟</div>
@@ -240,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 win.style.display = 'flex';
                 if (windowId === 'terminal-window') {
                     const output = win.querySelector('#terminal-output');
-                    output.innerHTML = 'ShimmerOS [Version 1.2.0]\n(c) 2025 Shimmer. All rights reserved.\nType "help" for a list of commands.\n';
+                    output.innerHTML = 'ShimmerOS [Version 1.4.0]\n(c) 2025 Shimmer. All rights reserved.\nType "help" for a list of commands.\n';
                 }
             }
             activateWindow(win);
@@ -251,9 +406,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const titleBar = win.querySelector('.title-bar');
         win.addEventListener('mousedown', () => activateWindow(win));
         
-        // --- Dragging Logic for both Mouse and Touch ---
         const startDrag = (e) => {
-            if (e.target.closest('.control-button')) return;
+            if (e.target.closest('.control-button') || win.closest('.no-drag')) return;
+            if (window.innerWidth <= 768) return; // Disable drag on mobile
             e.preventDefault();
             activateWindow(win);
             
@@ -271,22 +426,12 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             
             const endDrag = () => {
-                if (isTouchEvent) {
-                    document.removeEventListener('touchmove', onDrag);
-                    document.removeEventListener('touchend', endDrag);
-                } else {
-                    document.removeEventListener('mousemove', onDrag);
-                    document.removeEventListener('mouseup', endDrag);
-                }
+                document.removeEventListener(isTouchEvent ? 'touchmove' : 'mousemove', onDrag);
+                document.removeEventListener(isTouchEvent ? 'touchend' : 'mouseup', endDrag);
             };
             
-            if (isTouchEvent) {
-                document.addEventListener('touchmove', onDrag);
-                document.addEventListener('touchend', endDrag);
-            } else {
-                document.addEventListener('mousemove', onDrag);
-                document.addEventListener('mouseup', endDrag);
-            }
+            document.addEventListener(isTouchEvent ? 'touchmove' : 'mousemove', onDrag);
+            document.addEventListener(isTouchEvent ? 'touchend' : 'mouseup', endDrag);
         };
 
         if (titleBar) {
@@ -312,8 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
     styleSheet.innerText = `@keyframes close-window { from { transform: scale(1); opacity: 1; } to { transform: scale(0.95); opacity: 0; } }`;
     document.head.appendChild(styleSheet);
 
-
-    // --- Context Menu Logic (Right-click & Long-press) ---
+    // --- Context Menu Logic ---
     const contextMenu = document.getElementById('context-menu');
     let longPressTimer;
     let longPressTriggered = false;
@@ -327,10 +471,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (windowId) {
             menuItems = `<div class="context-menu-item" data-action="open" data-window-id="${windowId}">打开</div>`;
-            // 未来可在此处添加更多选项, 如:
-            // menuItems += `<div class="context-menu-item">查看属性</div>`;
         } else {
-            menuItems = `<div class="context-menu-item" data-action="theme">切换主题 (TBD)</div>`;
+            menuItems = `<div class="context-menu-item" data-action="settings">显示设置</div>`;
         }
         contextMenu.innerHTML = menuItems;
         
@@ -343,9 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', hideContextMenu, { once: true });
     };
 
-    const hideContextMenu = () => {
-        contextMenu.style.display = 'none';
-    };
+    const hideContextMenu = () => contextMenu.style.display = 'none';
 
     contextMenu.addEventListener('click', (e) => {
         const target = e.target;
@@ -354,30 +494,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const windowId = target.dataset.windowId;
             if (action === 'open' && windowId) {
                 openOrActivateWindow(windowId);
+            } else if (action === 'settings') {
+                openOrActivateWindow('settings-window');
             }
             hideContextMenu();
         }
     });
 
-    // --- Event Binding (Click, Long-press, Right-click) ---
+    // --- Event Binding ---
     function setupIconEvents(icon) {
-        // 单击打开
         icon.addEventListener('click', (e) => {
-            if (!longPressTriggered) { // 只有在不是长按之后才执行单击
-                openOrActivateWindow(icon.getAttribute('data-window-id'));
-            }
+            if (!longPressTriggered) openOrActivateWindow(icon.getAttribute('data-window-id'));
         });
-
-        // 电脑端右键
         icon.addEventListener('contextmenu', (e) => showContextMenu(e, icon));
-        
-        // 移动端长按
         icon.addEventListener('touchstart', (e) => {
             longPressTriggered = false;
             longPressTimer = setTimeout(() => {
                 longPressTriggered = true;
                 showContextMenu(e, icon);
-            }, 500); // 500毫秒算长按
+            }, 500);
         });
         icon.addEventListener('touchend', () => clearTimeout(longPressTimer));
         icon.addEventListener('touchmove', () => clearTimeout(longPressTimer));
@@ -385,7 +520,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.desktop-icon').forEach(setupIconEvents);
     desktop.addEventListener('contextmenu', (e) => { if(e.target === desktop) showContextMenu(e, null); });
-
     document.querySelectorAll('.nav-button[data-window-id]').forEach(button => {
         button.addEventListener('click', () => openOrActivateWindow(button.getAttribute('data-window-id')));
     });
@@ -397,10 +531,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const commands = {
         help: () => `Available commands:\n  help      - Shows this help message\n  ls        - Lists all desktop apps\n  open <app>- Opens an application (e.g., open blog)\n  date      - Displays the current date and time\n  about     - Shows the player profile\n  clear     - Clears the terminal screen\n  reboot    - Reboots the system`,
-        ls: () => { const icons = [...document.querySelectorAll('.desktop-icon .icon-label')]; return 'Desktop Items:\n' + icons.map(icon => `  - ${icon.textContent}`).join('\n'); },
-        open: (args) => { const appName = args[0]; if (!appName) return 'Usage: open <app_name>'; const icon = [...document.querySelectorAll('.desktop-icon')].find(i => i.querySelector('.icon-label').textContent.toLowerCase().includes(appName.toLowerCase())); if (icon) { openOrActivateWindow(icon.dataset.windowId); return `Opening ${appName}...`; } return `Error: Application "${appName}" not found.`; },
+        ls: () => 'Desktop Items:\n' + [...document.querySelectorAll('.desktop-icon .icon-label')].map(i => `  - ${i.textContent}`).join('\n'),
+        open: (args) => {
+            const appName = args[0];
+            if (!appName) return 'Usage: open <app_name>';
+            const nameMap = { blog: '微光博客', notes: '课业笔记', skills: '技能树', about: '关于我', projects: '项目浏览器', dashboard: '数据仪表盘', api: 'GitHub查询', settings: '设置', clock: '时钟' };
+            const targetName = Object.keys(nameMap).find(k => appName.toLowerCase() === k) || appName;
+            const icon = [...document.querySelectorAll('.desktop-icon')].find(i => i.querySelector('.icon-label').textContent.toLowerCase().includes(targetName.toLowerCase()));
+            if (icon) {
+                openOrActivateWindow(icon.dataset.windowId);
+                return `Opening ${icon.querySelector('.icon-label').textContent}...`;
+            }
+            return `Error: Application "${appName}" not found.`;
+        },
         date: () => new Date().toLocaleString('ja-JP'),
-        about: () => `\n-- Player Profile --\n${document.querySelector('#about-window .window-body').innerText.trim()}`,
+        about: () => `-- Player Profile --\n${document.querySelector('#about-window .window-body').innerText.trim()}`,
         clear: () => { terminalOutput.innerHTML = ''; return ''; },
         reboot: () => { window.location.reload(); return 'Rebooting system...'; }
     };
@@ -419,10 +564,8 @@ document.addEventListener('DOMContentLoaded', () => {
             terminalInput.textContent = '';
             terminalBody.scrollTop = terminalBody.scrollHeight;
         } else if (e.key === 'Backspace') {
-            e.preventDefault();
             terminalInput.textContent = terminalInput.textContent.slice(0, -1);
         } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
-            e.preventDefault();
             terminalInput.textContent += e.key;
         }
     });
@@ -431,11 +574,81 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Clock Widget ---
     const clockElement = document.getElementById('clock-widget');
     function updateClock() {
-        const now = new Date();
-        clockElement.textContent = now.toLocaleTimeString('ja-JP');
+        clockElement.textContent = new Date().toLocaleTimeString('ja-JP');
     }
     setInterval(updateClock, 1000);
     updateClock();
+
+    // --- Settings Logic ---
+    const settingsWindow = document.getElementById('settings-window');
+    settingsWindow.querySelectorAll('.theme-button').forEach(button => {
+        button.addEventListener('click', () => {
+            const theme = button.dataset.theme;
+            document.body.dataset.theme = theme;
+            settingsWindow.querySelector('.theme-button.active').classList.remove('active');
+            button.classList.add('active');
+        });
+    });
+
+    settingsWindow.querySelectorAll('.color-swatch').forEach(swatch => {
+        swatch.addEventListener('click', () => {
+            const color = swatch.dataset.color;
+            document.documentElement.style.setProperty('--primary-accent', color);
+            settingsWindow.querySelector('.color-swatch.active').classList.remove('active');
+            swatch.classList.add('active');
+        });
+    });
+
+    // --- GitHub API Fetcher Logic ---
+    const githubQueryBtn = document.getElementById('github-query-btn');
+    const githubUsernameInput = document.getElementById('github-username-input');
+    const githubResponseArea = document.getElementById('github-response-area');
+
+    const fetchGitHubUser = async () => {
+        const username = githubUsernameInput.value.trim();
+        if (!username) {
+            githubResponseArea.innerHTML = `<p style="color: var(--secondary-accent);">请输入一个用户名。</p>`;
+            return;
+        }
+        
+        githubResponseArea.innerHTML = `<p>正在查询...</p>`;
+
+        try {
+            const response = await fetch(`https://api.github.com/users/${username}`);
+            if (!response.ok) {
+                if(response.status === 404) throw new Error(`用户 "${username}" 未找到。`);
+                throw new Error(`网络错误, 状态: ${response.status}`);
+            }
+            const data = await response.json();
+            
+            githubResponseArea.innerHTML = `
+                <div class="github-user-profile">
+                    <img src="${data.avatar_url}" alt="${data.login} avatar" class="github-avatar">
+                    <div class="github-user-info">
+                        <h3>${data.name || data.login} 
+                            <a href="${data.html_url}" target="_blank" title="访问GitHub主页">(@${data.login})</a>
+                        </h3>
+                        <p class="github-bio">${data.bio || '这个用户很神秘，什么也没留下...'}</p>
+                        <div class="github-user-stats">
+                            <span><span class="stat-value">${data.public_repos}</span> 公开仓库</span>
+                            <span><span class="stat-value">${data.followers}</span> 关注者</span>
+                            <span><span class="stat-value">${data.following}</span> 正在关注</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+        } catch (error) {
+            githubResponseArea.innerHTML = `<p style="color: var(--secondary-accent);">${error.message}</p>`;
+        }
+    };
+
+    githubQueryBtn.addEventListener('click', fetchGitHubUser);
+    githubUsernameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            fetchGitHubUser();
+        }
+    });
 });
 </script>
 
