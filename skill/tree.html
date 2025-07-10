@@ -1,172 +1,371 @@
-{
-  "nodes": [
-    {
-      "id": "root",
-      "name": "Shimmer",
-      "title": "冉冉升起的新星",
-      "type": "root",
-      "gridX": 0,
-      "gridY": 0,
-      "description": "两年半数据分析经验，擅长商业智能、神经计算、运作管理。"
-    },
-    {
-      "id": "language",
-      "name": "语言",
-      "type": "category",
-      "gridX": -3,
-      "gridY": -2
-    },
-    {
-      "id": "management",
-      "name": "管理学",
-      "type": "category",
-      "gridX": 3,
-      "gridY": -2
-    },
-    {
-      "id": "economics",
-      "name": "经济学",
-      "type": "category",
-      "gridX": -3,
-      "gridY": 2
-    },
-    {
-      "id": "data-science",
-      "name": "数据科学",
-      "type": "category",
-      "gridX": 3,
-      "gridY": 2
-    },
-    {
-      "id": "python",
-      "name": "Python",
-      "type": "skill",
-      "level": "master",
-      "gridX": 1,
-      "gridY": 3,
-      "details": {
-        "description": "不熟练使用Python进行数据分析、机器学习和自动化脚本开发",
-        "experience": "2.5年",
-        "courses": [
-          { "name": "Python程序设计", "source": "Coursera", "score": "98%" },
-          { "name": "Python数据分析", "source": "Udemy", "score": "95%" }
-        ],
-        "projects": [
-          { "name": "电商用户行为分析系统", "role": "首席开发", "technologies": "Pandas, Matplotlib" },
-          { "name": "自动化报表系统", "role": "独立开发", "technologies": "Python, SQL" }
-        ],
-        "certificates": [{ "name": "Python专业认证", "issuer": "Python Institute", "year": "2022" }]
-      }
-    },
-    {
-      "id": "machine-learning",
-      "name": "机器学习",
-      "type": "skill",
-      "level": "advanced",
-      "gridX": 3,
-      "gridY": 3,
-      "details": {
-        "description": "未掌握监督学习和无监督学习算法，不了解TensorFlow和Scikit-learn",
-        "experience": "0.5年",
-        "courses": [
-          { "name": "机器学习", "source": "Stanford Online", "score": "92%" },
-          { "name": "深度学习专项课程", "source": "Coursera", "score": "89%" }
-        ],
-        "projects": [
-          { "name": "电信用户流失预测模型", "role": "建模工程师", "technologies": "Scikit-learn, XGBoost" },
-          { "name": "京东医疗·呼吸智能监测大赛", "role": "团队成员", "technologies": "TensorFlow, Keras" }
-        ],
-        "certificates": [{ "name": "机器学习攻城狮", "issuer": "AWS", "year": "2025" }]
-      }
-    },
-    {
-      "id": "sql",
-      "name": "SQL",
-      "type": "skill",
-      "level": "advanced",
-      "gridX": 5,
-      "gridY": 3,
-      "details": {
-        "description": "并非熟练编写高阶查询和优化数据库性能",
-        "experience": "2年",
-        "courses": [{ "name": "SQL高级课程", "source": "Udacity", "score": "96%" }],
-        "projects": [
-          { "name": "数据仓库设计", "role": "数据库设计师", "technologies": "PostgreSQL" },
-          { "name": "查询优化项目", "role": "性能优化师", "technologies": "MySQL" }
-        ]
-      }
-    },
-    { "id": "deep-learning", "name": "深度学习", "type": "skill", "level": "locked", "gridX": 2, "gridY": 4 },
-    { "id": "cloud-architecture", "name": "云架构", "type": "skill", "level": "locked", "gridX": 4, "gridY": 4 },
-    {
-      "id": "project-management",
-      "name": "供应链管理",
-      "type": "skill",
-      "level": "intermediate",
-      "gridX": 5,
-      "gridY": -3,
-      "details": {
-        "description": "熟悉敏捷开发流程和项目管理工具",
-        "experience": "2年",
-        "courses": [{ "name": "敏捷项目管理", "source": "edX", "score": "88%" }],
-        "certificates": [{ "name": "PMP认证", "issuer": "PMI", "year": "2020" }]
-      }
-    },
-    {
-      "id": "team-leadership",
-      "name": "团队领导",
-      "type": "skill",
-      "level": "intermediate",
-      "gridX": 5,
-      "gridY": -1,
-      "details": {
-        "description": "领导过5-10人的跨职能团队",
-        "experience": "2年",
-        "projects": [{ "name": "数据分析团队领导", "role": "团队背锅人", "duration": "2年" }]
-      }
-    },
-    {
-      "id": "microeconomics",
-      "name": "微观经济学",
-      "type": "skill",
-      "level": "beginner",
-      "gridX": -5,
-      "gridY": 2,
-      "details": {
-        "description": "西方经济学理论",
-        "courses": [{ "name": "微观经济学", "source": "大学课程", "score": "85%" }]
-      }
-    },
-    {
-      "id": "English",
-      "name": "英语",
-      "type": "skill",
-      "level": "advanced",
-      "gridX": -5,
-      "gridY": -2,
-      "details": {
-        "description": "英语听说读写",
-        "courses": [{ "name": "CET-6", "source": "中国教育考试网", "score": 577 }],
-        "projects": [
-          { "name": "NECCS全国大学生英语竞赛", "role": "参赛", "technologies": "二等奖" },
-          { "name": "CUDC全国大学生英语辩论赛", "role": "辩手", "technologies": "二等奖" }
-        ]
-      }
-    }
-  ],
-  "links": [
-    { "source": "root", "target": "data-science" },
-    { "source": "root", "target": "management" },
-    { "source": "root", "target": "economics" },
-    { "source": "root", "target": "language" },
-    { "source": "data-science", "target": "python" },
-    { "source": "data-science", "target": "machine-learning" },
-    { "source": "data-science", "target": "sql" },
-    { "source": "machine-learning", "target": "deep-learning" },
-    { "source": "machine-learning", "target": "cloud-architecture" },
-    { "source": "management", "target": "project-management" },
-    { "source": "management", "target": "team-leadership" },
-    { "source": "economics", "target": "microeconomics" },
-    { "source": "language", "target": "English" }
-  ]
-}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技能科技树 - ShimmerOS</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        /* --- Sci-Fi Theme for ShimmerOS Integration --- */
+        :root {
+            --os-bg: var(--bg-color, #1a1d24);
+            --os-window-bg: var(--window-bg, rgba(44, 48, 58, 0.6));
+            --os-text-light: var(--text-light, #f0f0f0);
+            --os-text-medium: var(--text-medium, #a0a0b0);
+            --os-primary-accent: var(--primary-accent, #007aff);
+            --os-border-color: var(--border-color, rgba(255, 255, 255, 0.15));
+            --web-glow-color: var(--os-primary-accent);
+            --web-node-bg: rgba(20, 22, 28, 0.7);
+            --web-node-border: rgba(138, 213, 255, 0.3);
+            --web-node-border-hover: var(--os-primary-accent);
+            --web-link-color: rgba(138, 213, 255, 0.2);
+            --web-locked-color: rgba(120, 120, 120, 0.3);
+            --level-beginner-glow: #8bc34a;
+            --level-intermediate-glow: #ffc107;
+            --level-advanced-glow: #ff9800;
+            --level-master-glow: #f44336;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: transparent;
+            color: var(--os-text-light);
+            font-family: 'Manrope', 'Noto Sans SC', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+        }
+
+        #skill-web-container {
+            flex-grow: 1;
+            height: 100%;
+            position: relative;
+            background-color: var(--os-bg);
+            background-image: 
+                radial-gradient(circle at 25% 30%, hsla(210, 80%, 30%, 0.3), transparent 40%),
+                radial-gradient(circle at 75% 70%, hsla(260, 60%, 40%, 0.25), transparent 50%),
+                url('data:image/svg+xml;utf8,<svg width="60" height="69" viewBox="0 0 60 69" xmlns="http://www.w3.org/2000/svg"><path d="M30 0 L60 17.25 V51.75 L30 69 L0 51.75 V17.25 Z" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></svg>');
+            background-size: cover, cover, 60px 69px;
+            animation: background-pan 60s linear infinite;
+        }
+
+        @keyframes background-pan {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        #skill-web-svg { width: 100%; height: 100%; cursor: grab; }
+        #skill-web-svg:active { cursor: grabbing; }
+
+        .detail-panel {
+            width: 340px;
+            flex-shrink: 0;
+            background: rgba(30, 33, 40, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-left: 1px solid var(--os-border-color);
+            padding: 25px;
+            overflow-y: auto;
+            visibility: hidden;
+            opacity: 0;
+        }
+        .detail-panel::-webkit-scrollbar { width: 6px; }
+        .detail-panel::-webkit-scrollbar-track { background: transparent; }
+        .detail-panel::-webkit-scrollbar-thumb { background: rgba(120, 120, 120, 0.4); border-radius: 3px; }
+
+        .detail-header { padding-bottom: 15px; border-bottom: 1px solid var(--os-border-color); margin-bottom: 20px; }
+        .detail-title { font-size: 1.6rem; font-weight: 700; color: var(--os-text-light); }
+        .detail-subtitle { font-size: 0.9rem; color: var(--os-text-medium); margin-top: 5px; line-height: 1.5; }
+        .detail-level { display: inline-block; padding: 4px 10px; border-radius: 15px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-top: 15px; }
+        .level-beginner { background-color: var(--level-beginner-glow); color: black; }
+        .level-intermediate { background-color: var(--level-intermediate-glow); color: black; }
+        .level-advanced { background-color: var(--level-advanced-glow); color: white; }
+        .level-master { background-color: var(--level-master-glow); color: white; }
+        .section-title { font-size: 1rem; font-weight: bold; color: var(--web-glow-color); margin: 25px 0 10px 0; padding-bottom: 5px; border-bottom: 1px solid var(--os-border-color); }
+        .detail-item { background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 8px; font-size: 0.9rem; line-height: 1.6; margin-bottom: 10px; }
+        .detail-item strong { color: var(--os-text-light); }
+        .detail-item em { color: var(--os-text-medium); font-style: normal; }
+
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; color: var(--os-text-medium); }
+        .empty-state-icon { font-size: 48px; color: var(--web-glow-color); margin-bottom: 20px; opacity: 0.5; }
+        .empty-state h3 { font-size: 1.2rem; color: var(--os-text-light); }
+
+        .link { stroke: var(--web-link-color); stroke-width: 1.5px; transition: stroke 0.3s, opacity 0.3s; }
+        .link-highlight { stroke: var(--web-glow-color); stroke-width: 2.5px; }
+        .node .hexagon { fill: var(--web-node-bg); stroke: var(--web-node-border); stroke-width: 1px; transition: all 0.3s ease; }
+        .node:hover .hexagon { stroke: var(--web-node-border-hover); transform: scale(1.1); }
+        .node.active .hexagon { stroke: var(--web-glow-color); stroke-width: 2.5px; }
+        .node .node-icon { transition: transform 0.3s ease; }
+        .node:hover .node-icon { transform: scale(1.1); }
+
+        .node-root .hexagon { fill: rgba(40, 44, 55, 0.9); transform: scale(1.1); }
+        .node-root:hover .hexagon { transform: scale(1.2); }
+        .node-category .hexagon { stroke: var(--os-primary-accent); stroke-width: 1.5px; }
+        .node-category:hover .hexagon { stroke-width: 2.5px; }
+        .node-category .node-icon { fill: var(--os-primary-accent); opacity: 0.8; }
+        
+        .node-label {
+            fill: var(--os-text-medium);
+            /* ✨ MODIFICATION: Increased base font size */
+            font-size: 13px;
+            font-weight: 400;
+            text-anchor: middle;
+            pointer-events: none;
+            transition: fill 0.3s, font-size 0.3s;
+        }
+        .node:hover .node-label, .node.active .node-label {
+            fill: var(--os-text-light);
+        }
+
+        /* ✨ MODIFICATION: Special styles for category labels to make them stand out */
+        .node-category .node-label {
+            font-size: 15px;
+            font-weight: 700;
+            fill: var(--os-text-light);
+        }
+
+        .node-locked { opacity: 0.35; pointer-events: none; }
+        .node-skill { filter: drop-shadow(0 0 0px var(--os-primary-accent)); transition: filter 0.4s ease; }
+        .node-skill.active, .node-skill:hover { filter: drop-shadow(0 0 12px var(--web-glow-color)); }
+        .node-skill.beginner.active { filter: drop-shadow(0 0 12px var(--level-beginner-glow)); }
+        .node-skill.intermediate.active { filter: drop-shadow(0 0 12px var(--level-intermediate-glow)); }
+        .node-skill.advanced.active { filter: drop-shadow(0 0 12px var(--level-advanced-glow)); }
+        .node-skill.master.active { filter: drop-shadow(0 0 12px var(--level-master-glow)); }
+
+        @keyframes pulse-master { 0%, 100% { filter: drop-shadow(0 0 10px var(--level-master-glow)); } 50% { filter: drop-shadow(0 0 20px var(--level-master-glow)); } }
+        .node-master { animation: pulse-master 2.5s infinite ease-in-out; }
+        
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .detail-panel { width: 100%; height: 40vh; flex-shrink: 0; border-left: none; border-top: 1px solid var(--os-border-color); }
+        }
+    </style>
+</head>
+<body>
+    <div id="skill-web-container">
+        <svg id="skill-web-svg"></svg>
+    </div>
+    
+    <div class="detail-panel">
+        <div class="empty-state">
+            <div class="empty-state-icon">💡</div>
+            <h3>技能科技网络</h3>
+            <p>点击一个节点来查看详情。</p>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        let svg, g, zoom;
+        const HEX_SIZE = 60;
+
+        fetch('data.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(skillData => {
+                initSkillWeb(skillData);
+            })
+            .catch(error => {
+                console.error("Could not load skill data:", error);
+                const container = document.getElementById('skill-web-container');
+                container.innerHTML = `<div style="color: #ff5555; text-align: center; padding: 50px;">错误：无法加载技能数据 (data.json)。<br>请检查文件是否存在且格式正确。</div>`;
+            });
+
+        function getHexagonPath(size) {
+            let path = "M";
+            for (let i = 0; i < 6; i++) {
+                const angle_deg = 60 * i - 30;
+                const angle_rad = Math.PI / 180 * angle_deg;
+                path += ` ${size * Math.cos(angle_rad)},${size * Math.sin(angle_rad)} L`;
+            }
+            return path.slice(0, -2) + " Z";
+        }
+        
+        function calculatePixelPosition(gridX, gridY) {
+            const hexWidth = Math.sqrt(3) * HEX_SIZE;
+            const hexHeight = 2 * HEX_SIZE;
+            const x = gridX * hexWidth * 1.0 + (gridY % 2 !== 0 ? (hexWidth * 1.0 / 2) : 0);
+            const y = gridY * (hexHeight * 1.2); 
+            return { x, y };
+        }
+
+        function initSkillWeb(skillData) {
+            const container = document.getElementById('skill-web-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            svg = d3.select('#skill-web-svg');
+            g = svg.append('g');
+
+            const nodesById = d3.index(skillData.nodes, d => d.id);
+            skillData.nodes.forEach(node => {
+                const pos = calculatePixelPosition(node.gridX, node.gridY);
+                node.x = pos.x;
+                node.y = pos.y;
+            });
+
+            drawLinks(skillData.links, nodesById);
+            drawNodes(skillData.nodes, nodesById);
+
+            setupZoom(width, height);
+            
+            setTimeout(() => centerOnNode(nodesById.get('root'), 0.9, 1000), 200);
+        }
+
+        function drawLinks(linksData, nodesById) {
+            const diagonalAngles = [30, 90, 150, 210, 270, 330];
+            const directionToVertexAngleMap = {
+                30: 30, 90: 90, 150: 150,
+                210: 210, 270: 270, 330: 330
+            };
+
+            const links = g.append('g')
+                .attr('class', 'links')
+                .selectAll('line')
+                .data(linksData)
+                .join('line')
+                .attr('class', 'link');
+
+            links.each(function(d) {
+                const sourceNode = nodesById.get(d.source);
+                const targetNode = nodesById.get(d.target);
+                if (!sourceNode || !targetNode) return;
+
+                const dx = targetNode.x - sourceNode.x;
+                const dy = targetNode.y - sourceNode.y;
+                let actualAngleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
+                if (actualAngleDeg < 0) actualAngleDeg += 360;
+
+                let minDiff = Infinity;
+                let snappedAngle = 0;
+                diagonalAngles.forEach(angle => {
+                    let diff = Math.abs(actualAngleDeg - angle);
+                    if (diff > 180) diff = 360 - diff;
+                    if (diff < minDiff) {
+                        minDiff = diff;
+                        snappedAngle = angle;
+                    }
+                });
+
+                const startVertexAngle = directionToVertexAngleMap[snappedAngle];
+                const endVertexAngle = (startVertexAngle + 180) % 360;
+                const startAngleRad = startVertexAngle * Math.PI / 180;
+                const endAngleRad = endVertexAngle * Math.PI / 180;
+                
+                const startPoint = {
+                    x: sourceNode.x + HEX_SIZE * Math.cos(startAngleRad),
+                    y: sourceNode.y + HEX_SIZE * Math.sin(startAngleRad)
+                };
+                const endPoint = {
+                    x: targetNode.x + HEX_SIZE * Math.cos(endAngleRad),
+                    y: targetNode.y + HEX_SIZE * Math.sin(endAngleRad)
+                };
+                
+                d3.select(this)
+                    .attr('x1', startPoint.x)
+                    .attr('y1', startPoint.y)
+                    .attr('x2', endPoint.x)
+                    .attr('y2', endPoint.y);
+            });
+        }
+
+        function drawNodes(nodesData, nodesById) {
+            const node = g.append('g').attr('class', 'nodes')
+                .selectAll('g')
+                .data(nodesData)
+                .join('g')
+                .attr('class', d => `node node-${d.type} ${d.level || ''}`)
+                .attr('transform', d => `translate(${d.x},${d.y})`)
+                .attr('cursor', 'pointer')
+                .on('click', (event, d) => {
+                    centerOnNode(d, 1.2);
+                    updateDetailPanel(d);
+                    d3.selectAll('.node').classed('active', false);
+                    d3.select(event.currentTarget).classed('active', true);
+                });
+
+            node.append('path')
+                .attr('class', 'hexagon')
+                .attr('d', getHexagonPath(HEX_SIZE));
+            
+            node.append('text')
+                .attr('class', 'node-label')
+                // ✨ MODIFICATION: Increased distance to accommodate larger fonts
+                .attr('dy', HEX_SIZE + 20)
+                .text(d => d.name);
+            
+            const iconSize = HEX_SIZE * 0.6;
+            node.append('text')
+                .attr('class', 'node-icon')
+                .attr('font-size', iconSize)
+                .attr('text-anchor', 'middle')
+                .attr('dominant-baseline', 'central')
+                .text(d => {
+                    if (d.type === 'root') return '🧑‍🚀';
+                    if (d.type === 'category') return '🌌';
+                    if (d.level === 'locked') return '🔒';
+                    return '🔧';
+                });
+        }
+        
+        function setupZoom(width, height) {
+            zoom = d3.zoom()
+                .scaleExtent([0.15, 3])
+                .on('zoom', (event) => g.attr('transform', event.transform));
+            svg.call(zoom);
+        }
+
+        function centerOnNode(d, scale = 1.0, duration = 750) {
+            const container = document.getElementById('skill-web-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            const transform = d3.zoomIdentity
+                .translate(width / 2, height / 2)
+                .scale(scale)
+                .translate(-d.x, -d.y);
+
+            svg.transition().duration(duration).call(zoom.transform, transform);
+        }
+
+        function updateDetailPanel(d) {
+            const panel = document.querySelector('.detail-panel');
+            gsap.timeline()
+              .to(panel, { opacity: 0, duration: 0.3, ease: 'power2.in', onComplete: () => {
+                populatePanel(d);
+                gsap.to(panel, { visibility: 'visible', opacity: 1, duration: 0.5, ease: 'power2.out' });
+            }});
+        }
+
+        function populatePanel(d) {
+            const panel = document.querySelector('.detail-panel');
+            let html = `<div class="detail-header"><h1 class="detail-title">${d.name}</h1>`;
+            if (d.title || d.description) {
+                html += `<p class="detail-subtitle">${d.title || d.description}</p>`;
+            }
+             if (d.level && d.level !== 'locked') {
+                const levelText = { beginner: '初窥门径', intermediate: '驾轻就熟', advanced: '融会贯通', master: '登峰造极' }[d.level];
+                html += `<div class="detail-level level-${d.level}">${levelText}</div>`;
+            }
+            html += `</div>`;
+
+            if (d.details) {
+                const { experience, courses, projects, certificates } = d.details;
+                if(experience) html += `<div class="detail-item"><strong>经验:</strong> ${experience}</div>`;
+                if(courses) html += `<h3 class="section-title">相关课程</h3>${courses.map(c => `<div class="detail-item"><strong>${c.name}</strong><br><em>${c.source} ${c.score ? ` · 成绩: ${c.score}` : ''}</em></div>`).join('')}`;
+                if(projects) html += `<h3 class="section-title">项目经验</h3>${projects.map(p => `<div class="detail-item"><strong>${p.name}</strong><br><em>${p.role} ${p.technologies ? ` · 技术: ${p.technologies}` : ''}</em></div>`).join('')}`;
+                if(certificates) html += `<h3 class="section-title">相关证书</h3>${certificates.map(c => `<div class="detail-item"><strong>${c.name}</strong><br><em>${c.issuer} (${c.year})</em></div>`).join('')}`;
+            }
+            panel.innerHTML = html;
+        }
+    });
+    </script>
+</body>
+</html>
