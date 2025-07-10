@@ -244,12 +244,18 @@
 
     <div id="about-window" class="window" style="top: 15%; left: 30%;">
         <div class="title-bar"><span>Player Profile</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body"><dl class="player-stats"><dt>身份</dt><dd>数据分析师 (萌新)</dd><dt>专长</dt><dd>Python, SQL, BI工具</dd><dt>能力</dt><dd>业务洞察力、逻辑思辨、快速学习</dd><dt>特质</dt><dd>将复杂业务问题转化为可执行的数据分析方案。</dd><dt>成就</dt><dd>在数学建模、商业分析竞赛中取得优良成绩。</dd><dt>信条</dt><dd>渴望在真实场景中挑战自我，用数据为决策创造价值。</dd></dl></div>
+        <div class="window-body" style="padding:0; overflow:hidden;">
+            <iframe src="about/me.html" style="width:100%; height:100%; border:0;"></iframe>
+        </div>
     </div>
+
     <div id="skills-window" class="window" style="top: 25%; left: 10%;">
         <div class="title-bar"><span>Skill Tree</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body"><ul class="skill-tree"><li><strong>数据分析 & 可视化</strong><ul class="skill-tree"><li>Python (Pandas, NumPy)</li><li>SQL (MySQL, PostgreSQL)</li><li>BI Tools (Tableau, Power BI)</li></ul></li><li><strong>编程 & 开发</strong><ul class="skill-tree"><li>Web (HTML, CSS, JS)</li><li>后端 (Flask)</li></ul></li><li><strong>数学 & 建模</strong><ul class="skill-tree"><li>统计学</li><li>机器学习 (Scikit-learn)</li></ul></li></ul></div>
+        <div class="window-body" style="padding:0; overflow:hidden;">
+            <iframe src="skill/tree.html" style="width:100%; height:100%; border:0;"></iframe>
+        </div>
     </div>
+
     <div id="terminal-window" class="window" style="top: 40%; left: 40%; width: 550px; height: 380px;">
         <div class="title-bar"><span>ShimmerCMD</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
         <div class="window-body" id="terminal-body" tabindex="0">
@@ -262,10 +268,12 @@
             <input type="text" id="hidden-terminal-input" style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; opacity: 0;" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         </div>
     </div>
+
     <div id="clock-window" class="window" style="top: 10%; left: 65%; width: 350px; height: 220px;">
         <div class="title-bar"><span>Clock</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
         <div class="window-body" style="display:flex; align-items:center; justify-content:center;"><div id="clock-widget">--:--:--</div></div>
     </div>
+
     <div id="blog-window" class="window" style="top: 15%; left: 20%; width: 60%; height: 70%;"><div class="title-bar"><span>微光博客 (Blog)</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div><div class="window-body" style="padding:0; overflow:hidden;"><iframe src="blog/blognav.html" style="width:100%; height:100%; border:0;"></iframe></div></div>
     <div id="notes-window" class="window" style="top: 20%; left: 25%; width: 60%; height: 70%;"><div class="title-bar"><span>课业笔记 (Notes)</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div><div class="window-body" style="padding:0; overflow:hidden;"><iframe src="note/notenav.html" style="width:100%; height:100%; border:0;"></iframe></div></div>
 
@@ -347,7 +355,7 @@
     </div>
 
     <div class="dock">
-        <div class="nav-button" title="终端" data-window-id="terminal-window">📟</div>
+        <button class="nav-button" title="终端" data-window-id="terminal-window">📟</button>
         <div class="nav-button" title="返回" onclick="window.history.back()">←</div>
         <div class="nav-button" title="主页" onclick="window.location.reload()">⌂</div>
     </div>
