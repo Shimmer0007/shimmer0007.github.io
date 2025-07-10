@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Janus Blueprint</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blueprint-bg: #1a233f; /* 蓝图背景色 */
+            --blueprint-line: rgba(102, 178, 255, 0.15); /* 网格线颜色 */
+            --blueprint-text: #c0d0f0; /* 主要文字颜色 */
+            --blueprint-highlight: #66b2ff; /* 高亮/标题颜色 */
+            --progress-bar-fill: #ffab40; /* 进度条填充色 - 琥珀色，形成对比 */
+            --card-bg: rgba(45, 62, 102, 0.5); /* 卡片背景 */
+            --card-border: #3a528f;
+        }
+
+        body {
+            background-color: var(--blueprint-bg);
+            background-image:
+                linear-gradient(var(--blueprint-line) 1px, transparent 1px),
+                linear-gradient(to right, var(--blueprint-line) 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--blueprint-text);
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            margin: 0;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px dashed var(--card-border);
+            padding-bottom: 1.5rem;
+        }
+
+        .header h1 {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 2.2rem;
+            color: var(--blueprint-highlight);
+            margin: 0;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+        
+        #task-container {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .task-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .task-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .task-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--blueprint-highlight);
+            margin: 0;
+        }
+
+        /* 新增：为标题链接添加样式 */
+        .task-title-link {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.2s ease;
+        }
+        .task-title-link:hover .task-title {
+            color: var(--progress-bar-fill); /* 鼠标悬浮时高亮标题 */
+            text-decoration: underline;
+        }
+
+        .task-status {
+            font-family: 'Roboto Mono', monospace;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            flex-shrink: 0;
+            margin-left: 1rem;
+        }
+        .task-status.inprogress { background-color: rgba(255, 171, 64, 0.2); color: var(--progress-bar-fill); }
+        .task-status.upcoming { background-color: rgba(102, 178, 255, 0.2); color: var(--blueprint-highlight); }
+        .task-status.completed { background-color: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+
+
+        .task-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            color: var(--blueprint-text);
+            opacity: 0.9;
+        }
+        .task-meta > div {
+            background-color: rgba(0,0,0,0.15);
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .task-meta strong {
+            display: block;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1rem;
+            color: var(--blueprint-highlight);
+            margin-top: 4px;
+        }
+
+        .task-countdown {
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+        }
+
+        .progress-section { margin-bottom: 1rem; }
+        .progress-label {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: rgba(0,0,0,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--progress-bar-fill);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .task-notes {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--card-border);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .task-notes p { margin: 0; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">
+            <h1>JANUS BLUEPRINT</h1>
+            <p>第四十二个二月计划：2025.7.10~2025.7.23</p>
+        </header>
+
+        <main id="task-container">
+            </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- 在这里编辑您的计划 ---
+            const tasks = [
+                {
+                    id: 1,
+                    title: 'ShimmerOS系统重构',
+                    status: 'inprogress',   // 'upcoming', 'inprogress', 'completed'
+                    startDate: '2025-07-01',
+                    endDate: '2025-08-10',
+                    progress: 60,
+                    notes: '核心目标：统一设计风格，充实板块内容。目前正在完善 "Janus Blueprint" 模块。',
+                    url: 'https://github.com/shimmer0007/shimmer0007.github.io' // 为任务添加url属性
+                    //  url: null // 没有链接的任务保持url为null或直接省略该属性
+                },
+                {
+                    id: 2,
+                    title: 'AFAC2025挑战组-赛题一：基金产品的长周期申购和赎回预测',
+                    status: 'inprogress',
+                    startDate: '2025-06-03',
+                    endDate: '2025-07-22',
+                    progress: 5,
+                    notes: '借助大模型自行获取和构造其他有效特征，训练1个时序模型，有效建模产品收益和市场行情波动，预测每只基金在每天的申购量和赎回量。',
+                    url: 'https://tianchi.aliyun.com/competition/entrance/532255/introduction'
+                },
+                {
+                    id: 3,
+                    title: '2025全球AI攻防挑战赛-赛道一：图片全要素交互认证-生成赛',
+                    status: 'inprogress',
+                    startDate: '2025-07-07',
+                    endDate: '2025-08-11',
+                    progress: 0,
+                    notes: '按照赛事规范生成高度逼真的模拟图片，挑战现有防伪系统的识别极限。我们期待通过这场攻防对抗，推动数字图片真伪鉴别技术的突破性发展，为构建可信的数字社会基础设施贡献力量。',
+                    url: 'https://tianchi.aliyun.com/competition/entrance/532389/introduction'
+                },
+                {
+                    id: 4,
+                    title: 'DW2025夏令营第一期-iFLYTEK 用户新增预测挑战赛 赛季3',
+                    status: 'inprogress',
+                    startDate: '2025-07-06',
+                    endDate: '2025-07-18',
+                    progress: 10,
+                    notes: '一直在报名，这次得完赛。',
+                    url: 'https://www.datawhale.cn/activity/323?sourceId=1499'
+                },
+                {
+                    id: 5,
+                    title: '复现《因子投资中所蕴含的宏观经济风险》',
+                    status: 'inprogress',
+                    startDate: '2025-05-20',
+                    endDate: '2025-07-15',
+                    progress: 5,
+                    notes: '找到数据，构建因子，进行回测。',
+                    url: null
+                }
+            ];
+
+            const taskContainer = document.getElementById('task-container');
+
+            function renderTasks() {
+                if (!taskContainer) return;
+                taskContainer.innerHTML = ''; 
+
+                tasks.forEach(task => {
+                    const card = document.createElement('div');
+                    card.className = 'task-card';
+
+                    // 改动2：根据任务是否有url，来决定是否生成带链接的标题
+                    const titleHTML = task.url
+                        ? `<a href="${task.url}" target="_blank" class="task-title-link"><h2 class="task-title">${task.title}</h2></a>`
+                        : `<h2 class="task-title">${task.title}</h2>`;
+
+                    card.innerHTML = `
+                        <div class="task-header">
+                            ${titleHTML}
+                            <span class="task-status ${task.status}">${task.status.toUpperCase()}</span>
+                        </div>
+
+                        <div class="task-meta">
+                            <div>目标日期: <strong>${task.startDate} ~ ${task.endDate}</strong></div>
+                            <div>剩余时间: <strong class="task-countdown" id="countdown-${task.id}">计算中...</strong></div>
+                        </div>
+
+                        <div class="progress-section">
+                            <div class="progress-label">
+                                <span>完成进度</span>
+                                <span>${task.progress}%</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: ${task.progress}%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="task-notes">
+                            <p>${task.notes}</p>
+                        </div>
+                    `;
+                    taskContainer.appendChild(card);
+                });
+            }
+
+            function updateCountdowns() {
+                tasks.forEach(task => {
+                    if (task.status === 'completed') {
+                        const countdownEl = document.getElementById(`countdown-${task.id}`);
+                        if (countdownEl) countdownEl.textContent = '已完成';
+                        return;
+                    }
+
+                    const endDate = new Date(task.endDate).getTime();
+                    const now = new Date().getTime();
+                    const distance = endDate - now;
+
+                    const countdownEl = document.getElementById(`countdown-${task.id}`);
+                    if (!countdownEl) return;
+
+                    if (distance < 0) {
+                        countdownEl.textContent = '已到期';
+                        return;
+                    }
+
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    countdownEl.textContent = `${days}天 ${hours}时 ${minutes}分 ${seconds}秒`;
+                });
+            }
+
+            // --- 初始化 ---
+            renderTasks();
+            updateCountdowns();
+            setInterval(updateCountdowns, 1000); 
+
+        });
+    </script>
+</body>
+</html>
