@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章详情</title> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/toc.css">
+    <style>
+        /* 页面特有布局 */
+        body {
+            padding-top: 40px;
+        }
+        .article-layout {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: flex-start;
+        }
+        .article-main {
+            flex-grow: 1;
+            max-width: 800px; /* 限制文章最大宽度，保证阅读体验 */
+            width: 100%;
+        }
+        .article-header h1 {
+            font-size: 2.8em;
+            margin-top: 0;
+            margin-bottom: 0.5em;
+        }
+        .article-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-light);
+        }
+        /* 文章内容里的元素样式 */
+        .article-content h2,
+        .article-content h3,
+        .article-content h4 {
+            scroll-margin-top: 20px; /* 点击TOC链接跳转时，标题距离顶部有20px间距 */
+        }
+        .article-content h2 { margin-top: 2.5em; padding-bottom: 0.5em; border-bottom: 1px solid var(--border-color); }
+        .article-content h3 { margin-top: 2em; }
+        .article-content a { color: var(--primary-accent); text-decoration: none; }
+        .article-content a:hover { text-decoration: underline; }
+        .article-content ul, .article-content ol { padding-left: 25px; }
+        .article-content code { background: var(--input-bg); padding: 0.2em 0.4em; border-radius: 4px; font-size: 0.9em; }
+        
+        /* 上一篇/下一篇导航 */
+        .post-navigation {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+        .post-navigation a {
+            color: var(--text-medium);
+            text-decoration: none;
+            max-width: 45%;
+        }
+        .post-navigation a:hover {
+            color: var(--primary-accent);
+        }
+        .post-navigation .nav-label { font-size: 0.9em; margin-bottom: 5px; }
+        .post-navigation .nav-title { font-weight: bold; color: var(--text-light); }
+
+        /* 在小屏幕上隐藏目录 */
+        @media (max-width: 1024px) {
+            .toc-container { display: none; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <div class="article-layout">
+        <main class="article-main" id="article-main">
+            <header class="article-header">
+                <a href="blognav.html" style="color: var(--primary-accent); text-decoration: none; font-size: 14px;">&larr; 返回列表</a>
+                <h1 id="article-title">正在加载...</h1>
+                <div class="article-meta" id="article-meta"></div>
+            </header>
+            
+            <article class="article-content" id="article-content">
+                </article>
+
+            <nav class="post-navigation" id="post-navigation">
+                </nav>
+        </main>
+
+        <aside class="toc-container" id="toc-container">
+            <h3>目录</h3>
+            <div class="toc-progress"><div class="toc-progress-bar" id="toc-progress-bar"></div></div>
+            <ul class="toc-list" id="toc-list">
+                </ul>
+        </aside>
+    </div>
+
+    <script>
+        // /blog/assets/js/theme.js 的内容 (复用)
+        class ThemeSync {
+            constructor() { this.iframeBody = document.body; this.parentBody = window.parent.document.body; this.init(); }
+            syncTheme() {
+                const currentTheme = this.parentBody.getAttribute('data-theme') || 'dark';
+                this.iframeBody.setAttribute('data-theme', currentTheme);
+                const accentColor = window.parent.document.documentElement.style.getPropertyValue('--primary-accent');
+                if (accentColor) document.documentElement.style.setProperty('--primary-accent', accentColor);
+            }
+            init() {
+                this.syncTheme();
+                const observer = new MutationObserver(() => this.syncTheme());
+                observer.observe(this.parentBody, { attributes: true, attributeFilter: ['data-theme'] });
+                observer.observe(window.parent.document.documentElement, { attributes: true, attributeFilter: ['style'] });
+            }
+        }
+        new ThemeSync();
+    </script>
+    <script>
+        // /blog/assets/js/toc.js 的内容 (*** 已修正 ***)
+        class TableOfContents {
+            constructor(contentSelector, tocSelector, progressSelector) {
+                this.contentEl = document.querySelector(contentSelector);
+                this.tocEl = document.querySelector(tocSelector);
+                this.progressEl = document.querySelector(progressSelector);
+                this.headings = [];
+                this.tocLinks = [];
+                this.activeTocLink = null;
+                // 使用 requestAnimationFrame 进行节流，避免滚动事件频繁触发导致性能问题
+                this.ticking = false;
+            }
+
+            build() {
+                this.tocEl.innerHTML = '';
+                // 仅选择 h2 和 h3，你可以按需扩展
+                this.headings = Array.from(this.contentEl.querySelectorAll('h2, h3'));
+                
+                if (this.headings.length === 0) {
+                    document.getElementById('toc-container').style.display = 'none';
+                    return;
+                }
+
+                this.headings.forEach(heading => {
+                    if (!heading.id) {
+                        heading.id = heading.textContent.trim().toLowerCase().replace(/\s+/g, '-');
+                    }
+                    
+                    const level = heading.tagName.toLowerCase();
+                    const listItem = document.createElement('li');
+                    listItem.dataset.level = level;
+
+                    const link = document.createElement('a');
+                    link.href = `#${heading.id}`;
+                    link.textContent = heading.textContent;
+
+                    listItem.appendChild(link);
+                    this.tocEl.appendChild(listItem);
+                    this.tocLinks.push(listItem); // 保存li元素，方便操作class
+                });
+            }
+            
+            initScrollSync() {
+                if (this.headings.length === 0) return;
+
+                window.addEventListener('scroll', () => {
+                    if (!this.ticking) {
+                        window.requestAnimationFrame(() => {
+                            this.updateActiveLink();
+                            this.updateProgress();
+                            this.ticking = false;
+                        });
+                        this.ticking = true;
+                    }
+                });
+                
+                // 初始加载时也执行一次
+                this.updateActiveLink();
+                this.updateProgress();
+            }
+            
+            updateActiveLink() {
+                // 定义一个判定为“有效”的屏幕位置，比如屏幕高度的 20%
+                const scrollY = window.scrollY;
+                const threshold = window.innerHeight * 0.2; 
+                let currentActiveHeading = null;
+
+                // 遍历所有标题，找到最后一个已经滚过阈值的标题
+                for (const heading of this.headings) {
+                    if (heading.getBoundingClientRect().top < threshold) {
+                        currentActiveHeading = heading;
+                    } else {
+                        break; // 后面的标题肯定没到位置，中断循环优化性能
+                    }
+                }
+                
+                let newActiveTocLink = null;
+                if (currentActiveHeading) {
+                    newActiveTocLink = this.tocEl.querySelector(`a[href="#${currentActiveHeading.id}"]`)?.parentElement;
+                }
+
+                // 仅当活动链接变化时才更新DOM，避免不必要的重绘
+                if (newActiveTocLink !== this.activeTocLink) {
+                    if (this.activeTocLink) {
+                        this.activeTocLink.classList.remove('active');
+                    }
+                    if (newActiveTocLink) {
+                        newActiveTocLink.classList.add('active');
+                    }
+                    this.activeTocLink = newActiveTocLink;
+                }
+            }
+
+            updateProgress() {
+                const articleMainEl = document.getElementById('article-main');
+                const contentHeight = articleMainEl.scrollHeight;
+                const viewportHeight = window.innerHeight;
+
+                // 当内容高度小于视口时，不计算进度
+                if (contentHeight <= viewportHeight) {
+                    this.progressEl.style.width = '0%';
+                    return;
+                }
+                
+                const scrollableDist = contentHeight - viewportHeight;
+                const progress = Math.min(window.scrollY / scrollableDist, 1);
+                
+                this.progressEl.style.width = `${progress * 100}%`;
+            }
+        }
+    </script>
+    <script>
+        // /blog/assets/js/article.js 的内容 (无重大修改，保持原样)
+        document.addEventListener('DOMContentLoaded', () => {
+            const titleEl = document.getElementById('article-title');
+            const metaEl = document.getElementById('article-meta');
+            const contentEl = document.getElementById('article-content');
+            const navEl = document.getElementById('post-navigation');
+
+            async function loadArticle() {
+                const params = new URLSearchParams(window.location.search);
+                const articleId = params.get('id');
+
+                if (!articleId) {
+                    contentEl.innerHTML = '<p>错误：未指定文章ID。</p>';
+                    return;
+                }
+                
+                try {
+                    const allArticlesRes = await fetch('data/articles.json');
+                    const allArticles = await allArticlesRes.json();
+                    allArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                    const articleData = allArticles.find(a => a.id === articleId);
+                    const articleIndex = allArticles.findIndex(a => a.id === articleId);
+
+                    if (!articleData) {
+                        contentEl.innerHTML = `<p>错误：找不到ID为 "${articleId}" 的文章。</p>`;
+                        return;
+                    }
+
+                    const articleHtmlRes = await fetch(articleData.file);
+                    const articleHtml = await articleHtmlRes.text();
+                    contentEl.innerHTML = articleHtml;
+                    
+                    document.title = `${articleData.title} - 微光博客`;
+                    titleEl.textContent = articleData.title;
+                    metaEl.innerHTML = `<span>📅 ${articleData.date}</span>`;
+
+                    // *** 核心：在这里初始化修正后的TOC模块 ***
+                    const toc = new TableOfContents('#article-content', '#toc-list', '#toc-progress-bar');
+                    toc.build();
+                    toc.initScrollSync();
+
+                    const prevArticle = allArticles[articleIndex + 1];
+                    const nextArticle = allArticles[articleIndex - 1];
+
+                    navEl.innerHTML = `
+                        <div>
+                            ${prevArticle ? `
+                                <a href="article.html?id=${prevArticle.id}">
+                                    <div class="nav-label">上一篇</div>
+                                    <div class="nav-title">${prevArticle.title}</div>
+                                </a>` : ''}
+                        </div>
+                        <div style="text-align: right;">
+                             ${nextArticle ? `
+                                <a href="article.html?id=${nextArticle.id}">
+                                    <div class="nav-label">下一篇</div>
+                                    <div class="nav-title">${nextArticle.title}</div>
+                                </a>` : ''}
+                        </div>
+                    `;
+
+                } catch (error) {
+                    console.error('加载文章失败:', error);
+                    contentEl.innerHTML = '<p>加载文章时发生网络错误，请稍后重试。</p>';
+                }
+            }
+
+            loadArticle();
+        });
+    </script>
+</body>
+</html>

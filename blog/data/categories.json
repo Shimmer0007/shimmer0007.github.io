@@ -1,0 +1,6 @@
+[
+  { "id": "all", "name": "全部文章" },
+  { "id": "tech", "name": "技术分享" },
+  { "id": "life", "name": "生活随笔" },
+  { "id": "project", "name": "项目复盘" }
+]

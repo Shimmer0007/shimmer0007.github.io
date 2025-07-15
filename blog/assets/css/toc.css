@@ -1,0 +1,97 @@
+/* --- 目录容器 (TOC) --- */
+.toc-container {
+    position: sticky;
+    top: 30px; /* 距离顶部的距离 */
+    width: 240px;
+    font-size: 14px;
+    align-self: flex-start; /* 防止被拉伸 */
+}
+
+.toc-container h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+/* --- 进度条 --- */
+.toc-progress {
+    width: 100%;
+    height: 3px;
+    background-color: var(--input-bg);
+    border-radius: 3px;
+    margin-bottom: 15px;
+}
+
+.toc-progress-bar {
+    width: 0%; /* JS会更新这个宽度 */
+    height: 100%;
+    background-color: var(--primary-accent);
+    border-radius: 3px;
+    transition: width 0.1s linear;
+}
+
+/* --- 目录列表 (核心样式) --- */
+.toc-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    max-height: calc(100vh - 150px); /* 限制最大高度，超出则滚动 */
+    overflow-y: auto;
+}
+
+/* 滚动条美化 */
+.toc-list::-webkit-scrollbar { width: 4px; }
+.toc-list::-webkit-scrollbar-track { background: transparent; }
+.toc-list::-webkit-scrollbar-thumb { background: rgba(120, 120, 120, 0.4); border-radius: 2px; }
+
+.toc-list li {
+    padding-left: 15px;
+    position: relative;
+}
+
+/* 模仿少数派/技能树的层级连接线 */
+.toc-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background-color: color-mix(in srgb, var(--primary-accent) 20%, transparent);
+}
+
+.toc-list li:last-child::before {
+    height: 1.1em; /* 最后一个只连接到文字高度 */
+}
+
+.toc-list a {
+    text-decoration: none;
+    color: var(--text-medium);
+    display: block;
+    padding: 8px 0;
+    transition: color 0.2s ease, transform 0.2s ease;
+    transform-origin: left center;
+}
+
+.toc-list a:hover {
+    color: var(--primary-accent);
+    transform: translateX(5px);
+}
+
+/* 激活状态的链接 */
+.toc-list li.active > a {
+    color: var(--primary-accent);
+    font-weight: 700;
+    transform: scale(1.05) translateX(5px);
+}
+
+/* 层级缩进 */
+.toc-list li[data-level="h3"] {
+    padding-left: 30px; /* H3比H2多一级缩进 */
+}
+
+.toc-list li[data-level="h3"]::before {
+    left: 15px; /* H3的连接线也要缩进 */
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "win11env",
+    "title": "一步到位配置好Win11的Python环境",
+    "date": "2025-07-15",
+    "category": "tech",
+    "summary": "上一世，为了我把Win11环境变量搞炸几次；这一次重置系统，我要夺回属于环境变量的一切...",
+    "tags": ["WSL2", "Ubuntu", "Miniconda", "VS Code"],
+    "file": "articles/20250715win11env.html"
+  },
+  {
+    "id": "textmining-analysis",
+    "title": "基于银发经济的文本挖掘与情感分析",
+    "date": "2025-06-02",
+    "category": "project",
+    "summary": "《统计机器学习与文本挖掘》课程的大作业，我们选择银发经济作为主题，通过爬取相关新闻摘要，进行了情感分析、主题建模和可视化展示...",
+    "tags": ["Python", "数据挖掘", "NLP", "项目"],
+    "file": "articles/20250602textmining.html"
+  },
+  {
+    "id": "usergrowth-challenge",
+    "title": "iFLYTEK 用户新增预测挑战赛复盘",
+    "date": "2025-07-12",
+    "category": "project",
+    "summary": "DW2025夏令营分享记录，主要使用LightGBM 模型，并进行了详细的特征工程，也遭遇了十分经典的数据泄露问题。",
+    "tags": ["机器学习", "竞赛", "特征工程"],
+    "file": "articles/20250712usergrowth.html"
+  },
+  {
+    "id": "build-a-blog",
+    "title": "从零开始构建一个动态个人博客",
+    "date": "2025-05-15",
+    "category": "tech",
+    "summary": "不使用后端框架，仅通过 HTML, CSS 和原生 JavaScript 来构建一个由 JSON 驱动的现代化、可维护的个人博客系统。",
+    "tags": ["JavaScript", "Web开发", "前端"],
+    "file": "articles/building-blog.html"
+  },
+  {
+    "id": "reading-notes-2025",
+    "title": "2025年度阅读书单与笔记",
+    "date": "2025-04-22",
+    "category": "life",
+    "summary": "整理和分享今年读过的一些好书，包括小说、社科和技术类。附上一些个人感悟和摘抄。",
+    "tags": ["阅读", "生活", "思考"],
+    "file": "articles/reading-2025.html"
+  }
+]

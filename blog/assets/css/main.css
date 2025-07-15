@@ -1,0 +1,170 @@
+/* --- 继承自 ShimmerOS 的核心变量 --- */
+/* 为了让iframe内的页面能独立预览，我们在这里也定义一遍 */
+:root {
+    --bg-color: #1a1d24;
+    --window-bg: rgba(44, 48, 58, 0.6);
+    --primary-accent: #007aff;
+    --text-light: #f0f0f0;
+    --text-medium: #a0a0b0;
+    --border-color: rgba(255, 255, 255, 0.15);
+    --input-bg: rgba(255, 255, 255, 0.05);
+    --border-radius-main: 12px;
+    --border-radius-small: 8px;
+    --font-main: 'Manrope', 'Noto Sans SC', sans-serif;
+}
+
+[data-theme="light"] {
+    --bg-color: #f0f2f5;
+    --window-bg: rgba(255, 255, 255, 0.6);
+    --primary-accent: #007aff; /* 在亮色模式下也保持这个蓝色，或者你可以为它单独设置 */
+    --text-light: #1d1d1f;
+    --text-medium: #6e6e73;
+    --border-color: rgba(0, 0, 0, 0.1);
+    --input-bg: rgba(0, 0, 0, 0.05);
+}
+
+/* --- 全局与基础样式 --- */
+body {
+    font-family: var(--font-main);
+    background-color: transparent; /* 使其能融入父页面的背景 */
+    color: var(--text-light);
+    margin: 0;
+    padding: 30px;
+    transition: color 0.4s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- 博客容器与布局 --- */
+.blog-container {
+    max-width: 900px;
+    margin: 0 auto;
+    animation: fade-in 0.6s ease;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 0.2em;
+    color: var(--text-light);
+}
+
+header p {
+    font-size: 1.1em;
+    color: var(--text-medium);
+}
+
+/* --- 分类筛选器 --- */
+.category-filters {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.category-button {
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-medium);
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.category-button:hover {
+    background-color: var(--primary-accent);
+    color: white;
+    border-color: var(--primary-accent);
+}
+
+.category-button.active {
+    background-color: var(--primary-accent);
+    color: white;
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--primary-accent) 40%, transparent);
+}
+
+[data-theme="light"] .category-button:hover,
+[data-theme="light"] .category-button.active {
+    color: #fff;
+}
+
+
+/* --- 文章卡片列表 --- */
+.article-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* 默认为单列 */
+    gap: 25px;
+}
+
+.article-card {
+    background: var(--input-bg);
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-main);
+    padding: 25px 30px;
+    text-decoration: none;
+    color: var(--text-light);
+    display: block;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.article-card:hover {
+    transform: translateY(-5px);
+    background-color: color-mix(in srgb, var(--primary-accent) 8%, transparent);
+    border-color: var(--primary-accent);
+}
+
+.article-card h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    color: var(--text-light);
+}
+
+.article-meta {
+    font-size: 0.9em;
+    color: var(--text-medium);
+    margin-bottom: 15px;
+}
+
+.article-summary {
+    color: var(--text-medium);
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+.article-tags span {
+    display: inline-block;
+    background-color: color-mix(in srgb, var(--primary-accent) 20%, transparent);
+    color: var(--primary-accent);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-right: 8px;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+/* --- 响应式设计 --- */
+@media (max-width: 768px) {
+    body {
+        padding: 20px 15px;
+    }
+
+    header h1 {
+        font-size: 2em;
+    }
+}

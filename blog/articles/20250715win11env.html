@@ -1,0 +1,111 @@
+<p>先前那台笔记本先后经历过C、Python、SQL、R的摧残，外加非常不好的操作习惯使得环境变量乱成了一锅粥。新换了一台Win11笔记本，吸取教训，从头开始就要保持一个良好的开发环境！</p>
+<p>我们的目标是，用最小的代价，把脆弱的Windows系统和Python环境隔离开，以免再因为一系列骚操作搞炸path。</p>
+
+<h2 id="step1-install-wsl">第一步：开启"异世界之门"——安装WSL2</h2>
+<p>抛掉大脑直接在Windows上装Python固然省事，但是迟早又要重蹈覆辙。趁着系统还很纯粹，咱来点稍微麻烦点的。</p>
+
+<h3 id="enable-wsl-feature">启用WSL功能：</h3>
+<p>先去"控制面板" -> "程序" -> "启用或关闭 Windows 功能"，把"适用于 Linux 的 Windows 子系统 (Windows Subsystem for Linux)" 和 "虚拟机平台 (Virtual Machine Platform)" 这两个选项给勾上。不出意外的话，做好上述准备就可以重启电脑了。</p>
+
+<h3 id="install-linux-distro">安装Linux发行版：</h3>
+<p>打开Win11自带的MS Store，搜索Ubuntu，就选最新的LTS版本好了，比如Ubuntu 22.04 LTS。下好了启动它，会让用户设个用户名和密码，这个得记住了，弄丢了着实比较头疼。</p>
+<p>MS Store下载应用的一大槽点是没法指定位置，而有分盘的用户通常是抗拒直接安在C盘的。如果确实嫌弃，这里需要给从MS Store下载的Ubuntu做一次“搬家”。</p>
+<h4 id="move-wsl-distro">（可选）迁移WSL发行版位置</h4>
+<p>先打开PowerShell（不是WSL终端，是Windows的PowerShell），敲命令看看装的Linux发行版叫什么名字：</p>
+<pre><code class="language-powershell">wsl -l -v</code></pre>
+<p>它会列出来，比如叫 Ubuntu 或者 Ubuntu-22.04 之类的，记下这个名字。以它叫Ubuntu为例(有需要请替换成上一步看到的名字)，我们想把它放到D盘一个叫 MyLinuxStuff 的文件夹里。
+  先在D盘建好这个文件夹。然后在PowerShell里敲：</p>
+<pre><code class="language-powershell">wsl --export Ubuntu D:\MyLinuxStuff\ubuntu_backup.tar</code></pre>
+<p>这个过程可能要花点时间，具体取决于我们塞了多少东西进去，急急急急急是不彳亍的。</p>
+
+<p>上述操作完成以后就可以让Ubuntu和C盘Say Goodbye了。把下面命令中的Ubuntu换成刚刚查看的发行版名称，这一步操作会把原先的Ubuntu注销掉，务必确保上一步的导出成功完成后再运行。</p>
+<pre><code class="language-powershell">wsl --unregister Ubuntu</code></pre>
+<p>现在把它请到D盘的新家去。如果让它住在 D:\MyLinuxStuff\Ubuntu 这个文件夹里 (这个文件夹它会自动创建，但上一级的 MyLinuxStuff 你得自己先建好)：</p>
+<pre><code class="language-powershell">wsl --import Ubuntu D:\MyLinuxStuff\Ubuntu D:\MyLinuxStuff\ubuntu_backup.tar --version 2</code></pre>
+<p>这里有三个参数：</p>
+<ul>
+  <li>第一个 Ubuntu：是我们希望以后这个Linux发行版显示的名字，可以和原来一样。</li>
+  <li>第二个 D:\MyLinuxStuff\Ubuntu：是我们希望它实际存放虚拟磁盘文件的新文件夹路径。</li>
+  <li>第三个 D:\MyLinuxStuff\ubuntu_backup.tar：是刚才导出的那个备份文件。</li>
+  <li>“--version 2”确保它是WSL2。</li>
+</ul>
+<p>搞定之后，Ubuntu就到D盘了，以后启动也会从新位置加载。</p>
+
+<h3 id="upgrade-to-wsl2">升级到WSL2 (如果需要的话)：</h3>
+<p>打开PowerShell (记得用管理员权限，否则等弹窗糊脸)，敲：</p>
+<pre><code class="language-powershell">wsl --set-default-version 2</code></pre>
+<p>如果它叫唤说要“更新内核”，那就去微软官网搜"WSL2 Linux 内核更新包"下载安装一下。</p>
+
+<h2 id="step2-vscode-connect-wsl">第二步：VS Code"魂穿"到Linux</h2>
+<p>我们是VS Code忠实拥簇，那就得让它也得跟着进到Linux里才行。</p>
+<ol>
+    <li>在Windows上，打开VS Code。</li>
+    <li>去扩展商店，搜"WSL" (Remote - WSL)，微软官方出的那个，安装。</li>
+    <li>装好之后左下角会多个绿色/蓝色/随便什么看你的主题配色的小图标。点击然后选"Connect to WSL"或者"New WSL Window using Distro..."，选刚装的Ubuntu。</li>
+</ol>
+<p>这样VS Code就能直接在Linux环境里干活了！</p>
+
+<h2 id="step3-conda-management">第三步：Python环境交给Conda来管教</h2>
+<p>直接在Linux里用系统Python也不是不行，但为了避免未来的麻烦，还是用Conda来管理Python环境和各种乱七八糟的包吧，尤其是要搞数据分析和深度学习，环境隔离还是很有必要的。</p>
+
+<h3 id="install-miniconda">在WSL (Ubuntu) 终端里安装Miniconda：</h3>
+<p>Miniconda小巧玲珑，不像Anaconda那么臃肿，适合折腾。打开WSL终端 (可以直接在VS Code里开一个)，然后：</p>
+<pre><code class="language-bash">wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh</code></pre>
+<p>要是提示wget命令找不到，那可能需要先`sudo apt update && sudo apt install wget -y`。</p>
+<p>安装过程中，终端会弹出一堆问题，基本上回车或者输入yes就行，看到许可协议就按q跳过阅读（应该也不会看罢）。</p>
+<p>比较关键的一步：当提示安装路径时，默认一般是/home/[username]/miniconda3，直接回车即可。最后会问要不要初始化Conda（Do you wish the installer to initialize Miniconda3 by running conda init? [yes|no]），
+  务必选yes，回车。装完之后关掉现在这个VS Code的WSL终端，再重新打开一个新的（在VS Code里点左下角绿色图标，选“New WSL Window”或者直接在当前窗口开新终端）。
+  这样conda命令才能被正确识别。</p>
+
+<h3 id="create-conda-env">创建并激活环境</h3>
+<p>现在终端提示符前面应该多了个 (base) 之类的字样，说明Conda已经准备好被使唤了，而我们自然也不能直接在 (base) 环境里乱装东西——不同的任务创建独立的环境。</p>
+<p>以搞数据分析为例，建一个叫 data_env 的环境。Python版本用个新点的3.12：</p>
+<pre><code class="language-bash">conda create -n data_env python=3.12 -y
+conda activate data_env</code></pre>
+<p>-n 后面是环境名字，python= 后面是版本号，最后的 -y 是自动同意。成功之后，终端提示符前面的 (base) 就会变成 (data_env) 了。</p>
+
+<p>进入了 data_env 之后就可以往里面包了，比如Numpy、Pandas、Matplotlib还有JupyterLab之类。用 pip install 即可~</p>
+<pre><code class="language-bash">pip install numpy pandas matplotlib seaborn scikit-learn jupyterlab notebook</code></pre>
+
+<p>深度学习环境 (比如叫 dl_env):</p>
+<pre><code class="language-bash">conda create -n dl_env python=3.11
+conda activate dl_env
+# 安装PyTorch或者TensorFlow；
+# PyTorch (去官网看最新命令，如果有NVIDIA显卡的话注意CUDA版本)；
+# pip install torch torchvision torchaudio
+# TensorFlow (同样，去官网看):
+# pip install tensorflow</code></pre>
+<p>深度学习框架的安装有时候挺麻烦的，特别是CUDA。</p>
+
+<h3 id="vscode-select-interpreter">向VS Code宣告主权</h3>
+<p>VS Code可能还没有意识到发生了什么，我们得明确告诉它用哪个玩蛇解释器：</p>
+<ol>
+  <li>在VS Code里，按 Ctrl+Shift+P (Windows/Linux) 或者 Cmd+Shift+P (Mac应该是这样，虽然我们都是基于Windows操作的)，打开命令面板。</li>
+  <li>输入: `Python: Select Interpreter`。</li>
+  <li>列表里能看到一个指向 ~/miniconda3/envs/data_env/bin/python (或者类似路径) 的选项，选它就完了。</li>
+</ol>
+<p>这样VS Code就知道去哪里的Python和那些库了。</p>
+
+<h2 id="step4-sql-setup">第四步：还有SQL？</h2>
+
+<h3 id="sqlite-option">SQLite (小打小闹)：</h3>
+<p>最简单的，Python自带sqlite3库，直接在Conda环境里就能用，不需要额外安装数据库服务器，适合快速上手。</p>
+
+<h3 id="docker-option">Docker大法 (专业点)：</h3>
+<p>如果想用正经的数据库，如PostgreSQL或MySQL，又不想污染WSL环境，那就用Docker。</p>
+<ol>
+    <li>先在Windows上安装 Docker Desktop，记得在设置里开启WSL2的集成。</li>
+    <li>在WSL终端里用docker命令，比如跑一个PostgreSQL：</li>
+</ol>
+<pre><code class="language-bash">docker run --name my_postgres -e POSTGRES_PASSWORD=xxxxxxxx -p 5432:5432 -d postgres</code></pre>
+<p>这样就有个数据库服务器在后台跑着了。</p>
+
+<h3 id="vscode-sql-tools">VS Code的SQL工具：</h3>
+<p>VS Code里也有很多好用的SQL扩展，比如"SQLTools"或者"PostgreSQL (Microsoft)"之类的，。连上用Docker跑的数据库，就可以在VS Code里写SQL了，方便得很。</p>
+
+<h2 id="step5-environment-variables">第五步：关底BOSS·环境变量</h2>
+<p>既然用了WSL，环境变量就好办多了。通常是编辑 ~/.bashrc (如果用bash) 或者 ~/.zshrc (如果用zsh)。</p>
+<p>比如：</p>
+<pre><code class="language-bash">echo 'export MY_SECRET_KEY="xxxxxxxx"' >> ~/.bashrc
+source ~/.bashrc</code></pre>

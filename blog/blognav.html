@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微光博客</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body data-theme="dark"> <main class="blog-container">
+        <header>
+            <h1>微光博客</h1>
+            <p>记录思考、分享技术、沉淀项目</p>
+        </header>
+
+        <nav class="category-filters" id="category-filters">
+            </nav>
+
+        <section class="article-grid" id="article-list">
+            </section>
+    </main>
+
+    <script>
+        // /blog/assets/js/theme.js 的内容
+        // 作用：保持 iframe 的主题与父窗口 ShimmerOS 一致
+        class ThemeSync {
+            constructor() {
+                this.iframeBody = document.body;
+                this.parentBody = window.parent.document.body;
+                this.init();
+            }
+            
+            syncTheme() {
+                const currentTheme = this.parentBody.getAttribute('data-theme') || 'dark';
+                this.iframeBody.setAttribute('data-theme', currentTheme);
+
+                // 同时，将父窗口的 --primary-accent 同步过来
+                const accentColor = window.parent.document.documentElement.style.getPropertyValue('--primary-accent');
+                if (accentColor) {
+                    document.documentElement.style.setProperty('--primary-accent', accentColor);
+                }
+            }
+        
+            init() {
+                // 1. 初始同步
+                this.syncTheme();
+        
+                // 2. 监听父窗口主题变化
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach(mutation => {
+                        if (mutation.type === 'attributes' && (mutation.attributeName === 'data-theme' || mutation.attributeName === 'style')) {
+                            this.syncTheme();
+                        }
+                    });
+                });
+        
+                observer.observe(this.parentBody, { attributes: true });
+                // 也要监听父窗口的 <html> 元素，因为 accent-color 是设置在那里的
+                observer.observe(window.parent.document.documentElement, { attributes: true, attributeFilter: ['style'] });
+            }
+        }
+        
+        // 启动主题同步
+        new ThemeSync();
+    </script>
+    
+    <script>
+        // /blog/assets/js/blognav.js 的内容 (为方便整合，先写在这里)
+        document.addEventListener('DOMContentLoaded', () => {
+            const filtersContainer = document.getElementById('category-filters');
+            const listContainer = document.getElementById('article-list');
+        
+            let allArticles = [];
+            let allCategories = [];
+        
+            async function fetchData() {
+                try {
+                    const [articlesRes, categoriesRes] = await Promise.all([
+                        fetch('data/articles.json'),
+                        fetch('data/categories.json')
+                    ]);
+                    allArticles = await articlesRes.json();
+                    allCategories = await categoriesRes.json();
+        
+                    // 按日期降序排序文章
+                    allArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    
+                    renderCategories();
+                    renderArticles(); // 默认显示全部
+                } catch (error) {
+                    console.error("加载博客数据失败:", error);
+                    listContainer.innerHTML = "<p>无法加载文章列表，请检查控制台信息。</p>";
+                }
+            }
+        
+            function renderCategories() {
+                filtersContainer.innerHTML = allCategories.map(cat => `
+                    <button class="category-button ${cat.id === 'all' ? 'active' : ''}" data-category="${cat.id}">
+                        ${cat.name}
+                    </button>
+                `).join('');
+        
+                // 添加事件监听
+                filtersContainer.querySelectorAll('.category-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        // 更新按钮激活状态
+                        filtersContainer.querySelector('.active').classList.remove('active');
+                        button.classList.add('active');
+                        // 渲染对应分类的文章
+                        renderArticles(button.dataset.category);
+                    });
+                });
+            }
+        
+            function renderArticles(categoryFilter = 'all') {
+                const filteredArticles = categoryFilter === 'all' 
+                    ? allArticles 
+                    : allArticles.filter(article => article.category === categoryFilter);
+        
+                if (filteredArticles.length === 0) {
+                    listContainer.innerHTML = '<p style="text-align: center; color: var(--text-medium);">该分类下暂无文章。</p>';
+                    return;
+                }
+
+                listContainer.innerHTML = filteredArticles.map(article => `
+                    <a href="article.html?id=${article.id}" class="article-card">
+                        <h2>${article.title}</h2>
+                        <div class="article-meta">
+                            <span>📅 ${article.date}</span>
+                        </div>
+                        <p class="article-summary">${article.summary}</p>
+                        <div class="article-tags">
+                            ${article.tags.map(tag => `<span># ${tag}</span>`).join('')}
+                        </div>
+                    </a>
+                `).join('');
+            }
+        
+            fetchData();
+        });
+    </script>
+
+</body>
+</html>
