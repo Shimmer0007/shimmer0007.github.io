@@ -400,9 +400,8 @@ document.addEventListener('DOMContentLoaded', () => {
         win.style.zIndex = maxZIndex;
         win.classList.add('active');
         activeWindow = win;
-        // Modified to focus the hidden input in terminal
         if (win.id === 'terminal-window') {
-            win.querySelector('#hidden-terminal-input').focus();
+            document.getElementById('hidden-terminal-input').focus();
         }
     }
 
@@ -411,9 +410,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (win) {
             if (win.style.display !== 'flex') {
                 win.style.display = 'flex';
+                // 仅在首次打开时重置内容
                 if (windowId === 'terminal-window') {
                     const output = win.querySelector('#terminal-output');
-                    output.innerHTML = 'ShimmerOS [Version 1.5.0]\n(c) 2025 Shimmer. All rights reserved.\nType "help" for a list of commands.\n';
+                    output.innerHTML = 'ShimmerOS [Version 2.0.0]\n(c) 2025 Shimmer. All rights reserved.\n\n<span style="color: var(--primary-accent);">Welcome to the new shell!</span>\nType "help" for a list of commands.\n';
                 }
             }
             activateWindow(win);
@@ -426,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const startDrag = (e) => {
             if (e.target.closest('.control-button') || win.closest('.no-drag')) return;
-            if (window.innerWidth <= 768) return; // Disable drag on mobile
+            if (window.innerWidth <= 768) return;
             e.preventDefault();
             activateWindow(win);
             
@@ -465,7 +465,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     win.style.display = 'none';
                     win.style.animation = 'open-window 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
-                    // Reset project browser view if closing it
                     if (win.id === 'project-window') {
                         document.getElementById('project-list-view').style.display = 'block';
                         document.getElementById('project-detail-view').style.display = 'none';
@@ -488,23 +487,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const showContextMenu = (e, targetIcon) => {
         e.preventDefault();
         hideContextMenu();
-        
         const windowId = targetIcon ? targetIcon.getAttribute('data-window-id') : null;
         let menuItems = '';
-
         if (windowId) {
             menuItems = `<div class="context-menu-item" data-action="open" data-window-id="${windowId}">打开</div>`;
         } else {
             menuItems = `<div class="context-menu-item" data-action="settings">显示设置</div>`;
         }
         contextMenu.innerHTML = menuItems;
-        
         const posX = e.touches ? e.touches[0].clientX : e.clientX;
         const posY = e.touches ? e.touches[0].clientY : e.clientY;
         contextMenu.style.left = `${posX}px`;
         contextMenu.style.top = `${posY}px`;
         contextMenu.style.display = 'block';
-
         document.addEventListener('click', hideContextMenu, { once: true });
     };
 
@@ -515,11 +510,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (target.matches('.context-menu-item')) {
             const action = target.dataset.action;
             const windowId = target.dataset.windowId;
-            if (action === 'open' && windowId) {
-                openOrActivateWindow(windowId);
-            } else if (action === 'settings') {
-                openOrActivateWindow('settings-window');
-            }
+            if (action === 'open' && windowId) openOrActivateWindow(windowId);
+            else if (action === 'settings') openOrActivateWindow('settings-window');
             hideContextMenu();
         }
     });
@@ -547,15 +539,37 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', () => openOrActivateWindow(button.getAttribute('data-window-id')));
     });
 
-    // --- Interactive Terminal (MODIFIED FOR MOBILE & SUDO) ---
+    // --- Enhanced Terminal ---
     const terminalBody = document.getElementById('terminal-body');
     const terminalOutput = document.getElementById('terminal-output');
-    const terminalInput = document.getElementById('terminal-input'); // The visible <span>
-    const hiddenInput = document.getElementById('hidden-terminal-input'); // The hidden <input>
+    const terminalInputDisplay = document.getElementById('terminal-input');
+    const hiddenInput = document.getElementById('hidden-terminal-input');
+
+    const formatHelp = (cmd, desc) => `  <span style="color: var(--primary-accent);">${cmd.padEnd(12, ' ')}</span>- ${desc}`;
 
     const commands = {
-        help: () => `Available commands:\n  help      - Shows this help message\n  ls        - Lists all desktop apps\n  open <app>- Opens an application (e.g., open blog)\n  date      - Displays the current date and time\n  about     - Shows the player profile\n  clear     - Clears the terminal screen\n  reboot    - Reboots the system`,
-        ls: () => 'Desktop Items:\n' + [...document.querySelectorAll('.desktop-icon .icon-label')].map(i => `  - ${i.textContent}`).join('\n'),
+        help: () => `Available commands:\n` +
+            `${formatHelp('help', 'Shows this help message')}\n` +
+            `${formatHelp('ls [-l]', 'Lists all desktop apps. Use -l for details.')}\n` +
+            `${formatHelp('open <app>', 'Opens an application (e.g., open blog)')}\n` +
+            `${formatHelp('theme <dark|light>', 'Changes the OS theme')}\n`+
+            `${formatHelp('accent <color>', 'Changes accent color (blue, purple, red, black, gold)')}\n`+
+            `${formatHelp('sysinfo', 'Displays system information')}\n`+
+            `${formatHelp('date', 'Displays the current date and time')}\n` +
+            `${formatHelp('contact', 'Shows contact information')}\n` +
+            `${formatHelp('clear', 'Clears the terminal screen')}\n` +
+            `${formatHelp('reboot', 'Reboots the system')}`,
+        ls: (args) => {
+            const icons = [...document.querySelectorAll('.desktop-icon')];
+            if (args[0] === '-l') {
+                return 'Desktop Items (Detailed):\n' + icons.map(i => {
+                    const label = i.querySelector('.icon-label').textContent.padEnd(12, ' ');
+                    const id = i.dataset.windowId;
+                    return `  - ${label} <span style="color: var(--text-medium);">(id: ${id})</span>`;
+                }).join('\n');
+            }
+            return 'Desktop Items:\n' + icons.map(i => `  - ${i.querySelector('.icon-label').textContent}`).join('\n');
+        },
         open: (args) => {
             const appName = args[0];
             if (!appName) return 'Usage: open <app_name>';
@@ -568,46 +582,94 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return `Error: Application "${appName}" not found.`;
         },
-        date: () => new Date().toLocaleString('ja-JP'),
-        about: () => `-- Player Profile --\n${document.querySelector('#about-window .window-body').innerText.trim()}`,
+        date: () => new Date().toLocaleString('zh-CN', { dateStyle: 'full', timeStyle: 'long' }),
+        sysinfo: () => {
+            const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-accent').trim();
+            return `
+  <span style="color: ${accentColor}; font-weight: bold;">ShimmerOS v2.0.0</span>
+  -------------------
+  <span style="color: var(--text-medium);">Host:</span>     Shimmer's Digital Garden
+  <span style="color: var(--text-medium);">Kernel:</span>   5.4.0-custom-js
+  <span style="color: var(--text-medium);">Uptime:</span>   ${Math.floor(performance.now() / 60000)} minutes
+  <span style="color: var(--text-medium);">Shell:</span>    ShimmerCMD
+  <span style="color: var(--text-medium);">Terminal:</span>   Hyper-Web-Terminal
+  <span style="color: var(--text-medium);">CPU:</span>      Imagination @ 2.5GHz
+  <span style="color: var(--text-medium);">Memory:</span>   128MB / 256MB
+            `;
+        },
+        contact: () => `
+  <span style="color: var(--primary-accent);">Contact Me:</span>
+  -------------------
+  Email:   <a href="mailto:xuanmi777@outlook.com" style="color: var(--text-light);">xuanmi777@outlook.com</a>
+  GitHub:  <a href="https://github.com/shimmer0007" target="_blank" style="color: var(--text-light);">github.com/shimmer0007</a>
+        `,
+        theme: (args) => {
+            const theme = args[0];
+            if (theme === 'dark' || theme === 'light') {
+                document.body.dataset.theme = theme;
+                document.querySelector(`.theme-button.active`).classList.remove('active');
+                document.querySelector(`.theme-button[data-theme=${theme}]`).classList.add('active');
+                return `Theme changed to ${theme}.`;
+            }
+            return 'Usage: theme <dark|light>';
+        },
+        accent: (args) => {
+            const colorName = args[0]?.toLowerCase();
+            const colorMap = {
+                blue: '#007aff',
+                purple: '#7b5ea7',
+                red: '#c82a2a',
+                black: '#070707',
+                gold: '#fff133'
+            };
+            if(colorMap[colorName]){
+                document.documentElement.style.setProperty('--primary-accent', colorMap[colorName]);
+                document.querySelector('.color-swatch.active')?.classList.remove('active');
+                document.querySelector(`.color-swatch[data-color='${colorMap[colorName]}']`)?.classList.add('active');
+                return `Accent color changed to ${colorName}.`;
+            }
+            return 'Usage: accent <blue|purple|red|black|gold>';
+        },
         clear: () => { terminalOutput.innerHTML = ''; return ''; },
         reboot: () => { window.location.reload(); return 'Rebooting system...'; }
     };
-
-    // When clicking the terminal, focus the hidden input to bring up the keyboard
-    terminalBody.addEventListener('click', () => {
-        hiddenInput.focus();
-    });
-
-    // Sync the hidden input with the visible span as user types
-    hiddenInput.addEventListener('input', () => {
-        terminalInput.textContent = hiddenInput.value;
-    });
+    
+    terminalBody.addEventListener('click', () => hiddenInput.focus());
+    hiddenInput.addEventListener('input', () => terminalInputDisplay.textContent = hiddenInput.value);
 
     hiddenInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
             const fullCommand = hiddenInput.value;
-            const [command, ...args] = fullCommand.trim().split(' ').filter(Boolean);
+            const [command, ...args] = fullCommand.trim().split(/\s+/);
             
             terminalOutput.innerHTML += `\n<span class="terminal-prompt"></span>${fullCommand}`;
             
-            // --- SUDO EASTER EGG (MODIFIED) ---
-            if (command && command.toLowerCase() === 'sudo') {
-                terminalOutput.innerHTML += `\nAccessing superuser shell... stand by.`;
-                // Redirect to fake update screen in a new tab
-                window.open('https://fakeupdate.net/win10ue/', '_blank');
+            if (fullCommand.toLowerCase().trim() === 'sudo rm -rf /') {
+                terminalOutput.innerHTML += `\n<span style="color: var(--secondary-accent);">ARE YOU SURE? This action cannot be undone. (y/n)</span>`;
+                hiddenInput.dataset.confirmingSudo = 'true';
+            } else if (hiddenInput.dataset.confirmingSudo === 'true') {
+                if(fullCommand.toLowerCase().trim() === 'y'){
+                    window.open('what/yx.html', '_blank');
+                    terminalOutput.innerHTML += `\nSystem integrity compromised... Initiating fail-safe...`;
+                } else {
+                    terminalOutput.innerHTML += `\nAction aborted.`;
+                }
+                delete hiddenInput.dataset.confirmingSudo;
             } else if (command) {
-                const response = commands[command] ? commands[command](args) : `Command not found: ${command}`;
+                const func = commands[command.toLowerCase()];
+                const response = func ? func(args) : `Command not found: ${command}. Type "help" for a list.`;
                 if(response) terminalOutput.innerHTML += `\n${response}`;
             }
             
             hiddenInput.value = '';
-            terminalInput.textContent = '';
+            terminalInputDisplay.textContent = '';
             terminalBody.scrollTop = terminalBody.scrollHeight;
-        } else if (e.ctrlKey && e.key.toLowerCase() === 'c') {
-            e.preventDefault();
-            e.stopPropagation();
+        } else if (e.key === 'c' && e.ctrlKey) {
+             hiddenInput.value = '';
+             terminalInputDisplay.textContent = '';
+             terminalOutput.innerHTML += `\n<span class="terminal-prompt"></span>`;
+             delete hiddenInput.dataset.confirmingSudo;
         }
     });
     
