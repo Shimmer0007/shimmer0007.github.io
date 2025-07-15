@@ -640,36 +640,53 @@ document.addEventListener('DOMContentLoaded', () => {
     hiddenInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
+            
             const fullCommand = hiddenInput.value;
             const [command, ...args] = fullCommand.trim().split(/\s+/);
-            
+            const lowerFullCommand = fullCommand.toLowerCase().trim();
+
+            // 在终端显示输入的命令
             terminalOutput.innerHTML += `\n<span class="terminal-prompt"></span>${fullCommand}`;
             
-            if (fullCommand.toLowerCase().trim() === 'sudo rm -rf /') {
-                terminalOutput.innerHTML += `\n<span style="color: var(--secondary-accent);">ARE YOU SURE? This action cannot be undone. (y/n)</span>`;
-                hiddenInput.dataset.confirmingSudo = 'true';
-            } else if (hiddenInput.dataset.confirmingSudo === 'true') {
-                if(fullCommand.toLowerCase().trim() === 'y'){
-                    window.open('what/yx.html', '_blank');
-                    terminalOutput.innerHTML += `\nSystem integrity compromised... Initiating fail-safe...`;
-                } else {
-                    terminalOutput.innerHTML += `\nAction aborted.`;
-                }
-                delete hiddenInput.dataset.confirmingSudo;
+            // --- 最终版 Sudo 彩蛋逻辑 ---
+
+            if (lowerFullCommand.includes('sudo rm')) {
+                // 1. 只要包含 "sudo rm"，就立即触发跳转
+                terminalOutput.innerHTML += `\n<span style="color: var(--secondary-accent);">Critical command detected. System override initiated...</span>`;
+                
+                // 跳转到您指定的 upgrade 页面
+                // 使用相对路径 'what/upgrade.html' 更为稳妥
+                window.open('what/upgrade.html', '_blank');
+
+            } else if (command && command.toLowerCase() === 'sudo') {
+                // 2. 其他不含 "rm" 的 "sudo" 命令，触发您原来的随机回复
+                const sudoResponses = [
+                    "User is not in the sudoers file. This incident will be reported.",
+                    "权限不足。检测到越权操作，ShimmerOS觉得你有点可爱并驳回了你的请求。",
+                    "嘿，朋友！这只是一个用HTML和JS做的个人主页，不是真正的Linux。但你的探索精神值得鼓励！",
+                    "[SECURITY ALERT] Unauthorized privilege escalation attempt detected. System integrity is safe."
+                ];
+                const response = sudoResponses[Math.floor(Math.random() * sudoResponses.length)];
+                terminalOutput.innerHTML += `\n${response}`;
+
             } else if (command) {
+                // 3. 处理所有其他常规命令
                 const func = commands[command.toLowerCase()];
                 const response = func ? func(args) : `Command not found: ${command}. Type "help" for a list.`;
                 if(response) terminalOutput.innerHTML += `\n${response}`;
             }
             
+            // 清空输入并滚动到底部
             hiddenInput.value = '';
             terminalInputDisplay.textContent = '';
             terminalBody.scrollTop = terminalBody.scrollHeight;
+
         } else if (e.key === 'c' && e.ctrlKey) {
+             // 允许 Ctrl+C 中断输入
+             e.preventDefault();
              hiddenInput.value = '';
              terminalInputDisplay.textContent = '';
              terminalOutput.innerHTML += `\n<span class="terminal-prompt"></span>`;
-             delete hiddenInput.dataset.confirmingSudo;
         }
     });
     
