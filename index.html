@@ -274,7 +274,7 @@
         <div class="window-body" style="display:flex; align-items:center; justify-content:center;"><div id="clock-widget">--:--:--</div></div>
     </div>
 
-    <div id="blog-window" class="window" style="top: 15%; left: 20%; width: 60%; height: 70%;"><div class="title-bar"><span>微光博客 (Blog)</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div><div class="window-body" style="padding:0; overflow:hidden;"><iframe src="blog/blognav.html" style="width:100%; height:100%; border:0;"></iframe></div></div>
+    <div id="blog-window" class="window" style="top: 15%; left: 14%; width: 82%; height: 70%;"><div class="title-bar"><span>微光博客 (Blog)</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div><div class="window-body" style="padding:0; overflow:hidden;"><iframe src="blog/blognav.html" style="width:100%; height:100%; border:0;"></iframe></div></div>
     <div id="notes-window" class="window" style="top: 20%; left: 25%; width: 60%; height: 70%;"><div class="title-bar"><span>课业笔记 (Notes)</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div><div class="window-body" style="padding:0; overflow:hidden;"><iframe src="note/notenav.html" style="width:100%; height:100%; border:0;"></iframe></div></div>
 
     <div id="project-window" class="window" style="top: 20%; left: 15%; width: 600px; height: 600px;">
@@ -707,23 +707,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 </ul>
             `
         },
-        'personal-os': {
-            name: 'Personal OS Homepage',
-            description: '您当前正在浏览的这个交互式个人主页。一个使用原生JS构建的仿操作系统界面。',
-            tags: ['JavaScript', 'HTML5', 'CSS3', 'UI/UX'],
+
+        'user-growth': {
+            name: '用户新增预测挑战赛 赛季3',
+            description: 'DW2025夏令营第一期-iFLYTEK 用户新增预测挑战赛',
+            tags: ['Python', '机器学习', '特征工程'],
             contentHTML: `
-                <p>一个使用原生JS、HTML和CSS构建的，模拟桌面操作系统的交互式个人主页，所有代码都在一个文件内。</p>
+                <p>预测用户新增行为的数据科学竞赛项目。</p>
                 <ul class="file-tree">
-                    <li><span class="file-icon">📄</span><strong>index.html</strong>
+                    <li><span class="file-icon">📁</span><strong>src</strong>
                         <ul class="file-tree">
-                             <li><span class="file-icon">🎨</span>style.css (Embedded)</li>
-                             <li><span class="file-icon">📜</span>script.js (Embedded)</li>
+                            <li><span class="file-icon">🐍</span>data_analysis.py</li>
+                            <li><span class="file-icon">🐍</span>feature_engineering.py</li>
+                            <li><span class="file-icon">🐍</span>model_training.py</li>
                         </ul>
                     </li>
-                    <li><span class="file-icon">📁</span><strong>assets</strong>
+                    <li><span class="file-icon">📁</span><strong>notebooks</strong>
                         <ul class="file-tree">
-                            <li><span class="file-icon">🖼️</span>(background-gradients)</li>
-                            <li><span class="file-icon">✒️</span>(google-fonts)</li>
+                            <li><span class="file-icon">📓</span>eda.ipynb</li>
                         </ul>
                     </li>
                 </ul>
