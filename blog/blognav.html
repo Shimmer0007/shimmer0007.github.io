@@ -1,962 +1,609 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>shimmer的小站 | 微光博客</title>
+    <title>微光博客 | ShimmerOS</title>
     <style>
+        /* 继承主系统的变量和字体 */
         :root {
-            --moon-white: #f5f7fa;
-            --slate-blue: #6a7ba2;
-            --amber-gold: #ffbf00;
-            --deep-night: #2d3748;
-            --twilight: #4a5568;
+            --primary-accent: #007aff;
+            --secondary-accent: #ff3b30;
+            --text-light: #f0f0f0;
+            --text-medium: #a0a0b0;
+            --text-dark: #1a1d24;
+            --bg-color: rgba(44, 48, 58, 0.6);
+            --card-bg: rgba(30, 33, 40, 0.7);
+            --border-color: rgba(255, 255, 255, 0.15);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --success-green: #34c759;
+            --border-radius-main: 12px;
+            --border-radius-small: 8px;
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --font-main: 'Manrope', 'Noto Sans SC', sans-serif;
         }
-        
-        * {
+
+        [data-theme="light"] {
+            --primary-accent: #007aff;
+            --text-light: #1d1d1f;
+            --text-medium: #6e6e73;
+            --text-dark: #f0f0f0;
+            --bg-color: rgba(255, 255, 255, 0.6);
+            --card-bg: rgba(235, 237, 240, 0.7);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.15);
+            --success-green: #28a745;
+            --input-bg: rgba(0, 0, 0, 0.05);
+        }
+
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', STHeiti, 'Microsoft YaHei', sans-serif;
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow: auto;
         }
-        
-        body {
-            background-color: var(--moon-white);
-            color: var(--deep-night);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* 头部样式 */
-        header {
-            background: linear-gradient(135deg, var(--slate-blue) 0%, var(--deep-night) 100%);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header-content {
-            position: relative;
-            z-index: 2;
-        }
-        
-        .header-title {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 300;
-            letter-spacing: 2px;
-        }
-        
-        .header-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.8;
-            font-weight: 300;
-        }
-        
-        /* 导航栏样式 */
-        nav {
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+
+        /* 博客导航栏 */
+        .blog-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
             z-index: 100;
         }
-        
-        .nav-container {
+
+        .blog-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0;
+            color: var(--primary-accent);
+        }
+
+        .blog-nav-links {
             display: flex;
-            justify-content: center;
-            padding: 1rem 0;
+            gap: 20px;
         }
-        
-        .nav-item {
-            position: relative;
-            padding: 0.5rem 1.2rem;
-            margin: 0 0.5rem;
-            font-size: 1.1rem;
-            color: var(--twilight);
+
+        .nav-link {
+            color: var(--text-medium);
             text-decoration: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
+            font-size: 0.95rem;
+            transition: color 0.2s;
         }
-        
-        .nav-item:before {
-            content: "";
-            position: absolute;
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-accent);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--input-bg);
+            border-radius: var(--border-radius-small);
+            padding: 8px 12px;
+            width: 200px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text-light);
             width: 100%;
-            height: 2px;
-            bottom: 0;
-            left: 0;
-            background-color: var(--amber-gold);
-            transform: scaleX(0);
-            transform-origin: bottom right;
-            transition: transform 0.3s ease;
+            font-family: var(--font-main);
+            outline: none;
         }
-        
-        .nav-item:hover {
-            color: var(--deep-night);
+
+        .search-box input::placeholder {
+            color: var(--text-medium);
         }
-        
-        .nav-item:hover:before {
-            transform: scaleX(1);
-            transform-origin: bottom left;
+
+        /* 博客内容区域 */
+        .blog-container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 30px;
         }
-        
-        .nav-item.active  {
-            color: var(--amber-gold);
+
+        /* 主内容区 */
+        .blog-main {
+            flex: 2;
+            min-width: 0;
         }
-        
-        .nav-item.active:before  {
-            transform: scaleX(1);
+
+        /* 侧边栏 */
+        .blog-sidebar {
+            flex: 1;
+            min-width: 0;
         }
-        
-        .nav-divider {
-            color: var(--slate-blue);
-            opacity: 0.3;
-            font-weight: 300;
-            align-self: center;
-        }
-        
-        /* 光效动画 */
-        .light-effect {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: var(--amber-gold);
-            filter: blur(2px);
-            pointer-events: none;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s, opacity 0.3s;
-            opacity: 0;
-            z-index: 1;
-        }
-        
-        .nav-item:hover .light-effect {
-            width: 100%;
-            height: 100%;
-            opacity: 0.1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-        
-        /* 内容区域 */
-        .main-content {
-            padding: 2rem 0;
-            min-height: 60vh;
-        }
-        
-        .section-title {
-            font-size: 1.8rem;
-            color: var(--slate-blue);
-            margin-bottom: 1.5rem;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .section-title:after {
-            content: "";
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 50%;
-            height: 2px;
-            background-color: var(--amber-gold);
-        }
-        
-        /* 星辉集样式 */
-        .star-article {
-            background-color: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+
+        /* 文章卡片 */
+        .article-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-main);
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px var(--shadow-color);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
         }
-        
-        .star-article:hover {
+
+        .article-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 25px var(--shadow-color);
+            border-color: var(--primary-accent);
         }
-        
+
+        .article-header {
+            margin-bottom: 15px;
+        }
+
         .article-title {
             font-size: 1.4rem;
-            color: var(--deep-night);
-            margin-bottom: 0.5rem;
+            margin: 0 0 10px 0;
+            color: var(--text-light);
         }
-        
+
+        .article-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+
         .article-meta {
-            color: var(--twilight);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
             display: flex;
             align-items: center;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: var(--text-medium);
         }
-        
-        .article-meta span {
-            margin-right: 1rem;
-        }
-        
-        .article-excerpt {
-            margin-bottom: 1rem;
-            color: var(--twilight);
-        }
-        
-        .read-more {
-            color: var(--amber-gold);
-            text-decoration: none;
-            font-weight: 500;
-            display: inline-flex;
+
+        .article-date, .article-category, .article-views {
+            display: flex;
             align-items: center;
+            gap: 5px;
         }
-        
-        .read-more:after {
-            content: "→";
-            margin-left: 5px;
-            transition: transform 0.3s ease;
+
+        .article-excerpt {
+            color: var(--text-medium);
+            line-height: 1.6;
+            margin-bottom: 15px;
         }
-        
-        .read-more:hover:after {
-            transform: translateX(3px);
+
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
         }
-        
-        /* 萤火录样式 */
-        .firefly-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
+
+        .article-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-        
-        .firefly-note {
-            background-color: white;
-            border-radius: 8px;
-            padding: 1rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: relative;
-            overflow: hidden;
+
+        .tag {
+            background: color-mix(in srgb, var(--primary-accent) 20%, transparent);
+            color: var(--primary-accent);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            text-decoration: none;
+            transition: background-color 0.2s;
         }
-        
-        .firefly-note:before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 3px;
-            height: 100%;
-            background-color: var(--amber-gold);
-        }
-        
-        .note-date {
-            font-size: 0.8rem;
-            color: var(--twilight);
-            margin-bottom: 0.5rem;
-        }
-        
-        .note-content {
-            font-size: 0.95rem;
-            line-height: 1.7;
-        }
-        
-        /* 棱镜台样式 */
-        .prism-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
-        
-        .gallery-item {
-            position: relative;
-            border-radius: 8px;
-            overflow: hidden;
-            aspect-ratio: 4/3;
-            transition: transform 0.3s ease;
-        }
-        
-        .gallery-item:hover {
-            transform: scale(1.03);
-        }
-        
-        .gallery-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: filter 0.3s ease;
-        }
-        
-        .gallery-item:hover .gallery-image {
-            filter: brightness(1.1);
-        }
-        
-        .gallery-caption {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+
+        .tag:hover {
+            background: var(--primary-accent);
             color: white;
-            padding: 1rem;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
         }
-        
-        .gallery-item:hover .gallery-caption {
-            transform: translateY(0);
+
+        .read-more {
+            color: var(--primary-accent);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
         }
-        
-        /* 灯语廊样式 */
-        .message-board {
-            background-color: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+
+        /* 侧边栏组件 */
+        .sidebar-widget {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-main);
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
         }
-        
-        .message {
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+
+        .widget-title {
+            font-size: 1.1rem;
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--primary-accent);
         }
-        
-        .message:last-child {
+
+        /* 分类列表 */
+        .category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .category-item {
+            margin-bottom: 8px;
+        }
+
+        .category-link {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-medium);
+            text-decoration: none;
+            padding: 8px 0;
+            transition: color 0.2s;
+        }
+
+        .category-link:hover {
+            color: var(--primary-accent);
+        }
+
+        .category-count {
+            background: var(--input-bg);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+
+        /* 热门文章 */
+        .popular-posts {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .popular-post {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .popular-post:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
             border-bottom: none;
         }
-        
-        .message-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.5rem;
+
+        .popular-post-img {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--border-radius-small);
+            object-fit: cover;
         }
-        
-        .message-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: var(--slate-blue);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-            font-weight: bold;
-        }
-        
-        .message-name {
-            font-weight: 500;
-            color: var(--deep-night);
-        }
-        
-        .message-time {
-            font-size: 0.8rem;
-            color: var(--twilight);
-            margin-left: auto;
-        }
-        
-        .message-content {
-            font-size: 0.95rem;
-            color: var(--twilight);
-            line-height: 1.7;
-        }
-        
-        .message-form {
-            margin-top: 2rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--deep-night);
-            font-weight: 500;
-        }
-        
-        .form-input {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 4px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: var(--slate-blue);
-        }
-        
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        
-        .submit-btn {
-            background-color: var(--slate-blue);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        
-        .submit-btn:hover {
-            background-color: var(--amber-gold);
-        }
-        
-        /* 溯光样式 */
-        .about-container {
-            display: flex;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .about-image {
-            flex: 0 0 250px;
-        }
-        
-        .about-image img {
-            width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .about-content {
+
+        .popular-post-content {
             flex: 1;
         }
-        
-        .about-title {
-            font-size: 1.8rem;
-            color: var(--slate-blue);
-            margin-bottom: 1rem;
+
+        .popular-post-title {
+            font-size: 0.9rem;
+            margin: 0 0 5px 0;
         }
-        
-        .about-text {
-            margin-bottom: 1.5rem;
-            color: var(--twilight);
-            line-height: 1.7;
+
+        .popular-post-title a {
+            color: var(--text-light);
+            text-decoration: none;
         }
-        
-        .about-social {
+
+        .popular-post-meta {
+            font-size: 0.75rem;
+            color: var(--text-medium);
+        }
+
+        /* 标签云 */
+        .tag-cloud {
             display: flex;
-            gap: 1rem;
+            flex-wrap: wrap;
+            gap: 8px;
         }
-        
-        .social-link {
+
+        .tag-cloud .tag {
+            font-size: 0.8rem;
+        }
+
+        /* 分页 */
+        .pagination {
             display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .page-link {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-color: var(--slate-blue);
-            color: white;
+            background: var(--input-bg);
+            color: var(--text-medium);
             text-decoration: none;
-            transition: background-color 0.3s ease;
+            transition: all 0.2s;
         }
-        
-        .social-link:hover {
-            background-color: var(--amber-gold);
-        }
-        
-        /* 拾光样式 */
-        .search-container {
-            display: flex;
-            margin-bottom: 2rem;
-        }
-        
-        .search-input {
-            flex: 1;
-            padding: 0.8rem;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-right: none;
-            border-radius: 4px 0 0 4px;
-            font-size: 1rem;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: var(--slate-blue);
-        }
-        
-        .search-btn {
-            background-color: var(--slate-blue);
+
+        .page-link:hover, .page-link.active {
+            background: var(--primary-accent);
             color: white;
-            border: none;
-            padding: 0 1.2rem;
-            border-radius: 0 4px 4px 0;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
         }
-        
-        .search-btn:hover {
-            background-color: var(--amber-gold);
-        }
-        
-        .tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        
-        .tag {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background-color: white;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 20px;
-            font-size: 0.9rem;
-            color: var(--twilight);
-            transition: all 0.3s ease;
-        }
-        
-        .tag:hover {
-            background-color: var(--slate-blue);
-            color: white;
-            transform: translateY(-2px);
-        }
-        
-        /* 页脚样式 */
-        footer {
-            background-color: var(--deep-night);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-            margin-top: 3rem;
-        }
-        
-        .footer-content {
-            opacity: 0.7;
-            font-size: 0.9rem;
-        }
-        
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin: 1rem 0;
-        }
-        
-        .footer-link {
-            color: white;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .footer-link:hover {
-            color: var(--amber-gold);
-        }
-        
+
         /* 响应式设计 */
         @media (max-width: 768px) {
-            .nav-container {
-                flex-wrap: wrap;
-                padding: 0.5rem;
-            }
-            
-            .nav-item {
-                font-size: 1rem;
-                padding: 0.5rem 0.8rem;
-                margin: 0.2rem;
-            }
-            
-            .about-container {
+            .blog-container {
                 flex-direction: column;
+                padding: 15px;
             }
             
-            .about-image {
-                flex: 0 0 auto;
-                margin-bottom: 1rem;
+            .blog-navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .blog-nav-links {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .article-title {
+                font-size: 1.2rem;
+            }
+            
+            .article-meta {
+                flex-wrap: wrap;
+                gap: 8px;
             }
         }
-        
-        /* 微光动画 */
-        .light-point {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background-color: var(--amber-gold);
-            border-radius: 50%;
-            filter: blur(1px);
-            opacity: 0.5;
-            animation: twinkle 2s infinite alternate;
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        @keyframes twinkle {
-            0% { opacity: 0.3; }
-            100% { opacity: 0.8; }
+
+        .article-card {
+            animation: fadeIn 0.5s ease forwards;
         }
+
+        .article-card:nth-child(1) { animation-delay: 0.1s; }
+        .article-card:nth-child(2) { animation-delay: 0.2s; }
+        .article-card:nth-child(3) { animation-delay: 0.3s; }
+        .article-card:nth-child(4) { animation-delay: 0.4s; }
+        .article-card:nth-child(5) { animation-delay: 0.5s; }
     </style>
 </head>
 <body>
-    <!-- 头部区域 -->
-    <header>
-        <div class="light-point" style="top: 20%; left: 15%; animation-delay: 0.2s;"></div>
-        <div class="light-point" style="top: 30%; left: 80%; animation-delay: 0.5s;"></div>
-        <div class="light-point" style="top: 70%; left: 25%; animation-delay: 0.7s;"></div>
-        <div class="light-point" style="top: 60%; left: 65%; animation-delay: 1s;"></div>
-        <div class="header-content">
-            <h1 class="header-title">微光博客</h1>
-            <p class="header-subtitle">有光的地方就会有影子，有影子的地方也必然有光。</p>
+    <!-- 博客导航栏 -->
+    <nav class="blog-navbar">
+        <h1 class="blog-title">微光博客</h1>
+        <div class="blog-nav-links">
+            <a href="#" class="nav-link active">首页</a>
+            <a href="#" class="nav-link">分类</a>
+            <a href="#" class="nav-link">归档</a>
+            <a href="#" class="nav-link">关于</a>
         </div>
-    </header>
-    
-    <!-- 导航栏 -->
-    <nav>
-        <div class="container nav-container">
-            <a href="#star" class="nav-item active" data-section="star">
-                星辉集 
-                <span class="light-effect"></span>
-            </a>
-            <span class="nav-divider">|</span>
-            <a href="#firefly" class="nav-item" data-section="firefly">
-                萤火录 
-                <span class="light-effect"></span>
-            </a>
-            <span class="nav-divider">|</span>
-            <a href="#prism" class="nav-item" data-section="prism">
-                棱镜台 
-                <span class="light-effect"></span>
-            </a>
-            <span class="nav-divider">|</span>
-            <a href="#lamp" class="nav-item" data-section="lamp">
-                灯语廊 
-                <span class="light-effect"></span>
-            </a>
-            <span class="nav-divider">|</span>
-            <a href="#about" class="nav-item" data-section="about">
-                溯光 
-                <span class="light-effect"></span>
-            </a>
-            <span class="nav-divider">|</span>
-            <a href="#search" class="nav-item" data-section="search">
-                拾光 
-                <span class="light-effect"></span>
-            </a>
+        <div class="search-box">
+            <input type="text" placeholder="搜索文章...">
         </div>
     </nav>
-    
-    <!-- 主要内容区域 -->
-    <div class="container main-content">
-        <!-- 星辉集 -->
-        <section id="star" class="content-section" style="display: block;">
-            <h2 class="section-title">星辉集</h2>
-            <div class="star-article">
-                <h3 class="article-title">在数字荒野中重建意义</h3>
-                <div class="article-meta">
-                    <span>发表于：2023年5月12日</span>
-                    <span>阅读时长：8分钟</span>
-                    <span>标签：数字生活、哲学</span>
+
+    <!-- 博客内容区域 -->
+    <div class="blog-container">
+        <!-- 主内容区 -->
+        <main class="blog-main">
+            <!-- 文章卡片1 -->
+            <article class="article-card">
+                <div class="article-header">
+                    <h2 class="article-title"><a href="#">统计机器学习与文本挖掘课程项目总结</a></h2>
+                    <div class="article-meta">
+                        <span class="article-date">📅 2025-06-15</span>
+                        <span class="article-category">🏷️ 数据科学</span>
+                        <span class="article-views">👁️ 256 阅读</span>
+                    </div>
                 </div>
                 <p class="article-excerpt">
-                    当我们的注意力被切割成像素级碎片，思考的时间厚度被压缩为即时反馈的薄片，数字原住民如何在信息的荒原上重建意义的坐标？本文尝试从媒介考古学的视角，考察从石刻到比特的意义载体重塑过程，并探讨在算法推荐时代保持思维完整性的可能性...
+                    本文总结了我在《统计机器学习与文本挖掘》课程中的项目经验，包括数据收集、预处理、情感分析和主题建模的全过程。项目聚焦银发经济领域的研究内容分析，探讨了如何从学术论文摘要中提取有价值的信息。
                 </p>
-                <a href="#" class="read-more">阅读全文</a>
-            </div>
-            
-            <div class="star-article">
-                <h3 class="article-title">沉默的语法：论留白在东西方诗歌中的不同表现</h3>
-                <div class="article-meta">
-                    <span>发表于：2023年4月28日</span>
-                    <span>阅读时长：12分钟</span>
-                    <span>标签：文学比较、美学</span>
+                <div class="article-footer">
+                    <div class="article-tags">
+                        <a href="#" class="tag">Python</a>
+                        <a href="#" class="tag">NLP</a>
+                        <a href="#" class="tag">文本挖掘</a>
+                    </div>
+                    <a href="#" class="read-more">阅读全文 →</a>
+                </div>
+            </article>
+
+            <!-- 文章卡片2 -->
+            <article class="article-card">
+                <div class="article-header">
+                    <h2 class="article-title"><a href="#">用户新增预测挑战赛技术复盘</a></h2>
+                    <div class="article-meta">
+                        <span class="article-date">📅 2025-05-28</span>
+                        <span class="article-category">🏷️ 机器学习</span>
+                        <span class="article-views">👁️ 189 阅读</span>
+                    </div>
                 </div>
                 <p class="article-excerpt">
-                    中国山水画的留白与俳句的"切字"，美国意象派的"意象并置"与德国表现主义的"语言沉默"，本文通过细读王维、松尾芭蕉、庞德和策兰的作品，分析沉默在诗歌中不仅是声音的缺席，更是一种积极的表达方式。当词语退场时，意义的星丛如何在空白处升起...
+                    参加DW2025夏令营第一期-iFLYTEK用户新增预测挑战赛的技术总结。详细介绍了特征工程的处理方法、模型选择与调优过程，以及在有限数据条件下提升模型性能的策略。
                 </p>
-                <a href="#" class="read-more">阅读全文</a>
-            </div>
-            
-            <div class="star-article">
-                <h3 class="article-title">记忆宫殿的数字化重构：当代记忆术的认知实验</h3>
-                <div class="article-meta">
-                    <span>发表于：2023年4月15日</span>
-                    <span>阅读时长：15分钟</span>
-                    <span>标签：认知科学、记忆术</span>
+                <div class="article-footer">
+                    <div class="article-tags">
+                        <a href="#" class="tag">机器学习</a>
+                        <a href="#" class="tag">特征工程</a>
+                        <a href="#" class="tag">竞赛</a>
+                    </div>
+                    <a href="#" class="read-more">阅读全文 →</a>
+                </div>
+            </article>
+
+            <!-- 文章卡片3 -->
+            <article class="article-card">
+                <div class="article-header">
+                    <h2 class="article-title"><a href="#">ShimmerOS 1.5开发笔记</a></h2>
+                    <div class="article-meta">
+                        <span class="article-date">📅 2025-04-12</span>
+                        <span class="article-category">🏷️ 前端开发</span>
+                        <span class="article-views">👁️ 342 阅读</span>
+                    </div>
                 </div>
                 <p class="article-excerpt">
-                    从古希腊西蒙尼戴斯的记忆宫殿到现代"记忆运动员"使用的定位法，人类一直在寻找扩展记忆容量的方法。本文将分享为期三个月的数字记忆实验：如何将传统记忆术与AR空间、脑机接口等现代技术结合，在虚拟空间中建造可无限扩展的记忆建筑群...
+                    记录ShimmerOS 1.5版本的开发过程，包括交互式终端模拟器的实现、窗口管理系统的优化，以及如何在前端项目中实现类似操作系统的用户体验。分享了几个关键的CSS技巧和JavaScript实现方案。
                 </p>
-                <a href="#" class="read-more">阅读全文</a>
+                <div class="article-footer">
+                    <div class="article-tags">
+                        <a href="#" class="tag">JavaScript</a>
+                        <a href="#" class="tag">CSS</a>
+                        <a href="#" class="tag">UI设计</a>
+                    </div>
+                    <a href="#" class="read-more">阅读全文 →</a>
+                </div>
+            </article>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <a href="#" class="page-link active">1</a>
+                <a href="#" class="page-link">2</a>
+                <a href="#" class="page-link">3</a>
+                <a href="#" class="page-link">→</a>
             </div>
-        </section>
-        
-        <!-- 萤火录 -->
-        <section id="firefly" class="content-section" style="display: none;">
-            <h2 class="section-title">萤火录</h2>
-            <div class="firefly-container">
-                <div class="firefly-note">
-                    <div class="note-date">2023.05.15 深夜</div>
-                    <p class="note-content">
-                        凌晨三点醒来，窗外有不知名的鸟在叫。想起博尔赫斯说盲人眼中的世界不是黑色，而是一片深蓝。失眠时的thought是否也有颜色？应该是一种介于灰紫与暗绿之间的色调，带着湿润的质感。
-                    </p>
-                </div>
-                
-                <div class="firefly-note">
-                    <div class="note-date">2023.05.10 咖啡馆</div>
-                    <p class="note-content">
-                        邻座两位女士的谈话片段飘进耳朵："他最后选择回到海边小镇当图书管理员..." 像是某部小说的开篇。人们常在不自知时成为彼此的叙事者，这就是为什么我总在公共场合写作。
-                    </p>
-                </div>
-                
-                <div class="firefly-note">
-                    <div class="note-date">2023.05.08 地铁上</div>
-                    <p class="note-content">
-                        穿红裙的女孩专注阅读《雪国》，指尖划过书页的样子像是在抚摸积雪。列车穿越隧道时，车窗映出她与书中世界重叠的倒影。
-                    </p>
-                </div>
-                
-                <div class="firefly-note">
-                    <div class="note-date">2023.05.05 雨后</div>
-                    <p class="note-content">
-                        在旧书店发现一本1978年的《天文爱好者》，扉页上有铅笔写的日期和天气："5月12日 晴"。四十五年前的星空记录，不知这位观测者是否还在仰望同一片天穹。
-                    </p>
-                </div>
-                
-                <div class="firefly-note">
-                    <div class="note-date">2023.04.30 公园长椅</div>
-                    <p class="note-content">
-                        小男孩用树枝在地上画迷宫，蚂蚁沿着凹槽行进。最原始的导航系统，没有GPS的文明如何理解空间？或许迷宫不是为了困住，而是为微小生命提供放大比例的宇宙模型。
-                    </p>
-                </div>
-                
-                <div class="firefly-note">
-                    <div class="note-date">2023.04.27 工作室</div>
-                    <p class="note-content">
-                        调试代码到凌晨，突然理解为什么程序员称修复bug为"debug"。错误就像夜行的昆虫被灯光吸引，而我们要做的不是消灭它们，而是理解其趋光性的本质。
-                    </p>
-                </div>
+        </main>
+
+        <!-- 侧边栏 -->
+        <aside class="blog-sidebar">
+            <!-- 关于我 -->
+            <div class="sidebar-widget">
+                <h3 class="widget-title">关于作者</h3>
+                <p style="color: var(--text-medium); line-height: 1.6;">
+                    数据科学与前端开发爱好者，喜欢探索技术与艺术的交汇点。记录学习笔记、项目经验和生活思考。
+                </p>
             </div>
-        </section>
-        
-        <!-- 棱镜台 -->
-        <section id="prism" class="content-section" style="display: none;">
-            <h2 class="section-title">棱镜台</h2>
-            <p>透过不同的介质，光会呈现出不同的色彩与形态。这里展示我的摄影、设计与代码作品。</p>
-            
-            <div class="prism-gallery">
-                <div class="gallery-item">
-                    <img src="https://source.unsplash.com/random/600x400/?photography,abstract"  alt="抽象摄影" class="gallery-image">
-                    <div class="gallery-caption">
-                        <strong>光的折射#12</strong> - 实验摄影系列 
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <img src="https://source.unsplash.com/random/600x400/?code,screen"  alt="代码截图" class="gallery-image">
-                    <div class="gallery-caption">
-                        <strong>粒子模拟器</strong> - WebGL实现 
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <img src="https://source.unsplash.com/random/600x400/?typography,design"  alt="字体设计" class="gallery-image">
-                    <div class="gallery-caption">
-                        <strong>微光体</strong> - 原创中文字体 
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <img src="https://source.unsplash.com/random/600x400/?data,visualization"  alt="数据可视化" class="gallery-image">
-                    <div class="gallery-caption">
-                        <strong>城市声纹图</strong> - 声音数据可视化 
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <img src="https://source.unsplash.com/random/600x400/?book,design"  alt="书籍设计" class="gallery-image">
-                    <div class="gallery-caption">
-                        <strong>《碎片集》</strong> - 书籍装帧设计 
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <img src="https://source.unsplash.com/random/600x400/?interface,design"  alt="UI设计" class="gallery-image">
-                    <div class="gallery-caption">
-                        <strong>阅读应用UI</strong> - 交互原型 
-                    </div>
-                </div>
+
+            <!-- 分类 -->
+            <div class="sidebar-widget">
+                <h3 class="widget-title">分类</h3>
+                <ul class="category-list">
+                    <li class="category-item">
+                        <a href="#" class="category-link">
+                            <span>数据科学</span>
+                            <span class="category-count">12</span>
+                        </a>
+                    </li>
+                    <li class="category-item">
+                        <a href="#" class="category-link">
+                            <span>前端开发</span>
+                            <span class="category-count">8</span>
+                        </a>
+                    </li>
+                    <li class="category-item">
+                        <a href="#" class="category-link">
+                            <span>学习笔记</span>
+                            <span class="category-count">15</span>
+                        </a>
+                    </li>
+                    <li class="category-item">
+                        <a href="#" class="category-link">
+                            <span>生活随笔</span>
+                            <span class="category-count">5</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
-        </section>
-        
-        <!-- 灯语廊 -->
-        <section id="lamp" class="content-section" style="display: none;">
-            <h2 class="section-title">灯语廊</h2>
-            <p>点亮一盏灯，传递你的思绪与回响。这里是读者交流的空间。</p>
-            
-            <div class="message-board">
-                <div class="message">
-                    <div class="message-header">
-                        <div class="message-avatar">L</div>
-                        <div class="message-name">Lumina</div>
-                        <div class="message-time">2023.05.14</div>
-                    </div>
-                    <div class="message-content">
-                        读完《在数字荒野中重建意义》很有共鸣。我在自己的数字花园实践中发现，建立私人化的信息过滤仪式比任何工具都重要。每周日的"无网络书写时间"已成为保留节目。
-                    </div>
-                </div>
-                
-                <div class="message">
-                    <div class="message-header">
-                        <div class="message-avatar">S</div>
-                        <div class="message-name">Stella</div>
-                        <div class="message-time">2023.05.10</div>
-                    </div>
-                    <div class="message-content">
-                        您的"萤火录"中关于男孩画迷宫的观察太美了！这让我想起卡尔维诺《看不见的城市》中马可波罗向忽必烈描述的那些城市。微观与宏观的对应关系总是令人着迷。
-                    </div>
-                </div>
-                
-                <div class="message">
-                    <div class="message-header">
-                        <div class="message-avatar">A</div>
-                        <div class="message-name">Albedo</div>
-                        <div class="message-time">2023.05.05</div>
-                    </div>
-                    <div class="message-content">
-                        棱镜台展示的数据可视化作品很有启发性。请问您使用什么工具生成城市声纹图？我想尝试将类似的理念应用到天气数据上。
-                    </div>
-                </div>
-                
-                <div class="message-form">
-                    <h3>留下你的印记</h3>
-                    <form>
-                        <div class="form-group">
-                            <label for="name" class="form-label">称呼</label>
-                            <input type="text" id="name" class="form-input" placeholder="可以是真名、昵称或代号">
+
+            <!-- 热门文章 -->
+            <div class="sidebar-widget">
+                <h3 class="widget-title">热门文章</h3>
+                <ul class="popular-posts">
+                    <li class="popular-post">
+                        <img src="https://via.placeholder.com/60" alt="文章缩略图" class="popular-post-img">
+                        <div class="popular-post-content">
+                            <h4 class="popular-post-title"><a href="#">如何高效学习数据科学</a></h4>
+                            <div class="popular-post-meta">2025-03-20 · 420阅读</div>
                         </div>
-                        <div class="form-group">
-                            <label for="message" class="form-label">留言内容</label>
-                            <textarea id="message" class="form-input form-textarea" placeholder="写下你想说的话..."></textarea>
+                    </li>
+                    <li class="popular-post">
+                        <img src="https://via.placeholder.com/60" alt="文章缩略图" class="popular-post-img">
+                        <div class="popular-post-content">
+                            <h4 class="popular-post-title"><a href="#">CSS玻璃拟态效果实现</a></h4>
+                            <div class="popular-post-meta">2025-02-15 · 380阅读</div>
                         </div>
-                        <button type="submit" class="submit-btn">点亮灯语</button>
-                    </form>
+                    </li>
+                    <li class="popular-post">
+                        <img src="https://via.placeholder.com/60" alt="文章缩略图" class="popular-post-img">
+                        <div class="popular-post-content">
+                            <h4 class="popular-post-title"><a href="#">Python异步编程入门</a></h4>
+                            <div class="popular-post-meta">2025-01-10 · 356阅读</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 标签云 -->
+            <div class="sidebar-widget">
+                <h3 class="widget-title">标签云</h3>
+                <div class="tag-cloud">
+                    <a href="#" class="tag">Python</a>
+                    <a href="#" class="tag">机器学习</a>
+                    <a href="#" class="tag">JavaScript</a>
+                    <a href="#" class="tag">CSS</a>
+                    <a href="#" class="tag">数据分析</a>
+                    <a href="#" class="tag">可视化</a>
+                    <a href="#" class="tag">前端</a>
+                    <a href="#" class="tag">算法</a>
                 </div>
             </div>
-        </section>
-        
-        <!-- 溯光 -->
-        <section id="about" class="content-section" style="display: none;">
-            <h2 class="section-title">溯光</h2>
-            <div class="about-container">
-                <div class="about-image">
-                    <img src="https://th.bing.com/th/id/OIP.4qE6UmzbSk0mCOn2uWMELAAAAA?w=149&h=166&c=7&r=0&o=5&pid=1.7"  alt="人先空着">
-                </div>
-                <div class="about-content">
-                    <h3 class="about-title">关于shimmer</h3>
-                    <p class="about-text">
-                        这里是Shimmer，一个披着理科生皮子的文科生。
-                    </p>
-                    <p class="about-text">
-                        我那存在主义哲学的语文老师说过，“有的人18岁就死了，80岁才埋。”上了两年学的我回去看老师，老师的评价是：眼里没光、面色沧桑。
-                        听上去是个鬼故事，但是单从黑眼圈日渐加深来看，眼里大概确是没光的。
-                    </p>
-                    <p class="about-text">
-                        Shimmer一词是苯人名字的天然音译，来自古英语中的scimerian，用来描述摇曳的、柔和的光芒。
-                        "微光博客"源于对微弱但持久的思想火种的珍视。希望不久后这里既有经过打磨的「星辉」长文，也有未经修饰的「萤火」片段。
-                    </p>
-                    
-                    <div class="about-social">
-                        <a href="#" class="social-link">0</a>
-                        <a href="#" class="social-link">0</a>
-                        <a href="#" class="social-link">0</a>
-                        <a href="#" class="social-link">7</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- 拾光 -->
-        <section id="search" class="content-section" style="display: none;">
-            <h2 class="section-title">拾光</h2>
-            <div class="search-container">
-                <input type="text" class="search-input" placeholder="在微光中寻找...">
-                <button class="search-btn">搜索</button>
-            </div>
-            
-            <h3>标签云</h3>
-            <div class="tags-container">
-                <span class="tag">数字人文</span>
-                <span class="tag">认知科学</span>
-                <span class="tag">实验写作</span>
-                <span class="tag">摄影</span>
-                <span class="tag">字体设计</span>
-                <span class="tag">数据可视化</span>
-                <span class="tag">城市研究</span>
-                <span class="tag">记忆术</span>
-                <span class="tag">文学批评</span>
-                <span class="tag">技术哲学</span>
-                <span class="tag">生活片段</span>
-                <span class="tag">书籍设计</span>
-                <span class="tag">交互叙事</span>
-                <span class="tag">诗歌</span>
-                <span class="tag">旅行笔记</span>
-            </div>
-        </section>
+        </aside>
     </div>
-    
-    <!-- 页脚 -->
-    <footer>
-        <div class="container">
-            <div class="footer-links">
-                <a href="#" class="footer-link">归档</a>
-                <a href="#" class="footer-link">订阅</a>
-                <a href="#" class="footer-link">版权说明</a>
-                <a href="#" class="footer-link">联系</a>
-            </div>
-            <div class="footer-content">
-                © 2025 微光博客 | 由Shimmer创建 | LUMIÈRE BLOGUE 
-            </div>
-        </div>
-    </footer>
-    
+
     <script>
-        // 导航交互 
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault(); 
-                
-                // 更新导航状态 
-                document.querySelectorAll('.nav-item').forEach(nav => {
-                    nav.classList.remove('active'); 
-                });
-                this.classList.add('active'); 
-                
-                // 隐藏所有内容区域，然后显示当前选中的
-                document.querySelectorAll('.content-section').forEach(section => {
-                    section.style.display = 'none';
-                });
-                const targetId = this.getAttribute('href').substring(1); 
-                document.getElementById(targetId).style.display = 'block';
-            });
-        });
-        
-        // 随机生成微光点 
-        function createLightPoints() {
-            const header = document.querySelector('header'); 
-            for (let i = 0; i < 8; i++) {
-                const light = document.createElement('div'); 
-                light.className = 'light-point';
-                light.style.top = `${Math.random() * 100}%`;
-                light.style.left = `${Math.random() * 100}%`;
-                light.style.animationDelay = `${Math.random() * 2}s`;
-                header.appendChild(light); 
+        // 继承父窗口的主题设置
+        document.addEventListener('DOMContentLoaded', () => {
+            // 从父窗口获取主题设置
+            const parentTheme = window.parent.document.body.dataset.theme;
+            if (parentTheme) {
+                document.body.dataset.theme = parentTheme;
             }
-        }
-        
-        // 初始化 
-        document.addEventListener('DOMContentLoaded', function() {
-            createLightPoints();
+
+            // 监听父窗口的主题变化
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'data-theme') {
+                        document.body.dataset.theme = window.parent.document.body.dataset.theme;
+                    }
+                });
+            });
+
+            observer.observe(window.parent.document.body, {
+                attributes: true,
+                attributeFilter: ['data-theme']
+            });
         });
     </script>
 </body>
