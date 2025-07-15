@@ -242,37 +242,44 @@
                 const params = new URLSearchParams(window.location.search);
                 const articleId = params.get('id');
 
+                // 如果URL中没有ID，跳转到404
                 if (!articleId) {
-                    contentEl.innerHTML = '<p>错误：未指定文章ID。</p>';
+                    window.location.href = '../404.html';
                     return;
                 }
-                
+    
                 try {
                     const allArticlesRes = await fetch('data/articles.json');
                     const allArticles = await allArticlesRes.json();
                     allArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
 
                     const articleData = allArticles.find(a => a.id === articleId);
-                    const articleIndex = allArticles.findIndex(a => a.id === articleId);
 
+                    // 如果在JSON数据中找不到对应的文章ID，跳转到404
                     if (!articleData) {
-                        contentEl.innerHTML = `<p>错误：找不到ID为 "${articleId}" 的文章。</p>`;
+                        window.location.href = '../404.html';
                         return;
                     }
 
                     const articleHtmlRes = await fetch(articleData.file);
+                    // 如果文章的html文件本身不存在，也跳转到404
+                    if (!articleHtmlRes.ok) {
+                        window.location.href = '../404.html';
+                        return;
+                    }
                     const articleHtml = await articleHtmlRes.text();
+        
                     contentEl.innerHTML = articleHtml;
-                    
+        
                     document.title = `${articleData.title} - 微光博客`;
                     titleEl.textContent = articleData.title;
                     metaEl.innerHTML = `<span>📅 ${articleData.date}</span>`;
 
-                    // *** 核心：在这里初始化修正后的TOC模块 ***
                     const toc = new TableOfContents('#article-content', '#toc-list', '#toc-progress-bar');
                     toc.build();
                     toc.initScrollSync();
 
+                    const articleIndex = allArticles.findIndex(a => a.id === articleId);
                     const prevArticle = allArticles[articleIndex + 1];
                     const nextArticle = allArticles[articleIndex - 1];
 
