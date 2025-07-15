@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - 未找到资源</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 继承自 ShimmerOS 的核心变量 */
+        :root {
+            --bg-color: #1a1d24;
+            --primary-accent: #007aff;
+            --secondary-accent: #ff3b30;
+            --text-light: #f0f0f0;
+            --text-medium: #a0a0b0;
+            --font-main: 'Manrope', 'Noto Sans SC', sans-serif;
+            --border-radius-main: 12px;
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f0f2f5;
+            --text-light: #1d1d1f;
+            --text-medium: #6e6e73;
+            --input-bg: rgba(0, 0, 0, 0.05);
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 页面样式 */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            font-family: var(--font-main);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            padding: 40px;
+            animation: fade-in 0.5s ease;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .error-code {
+            font-size: 10rem;
+            font-weight: 700;
+            color: var(--primary-accent);
+            line-height: 1;
+            text-shadow: 0 0 20px color-mix(in srgb, var(--primary-accent) 30%, transparent);
+        }
+
+        .error-title {
+            font-size: 1.75rem;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .error-message {
+            color: var(--text-medium);
+            margin-bottom: 30px;
+            max-width: 400px;
+        }
+
+        .home-button {
+            display: inline-block;
+            background-color: var(--primary-accent);
+            color: white;
+            padding: 12px 25px;
+            border-radius: var(--border-radius-main);
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .home-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px color-mix(in srgb, var(--primary-accent) 40%, transparent);
+        }
+
+        .countdown-message {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: var(--text-medium);
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <div class="container">
+        <div class="error-code">404</div>
+        <h1 class="error-title">文件或路径未找到ヽ(￣д￣;)ノ</h1>
+        <p class="error-message">ShimmerOS暂时无法定位到您请求的资源。请检查URL是否正确，或返回博客主页。</p>
+        <a href="/blog/blognav.html" class="home-button">返回主页</a>
+        <p class="countdown-message">
+            将在 <span id="countdown">5</span> 秒后自动跳转...
+        </p>
+    </div>
+
+    <script>
+        // 简单的自动跳转倒计时
+        (function() {
+            // 首先，尝试同步父窗口的主题（如果存在）
+            try {
+                if (window.parent && window.parent.document) {
+                     const parentTheme = window.parent.document.body.getAttribute('data-theme');
+                     if (parentTheme) {
+                        document.body.setAttribute('data-theme', parentTheme);
+                     }
+                }
+            } catch(e) {
+                // 跨域或其他安全限制，忽略错误
+            }
+
+            // 倒计时逻辑
+            const countdownElement = document.getElementById('countdown');
+            let seconds = 5;
+
+            const interval = setInterval(() => {
+                seconds--;
+                countdownElement.textContent = seconds;
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    window.location.href = '/blog/blognav.html'; // 目标地址
+                }
+            }, 1000);
+        })();
+    </script>
+</body>
+</html>
