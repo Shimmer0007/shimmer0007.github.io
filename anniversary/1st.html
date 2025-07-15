@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShimmerOS - 一周年纪念</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 继承 ShimmerOS 的核心设计语言 - 增强版 */
+        :root {
+            --blueprint-bg: var(--bg-color, #1a1d24);
+            --blueprint-line: rgba(102, 178, 255, 0.1);
+            --blueprint-text: var(--text-light, #f0f0f0);
+            --blueprint-text-medium: var(--text-medium, #a0a0b0);
+            --blueprint-highlight: var(--primary-accent, #007aff);
+            --blueprint-highlight-light: color-mix(in srgb, var(--blueprint-highlight) 20%, transparent);
+            --card-bg: rgba(44, 48, 58, 0.5);
+            --card-border: rgba(255, 255, 255, 0.15);
+            --anniversary-gold: #ffd700;
+        }
+
+        [data-theme="light"] {
+            --blueprint-bg: var(--bg-color, #f0f2f5);
+            --blueprint-line: rgba(0, 0, 0, 0.08);
+            --blueprint-text: var(--text-light, #1d1d1f);
+            --blueprint-text-medium: var(--text-medium, #6e6e73);
+            --blueprint-highlight-light: color-mix(in srgb, var(--blueprint-highlight) 80%, white);
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-border: rgba(0, 0, 0, 0.1);
+            --anniversary-gold: #d4af37;
+        }
+
+        body {
+            background-color: var(--blueprint-bg);
+            background-image:
+                linear-gradient(var(--blueprint-line) 1px, transparent 1px),
+                linear-gradient(to right, var(--blueprint-line) 1px, transparent 1px);
+            background-size: 25px 25px;
+            color: var(--blueprint-text);
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            margin: 0;
+            padding: 2rem 1.5rem;
+            line-height: 1.7;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            position: relative;
+        }
+
+        /* 粒子背景效果 */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, var(--blueprint-highlight-light) 0%, transparent 70%);
+            opacity: 0.1;
+            z-index: -1;
+            animation: pulse 15s infinite alternate;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* --- 头部 --- 增强版 */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px dashed var(--card-border);
+            animation: fadeInDown 0.8s ease-out;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 2.5rem;
+            color: var(--blueprint-highlight);
+            margin: 0;
+            text-shadow: 0 0 10px color-mix(in srgb, var(--blueprint-highlight) 30%, transparent);
+            position: relative;
+            display: inline-block;
+        }
+        
+        /* 周年徽章 */
+        .header h1::after {
+            content: '1st';
+            position: absolute;
+            top: -15px;
+            right: -30px;
+            background: linear-gradient(135deg, var(--anniversary-gold), #ffcc00);
+            color: #222;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 20px;
+            transform: rotate(15deg);
+            animation: bounce 2s infinite;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1rem;
+            color: var(--blueprint-text-medium);
+            margin-top: 0.5rem;
+        }
+        
+        #countdown-timer {
+            margin-top: 1.5rem;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.2rem;
+            padding: 12px 24px;
+            display: inline-block;
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        #countdown-timer:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px color-mix(in srgb, var(--blueprint-highlight) 20%, transparent);
+        }
+
+        #countdown-timer strong {
+            color: var(--blueprint-highlight);
+        }
+
+        /* --- 里程碑时间线 - 增强版 --- */
+        .milestone-timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .milestone-timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, 
+                var(--blueprint-highlight), 
+                color-mix(in srgb, var(--blueprint-highlight) 70%, transparent));
+            border-radius: 2px;
+        }
+
+        .milestone {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            perspective: 1000px;
+        }
+        
+        .milestone.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .milestone-content {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .milestone:hover .milestone-content {
+            transform: translateY(-5px) rotateX(1deg);
+            box-shadow: 0 10px 25px color-mix(in srgb, var(--blueprint-highlight) 20%, transparent);
+            border-color: var(--blueprint-highlight);
+        }
+
+        .milestone-marker {
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 43px;
+            height: 43px;
+            background-color: var(--blueprint-bg);
+            border: 3px solid var(--blueprint-highlight);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 0 15px color-mix(in srgb, var(--blueprint-highlight) 40%, transparent);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .milestone:hover .milestone-marker {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 25px color-mix(in srgb, var(--blueprint-highlight) 60%, transparent);
+        }
+
+        .milestone-date {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--blueprint-text-medium);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .milestone-date::before {
+            content: '📅';
+            margin-right: 6px;
+            font-size: 0.8em;
+        }
+
+        .milestone-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--blueprint-text);
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .milestone-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--blueprint-highlight);
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .milestone-description {
+            color: var(--blueprint-text-medium);
+            line-height: 1.8;
+        }
+
+        /* --- 留言板区域 - 增强版 --- */
+        .guestbook-section {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px dashed var(--card-border);
+            animation: fadeInUp 1s ease-out 0.5s;
+            animation-fill-mode: both;
+        }
+
+        .guestbook-section h2 {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--blueprint-highlight);
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .guestbook-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, 
+                transparent, 
+                var(--blueprint-highlight), 
+                transparent);
+        }
+
+        #giscus-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-height: 300px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        #giscus-container:hover {
+            border-color: var(--blueprint-highlight);
+            box-shadow: 0 8px 25px color-mix(in srgb, var(--blueprint-highlight) 20%, transparent);
+        }
+
+        /* 周年庆祝动画 */
+        @keyframes confetti {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(calc(100vh + 100px)) rotate(360deg); opacity: 0; }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--anniversary-gold);
+            opacity: 0;
+            z-index: 9999;
+            animation: confetti 3s ease-out forwards;
+        }
+
+        /* 其他动画 */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.1; }
+            50% { transform: scale(1.05); opacity: 0.15; }
+            100% { transform: scale(1); opacity: 0.1; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: rotate(15deg) translateY(0); }
+            50% { transform: rotate(15deg) translateY(-5px); }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header h1::after {
+                top: -10px;
+                right: -20px;
+                font-size: 0.7rem;
+            }
+            
+            .milestone {
+                padding-left: 50px;
+            }
+            
+            .milestone-marker {
+                width: 36px;
+                height: 36px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <div class="container">
+        <header class="header">
+            <h1>ShimmerOS一岁啦！</h1>
+            <p>第一周期：从 2024.08.08 到 <span id="anniversary-date">2025.08.08</span></p>
+            <div id="countdown-timer">正在计算周年倒计时...</div>
+        </header>
+
+        <main>
+            <section class="milestone-timeline">
+                <div class="milestone">
+                    <div class="milestone-marker">🚀</div>
+                    <div class="milestone-content">
+                        <p class="milestone-date">2024.08.08</p>
+                        <h3 class="milestone-title">万物起源：index.html</h3>
+                        <p class="milestone-description">一切始于一个不足150行的主页文件。一个简单的想法，借助与AI的交互，开启了这段奇妙的旅程。</p>
+                    </div>
+                </div>
+                
+                <div class="milestone">
+                    <div class="milestone-marker">🔧</div>
+                    <div class="milestone-content">
+                        <p class="milestone-date">2024.10 - 2025.01</p>
+                        <h3 class="milestone-title">核心功能构建</h3>
+                        <p class="milestone-description">实现了窗口系统、Dock栏、桌面图标等核心OS功能。第一次，它看起来真的像一个"操作系统"了。</p>
+                    </div>
+                </div>
+
+                <div class="milestone">
+                    <div class="milestone-marker">🧩</div>
+                    <div class="milestone-content">
+                        <p class="milestone-date">2025.02 - 2025.06</p>
+                        <h3 class="milestone-title">生态扩展</h3>
+                        <p class="milestone-description">陆续集成了博客、技能树、出行足迹、项目计划等"App"，ShimmerOS的内容逐渐丰满，从一个空壳变成了有血有肉的数字空间。</p>
+                    </div>
+                </div>
+
+                <div class="milestone">
+                    <div class="milestone-marker">✨</div>
+                    <div class="milestone-content">
+                        <p class="milestone-date">2025.07.15</p>
+                        <h3 class="milestone-title">系统重构与展望</h3>
+                        <p class="milestone-description">开始对整个项目进行代码重构与设计优化，目标是让它成为简历上最亮的作品。并且，我们在这里，共同庆祝它的第一个周年！</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="guestbook-section">
+                <h2>访客日志 (Guestbook)</h2>
+                <div id="giscus-container">
+                    <p style="text-align:center; color: var(--blueprint-text-medium);">正在加载留言板...</p>
+                    <p style="text-align:center; color: var(--blueprint-text-medium);">请确保已在下方粘贴了你的 Giscus 脚本。</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // === 主题同步脚本 ===
+        // 作用：确保该页面的主题与父窗口 ShimmerOS 保持一致
+        (function syncTheme() {
+            // 只有当作为iframe加载时才执行
+            if (window.self === window.top) {
+                console.log('Not in an iframe, theme sync skipped.');
+                return;
+            }
+            
+            try {
+                const parentDoc = window.parent.document;
+                const parentBody = parentDoc.body;
+                const parentHtml = parentDoc.documentElement;
+                const thisBody = document.body;
+                const thisHtml = document.documentElement;
+
+                const applyStyles = () => {
+                    const currentTheme = parentBody.dataset.theme || 'dark';
+                    if (thisBody.dataset.theme !== currentTheme) {
+                        thisBody.dataset.theme = currentTheme;
+                    }
+                    
+                    const currentAccent = parentHtml.style.getPropertyValue('--primary-accent');
+                    if (currentAccent) {
+                        thisHtml.style.setProperty('--primary-accent', currentAccent);
+                        thisHtml.style.setProperty('--blueprint-highlight', currentAccent);
+                    }
+                };
+                
+                // 初始同步
+                applyStyles();
+                
+                // 使用 MutationObserver 监听父窗口变化
+                const observer = new MutationObserver(applyStyles);
+                observer.observe(parentBody, { attributes: true, attributeFilter: ['data-theme'] });
+                observer.observe(parentHtml, { attributes: true, attributeFilter: ['style'] });
+                
+                // 页面卸载时停止监听
+                window.addEventListener('unload', () => observer.disconnect());
+
+            } catch (e) {
+                console.error('Theme sync failed. This might be due to cross-origin restrictions.', e);
+            }
+        })();
+
+        // === 页面交互脚本 ===
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 周年倒计时 ---
+            const countdownEl = document.getElementById('countdown-timer');
+            const anniversaryDateStr = document.getElementById('anniversary-date').textContent;
+            const anniversaryDate = new Date(anniversaryDateStr).getTime();
+
+            const updateCountdown = () => {
+                const now = new Date().getTime();
+                const distance = anniversaryDate - now;
+
+                if (distance < 0) {
+                    countdownEl.textContent = "🎉 Happy Anniversary! 🎉";
+                    countdownEl.style.background = "linear-gradient(135deg, var(--anniversary-gold), #ffcc00)";
+                    countdownEl.style.color = "#222";
+                    countdownEl.style.fontWeight = "bold";
+                    clearInterval(countdownInterval);
+                    createConfetti();
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                countdownEl.innerHTML = `周年倒计时: <strong>${days}</strong>天 <strong>${hours}</strong>时 <strong>${minutes}</strong>分 <strong>${seconds}</strong>秒`;
+            };
+
+            const countdownInterval = setInterval(updateCountdown, 1000);
+            updateCountdown(); // 立即执行一次
+
+            // --- 周年庆祝彩带效果 ---
+            function createConfetti() {
+                const colors = ['var(--anniversary-gold)', '#ff6b6b', '#48dbfb', '#1dd1a1', '#feca57'];
+                
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = (Math.random() * 8 + 4) + 'px';
+                    confetti.style.height = (Math.random() * 8 + 4) + 'px';
+                    confetti.style.animationDelay = (Math.random() * 3) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    // 移除彩带元素以避免内存泄漏
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }
+            }
+
+            // --- 滚动动画 ---
+            const milestones = document.querySelectorAll('.milestone');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        
+                        // 为每个里程碑添加不同的延迟效果
+                        const index = Array.from(milestones).indexOf(entry.target);
+                        entry.target.style.transitionDelay = `${index * 0.1}s`;
+                    }
+                });
+            }, {
+                threshold: 0.1 // 当元素进入视窗10%时触发
+            });
+
+            milestones.forEach(milestone => {
+                observer.observe(milestone);
+            });
+        });
+    </script>
+</body>
+</html>
