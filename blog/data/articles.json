@@ -1,5 +1,14 @@
 [
   {
+    "id": "peking-underground",
+    "title": "北京地铁：伟大的十号坏线",
+    "date": "2025-07-24",
+    "category": "life",
+    "summary": "在最不自由的环境里发现自由，在最痛苦的日常中修炼身心。",
+    "tags": ["地铁十号线", "吐槽", "纪实"],
+    "file": "articles/20250724underground.html"
+  },
+  {
     "id": "win11env",
     "title": "一步到位配置好Win11的Python环境",
     "date": "2025-07-15",
@@ -34,14 +43,5 @@
     "summary": "不使用后端框架，仅通过 HTML, CSS 和原生 JavaScript 来构建一个由 JSON 驱动的现代化、可维护的个人博客系统。",
     "tags": ["JavaScript", "Web开发", "前端"],
     "file": "articles/building-blog.html"
-  },
-  {
-    "id": "reading-notes-2025",
-    "title": "2025年度阅读书单与笔记",
-    "date": "2025-04-22",
-    "category": "life",
-    "summary": "整理和分享今年读过的一些好书，包括小说、社科和技术类。附上一些个人感悟和摘抄。",
-    "tags": ["阅读", "生活", "思考"],
-    "file": "articles/reading-2025.html"
   }
 ]
