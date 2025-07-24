@@ -9,6 +9,15 @@
     "file": "articles/20250724underground.html"
   },
   {
+    "id": "aboutabs",
+    "title": "资产证券化：皇帝的新衣",
+    "date": "2025-07-18",
+    "category": "tech",
+    "summary": "在现实的泥潭里，实现风险隔离的法律结构为什么脆弱且不靠谱？",
+    "tags": ["ABS", "真实出售", "破产隔离"],
+    "file": "articles/20250718aboutabs.html"
+  },
+  {
     "id": "win11env",
     "title": "一步到位配置好Win11的Python环境",
     "date": "2025-07-15",
@@ -34,14 +43,5 @@
     "summary": "DW2025夏令营分享记录，主要使用LightGBM 模型，并进行了详细的特征工程，也遭遇了十分经典的数据泄露问题。",
     "tags": ["机器学习", "竞赛", "特征工程"],
     "file": "articles/20250712usergrowth.html"
-  },
-  {
-    "id": "build-a-blog",
-    "title": "从零开始构建一个动态个人博客",
-    "date": "2025-05-15",
-    "category": "tech",
-    "summary": "不使用后端框架，仅通过 HTML, CSS 和原生 JavaScript 来构建一个由 JSON 驱动的现代化、可维护的个人博客系统。",
-    "tags": ["JavaScript", "Web开发", "前端"],
-    "file": "articles/building-blog.html"
   }
 ]
