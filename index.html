@@ -236,12 +236,20 @@
         <div class="desktop-icon" data-window-id="skills-window"><div class="icon-image">🌱</div><span class="icon-label" data-lang-key="icon_skills"></span></div>
         <div class="desktop-icon" data-window-id="about-window"><div class="icon-image">🧑‍🚀</div><span class="icon-label" data-lang-key="icon_about"></span></div>
         <div class="desktop-icon" data-window-id="project-window"><div class="icon-image">📂</div><span class="icon-label" data-lang-key="icon_projects"></span></div>
+        <div class="desktop-icon" data-window-id="hokiehub-window"><div class="icon-image">🦃</div><span class="icon-label" data-lang-key="icon_hokiehub"></span></div>
         <div class="desktop-icon" data-window-id="api-window"><div class="icon-image">🛰️</div><span class="icon-label" data-lang-key="icon_github"></span></div>
         <div class="desktop-icon" data-window-id="settings-window"><div class="icon-image">⚙️</div><span class="icon-label" data-lang-key="icon_settings"></span></div>
         <div class="desktop-icon" data-window-id="anniversary-window"><div class="icon-image">🎂</div><span class="icon-label" data-lang-key="icon_anniversary"></span></div>
         <div class="desktop-icon" data-window-id="travel-window"><div class="icon-image">🗺️</div><span class="icon-label" data-lang-key="icon_travel"></span></div>
         <div class="desktop-icon" data-window-id="plan-window"><div class="icon-image">📅</div><span class="icon-label" data-lang-key="icon_plan"></span></div>
         <div class="desktop-icon" data-window-id="links-window"><div class="icon-image">🤝</div><span class="icon-label" data-lang-key="icon_links"></span></div>
+    </div>
+
+    <div id="hokiehub-window" class="window" style="top: 10%; left: 10%; width: 80%; height: 80%;">
+        <div class="title-bar"><span data-lang-key="title_hokiehub"></span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
+        <div class="window-body" style="padding:0; overflow:hidden;">
+            <iframe src="hokiesehall/index.html" style="width:100%; height:100%; border:0;"></iframe>
+        </div>
     </div>
 
     <div id="about-window" class="window" style="top: 15%; left: 30%; width: 50%; height: 70%;">
@@ -399,6 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
             icon_travel: '出行足迹',
             icon_plan: '二月计划',
             icon_links: '友情链接',
+            icon_hokiehub: 'Hokie一站通', // <-- ADDED
             // Window Titles
             title_about: 'Player Profile',
             title_skills: 'Skill Tree',
@@ -411,6 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
             title_travel: '出行足迹',
             title_plan: '二月计划 (Janus Blueprint)',
             title_links: '友情链接',
+            title_hokiehub: 'Hokie Hub - VT 资源门户', // <-- ADDED
             // Settings
             settings_theme: '外观主题',
             settings_theme_dark: '深邃暗色',
@@ -498,6 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
             icon_travel: 'Travel Map',
             icon_plan: 'Janus Blueprint',
             icon_links: 'Friend Links',
+            icon_hokiehub: 'Hokie Hub', // <-- ADDED
             // Window Titles
             title_about: 'Player Profile',
             title_skills: 'Skill Tree',
@@ -510,6 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
             title_travel: 'Travel Footprints',
             title_plan: 'Janus Blueprint',
             title_links: 'Friend Links',
+            title_hokiehub: 'Hokie Hub - VT Resource Portal', // <-- ADDED
             // Settings
             settings_theme: 'Appearance',
             settings_theme_dark: 'Dark',
@@ -629,10 +641,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Re-populate dynamic content
         populateProjects();
-        // IMPORTANT: You'll need a way to tell your iframes to switch languages too.
-        // For example, by reposting a message to them or changing their src attribute
-        // if you have separate HTML files for each language.
-        // e.g., document.querySelector('#about-window iframe').src = `about/me-${lang}.html`;
     }
 
     // --- Boot Sequence ---
@@ -826,7 +834,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const nameKeyMap = {
                 '微光博客': 'icon_blog', '课业笔记': 'icon_notes', '技能树': 'icon_skills', '关于我': 'icon_about',
                 '项目浏览': 'icon_projects', 'GitHub查询': 'icon_github', '设置': 'icon_settings', '一周年': 'icon_anniversary',
-                '出行足迹': 'icon_travel', '二月计划': 'icon_plan', '友情链接': 'icon_links'
+                '出行足迹': 'icon_travel', '二月计划': 'icon_plan', '友情链接': 'icon_links', 'Hokie一站通': 'icon_hokiehub' // <-- ADDED
             };
             const getLabel = (icon) => {
                 const chineseLabel = icon.querySelector('.icon-label').textContent;
@@ -851,7 +859,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 'blog': 'blog-window', 'notes': 'notes-window', 'skills': 'skills-window',
                 'about': 'about-window', 'projects': 'project-window', 'github': 'api-window',
                 'settings': 'settings-window', 'anniversary': 'anniversary-window',
-                'travel': 'travel-window', 'plan': 'plan-window', 'links': 'links-window'
+                'travel': 'travel-window', 'plan': 'plan-window', 'links': 'links-window',
+                'hokiehub': 'hokiehub-window' // <-- ADDED
             };
             const windowId = appMap[appName.toLowerCase()];
 
