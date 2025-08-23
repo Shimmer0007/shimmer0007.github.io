@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hokie Hub - 弗吉尼亚理工大学学生资源门户</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #861F41;
+            --secondary: #E87722;
+            --accent1: #5D9732;
+            --accent2: #007749;
+            --accent3: #343E87;
+            --light: #F8F9FA;
+            --dark: #212529;
+            --gray: #6C757D;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #6A1A36 100%);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 搜索区域样式 */
+        .search-section {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80') center/cover no-repeat;
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .search-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-radius: 50px;
+            overflow: hidden;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            font-size: 1.1rem;
+        }
+        
+        .search-box button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background-color 0.3s;
+        }
+        
+        .search-box button:hover {
+            background-color: #d36a1a;
+        }
+        
+        /* 快速链接区域 */
+        .quick-links {
+            padding: 40px 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary);
+            font-size: 2rem;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--secondary);
+            border-radius: 2px;
+        }
+        
+        .quick-link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .quick-link-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .quick-link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .quick-link-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .quick-link-card h3 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        /* 分类区域 */
+        .categories {
+            padding: 50px 0;
+            background-color: #f9f9f9;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .category-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .category-icon {
+            font-size: 1.8rem;
+        }
+        
+        .category-content {
+            padding: 20px;
+        }
+        
+        .resource-list {
+            list-style: none;
+        }
+        
+        .resource-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .resource-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .resource-list a {
+            color: var(--dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s;
+        }
+        
+        .resource-list a:hover {
+            color: var(--primary);
+        }
+        
+        .resource-list i {
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 40px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        .credit {
+            text-align: center;
+            margin-top: 10px;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .search-section h2 {
+                font-size: 2rem;
+            }
+            
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap logo-icon"></i>
+                <h1>Hokie Hub</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#"><i class="fas fa-home"></i> 首页</a></li>
+                    <li><a href="#"><i class="fas fa-info-circle"></i> 关于</a></li>
+                    <li><a href="#"><i class="fas fa-envelope"></i> 联系</a></li>
+                    <li><a href="#"><i class="fas fa-globe"></i> 英文版</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 搜索区域 -->
+    <section class="search-section">
+        <div class="container">
+            <h2>弗吉尼亚理工大学一站式资源门户</h2>
+            <p>查找所有学校服务与资源的集中平台</p>
+            <div class="search-box">
+                <input type="text" placeholder="搜索服务或资源...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 快速链接区域 -->
+    <section class="quick-links">
+        <div class="container">
+            <h2 class="section-title">常用快速链接</h2>
+            <div class="quick-link-grid">
+                <div class="quick-link-card">
+                    <i class="fas fa-book-open quick-link-icon"></i>
+                    <h3>Canvas</h3>
+                    <p>学习管理系统</p>
+                </div>
+                <div class="quick-link-card">
+                    <i class="fas fa-user-circle quick-link-icon"></i>
+                    <h3>Hokie Spa</h3>
+                    <p>学生信息系统</p>
+                </div>
+                <div class="quick-link-card">
+                    <i class="fas fa-calendar-alt quick-link-icon"></i>
+                    <h3>校历</h3>
+                    <p>重要日期与截止时间</p>
+                </div>
+                <div class="quick-link-card">
+                    <i class="fas fa-envelope quick-link-icon"></i>
+                    <h3>VT邮箱</h3>
+                    <p>访问学生邮箱</p>
+                </div>
+                <div class="quick-link-card">
+                    <i class="fas fa-building quick-link-icon"></i>
+                    <h3>StarRez</h3>
+                    <p>住宿与餐饮门户</p>
+                </div>
+                <div class="quick-link-card">
+                    <i class="fas fa-handshake quick-link-icon"></i>
+                    <h3>Handshake</h3>
+                    <p>职业发展平台</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 分类资源区域 -->
+    <section class="categories">
+        <div class="container">
+            <h2 class="section-title">资源分类</h2>
+            <div class="category-grid">
+                <!-- 学术与成功 -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <i class="fas fa-graduation-cap category-icon"></i>
+                        <h3>学术与成功</h3>
+                    </div>
+                    <div class="category-content">
+                        <ul class="resource-list">
+                            <li><a href="#"><i class="fas fa-link"></i> 课程时间表</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 大学图书馆</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 学生成功中心</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 写作中心</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 学位审核报告(DARs)</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 财务与援助 -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <i class="fas fa-dollar-sign category-icon"></i>
+                        <h3>财务与援助</h3>
+                    </div>
+                    <div class="category-content">
+                        <ul class="resource-list">
+                            <li><a href="#"><i class="fas fa-link"></i> Hokie Wallet支付</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 经济援助办公室</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> FAFSA申请</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 奖学金申请</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 学生就业</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 校园生活 -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <i class="fas fa-users category-icon"></i>
+                        <h3>校园生活</h3>
+                    </div>
+                    <div class="category-content">
+                        <ul class="resource-list">
+                            <li><a href="#"><i class="fas fa-link"></i> GobblerConnect</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 文化与社区中心</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 兄弟会与姐妹会</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 大学活动日历</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 转学生资源</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 健康与安全 -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <i class="fas fa-heartbeat category-icon"></i>
+                        <h3>健康与安全</h3>
+                    </div>
+                    <div class="category-content">
+                        <ul class="resource-list">
+                            <li><a href="#"><i class="fas fa-link"></i> Schiffert健康中心</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> Cook咨询中心</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> TimelyCare远程医疗</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> VT警报系统</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 校园警察(VTPD)</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 职业与发展 -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <i class="fas fa-briefcase category-icon"></i>
+                        <h3>职业与发展</h3>
+                    </div>
+                    <div class="category-content">
+                        <ul class="resource-list">
+                            <li><a href="#"><i class="fas fa-link"></i> 职业与专业发展中心</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 简历制作工具</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 研究生院</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 实习机会</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 招聘会信息</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 生活与后勤 -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <i class="fas fa-home category-icon"></i>
+                        <h3>生活与后勤</h3>
+                    </div>
+                    <div class="category-content">
+                        <ul class="resource-list">
+                            <li><a href="#"><i class="fas fa-link"></i> 餐饮服务与菜单</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 邮件包裹服务</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 4Help技术支持</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 软件下载</a></li>
+                            <li><a href="#"><i class="fas fa-link"></i> 学生行为准则</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>关于Hokie Hub</h3>
+                    <ul>
+                        <li><a href="#">项目背景</a></li>
+                        <li><a href="#">开发团队</a></li>
+                        <li><a href="#">反馈建议</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>弗吉尼亚理工大学</h3>
+                    <ul>
+                        <li><a href="#">官方网站</a></li>
+                        <li><a href="#">招生信息</a></li>
+                        <li><a href="#">校园地图</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>联系信息</h3>
+                    <ul>
+                        <li><a href="#">技术支持</a></li>
+                        <li><a href="#">网站维护</a></li>
+                        <li><a href="#">贡献代码</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Hokie Hub - 弗吉尼亚理工大学学生资源门户</p>
+                <p class="credit">由 Shimmer 设计与开发</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 简单的搜索功能示例
+        document.querySelector('.search-box button').addEventListener('click', function() {
+            const searchTerm = document.querySelector('.search-box input').value;
+            if(searchTerm.trim() !== '') {
+                alert(`搜索: ${searchTerm}\n在实际应用中，这里会显示搜索结果。`);
+            }
+        });
+
+        // 快速链接点击效果
+        document.querySelectorAll('.quick-link-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const title = this.querySelector('h3').textContent;
+                alert(`正在打开: ${title}\n在实际应用中，这里会跳转到相应页面。`);
+            });
+        });
+
+        // 资源链接点击效果
+        document.querySelectorAll('.resource-list a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const title = this.textContent;
+                alert(`正在打开: ${title}\n在实际应用中，这里会跳转到相应页面。`);
+            });
+        });
+    </script>
+</body>
+</html>
