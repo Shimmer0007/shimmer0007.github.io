@@ -287,7 +287,7 @@
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 8px 25px var(--shadow-color);
-            transition: transform 0.4s ease, border-color 0.4s ease;
+            transition: transform 0.4s ease, border-color 0.4s ease, opacity 0.5s ease, transform 0.5s ease;
             opacity: 0; /* Hidden for animation */
             transform: translateY(30px); /* Start position for animation */
         }
@@ -299,11 +299,11 @@
 
         .category-card:hover {
             border-color: var(--primary);
-            transform: translateY(-5px);
+            transform: translateY(-5px) !important;
         }
         
         .category-header {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), var(--image-placeholder) center/cover;
+            background-color: rgba(0,0,0,0.3);
             padding: 25px;
             display: flex;
             align-items: center;
@@ -316,9 +316,10 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             object-fit: cover;
-            z-index: -1;
+            z-index: -2;
+            opacity: 0.5;
+            filter: blur(2px);
             transition: opacity 0.5s ease-in-out;
-            filter: blur(5px); /* Start blurred */
         }
         .category-header img.loaded {
             opacity: 1;
@@ -326,7 +327,7 @@
         }
         
         .category-icon { font-size: 2.2rem; color: var(--light); text-shadow: 0 2px 5px #000; }
-        .category-header h3 { font-size: 1.5rem; color: var(--light); text-shadow: 0 2px 5px #000; }
+        .category-header h3 { font-size: 1.5rem; color: var(--light); text-shadow: 0 2px 5px #000; font-weight: 700; }
 
         .category-content { padding: 25px; }
         .resource-list { list-style: none; }
@@ -425,8 +426,8 @@
     <main>
         <section class="search-section">
             <div class="container">
-                <h2>弗吉尼亚理工大学一站式资源门户</h2>
-                <p>查找所有学校服务与资源的集中平台</p>
+                <h2>弗吉尼亚理工一站式资源门户</h2>
+                <p>一个符合VT学生使用直觉的导航网站</p>
                 <div class="search-box">
                     <input type="text" placeholder="搜索服务、资源或关键词 (如 Canvas, 选课)...">
                     <button aria-label="Search"><i class="fas fa-search"></i></button>
@@ -477,98 +478,104 @@
                 <h2 class="section-title">资源分类</h2>
                 <div class="category-grid">
                     
-                    <div class="category-card" data-keywords="学术 成功 课程 注册 图书馆 写作 学位 DARs">
+                    <div class="category-card" data-keywords="学业 命脉 Academics Success Canvas Hokie SPA 课程 注册 成绩 时间表 校历 图书馆 辅导 写作 荣誉">
                         <div class="category-header">
-                            <img data-src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=60" alt="Students studying">
-                            <i class="fas fa-graduation-cap category-icon"></i><h3>学术与成功</h3>
+                            <img data-src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=60" alt="Graduation caps in the air">
+                            <i class="fas fa-graduation-cap category-icon"></i><h3>学业命脉</h3>
                         </div>
                         <div class="category-content">
                             <ul class="resource-list">
-                                <li><a href="https://apps.es.vt.edu/ssb/vt/index.html" target="_blank" data-keywords="课程时间表 选课 Timetable of Classes"><i class="fas fa-link"></i> 课程时间表</a></li>
-                                <li><a href="https://lib.vt.edu/" target="_blank" data-keywords="大学图书馆"><i class="fas fa-link"></i> 大学图书馆</a></li>
-                                <li><a href="https://studentsuccess.vt.edu/" target="_blank" data-keywords="学生成功中心 辅导"><i class="fas fa-link"></i> 学生成功中心</a></li>
+                                <li><a href="https://canvas.vt.edu/" target="_blank" data-keywords="Canvas"><i class="fas fa-link"></i> Canvas 学习系统</a></li>
+                                <li><a href="https://onecampus.vt.edu/task/all/hokiespa" target="_blank" data-keywords="Hokie SPA 课程注册 成绩查询"><i class="fas fa-link"></i> Hokie SPA (课程/成绩)</a></li>
+                                <li><a href="https://apps.es.vt.edu/ssb/vt/index.html" target="_blank" data-keywords="课程时间表 Timetable"><i class="fas fa-link"></i> 课程时间表</a></li>
+                                <li><a href="https://www.registrar.vt.edu/dates-deadlines/academic-calendar.html" target="_blank" data-keywords="校历 Academic Calendar"><i class="fas fa-link"></i> 校历</a></li>
+                                <li><a href="https://lib.vt.edu/" target="_blank" data-keywords="大学图书馆 Library"><i class="fas fa-link"></i> 大学图书馆</a></li>
+                                <li><a href="https://studentsuccess.vt.edu/" target="_blank" data-keywords="学生成功中心 辅导"><i class="fas fa-link"></i> 学生成功中心 (辅导)</a></li>
                                 <li><a href="https://studentsuccess.vt.edu/writing_center" target="_blank" data-keywords="写作中心"><i class="fas fa-link"></i> 写作中心</a></li>
-                                <li><a href="https://onecampus.vt.edu/task/all/degreeaudit" target="_blank" data-keywords="学位审核报告 DARs"><i class="fas fa-link"></i> 学位审核报告(DARs)</a></li>
+                                <li><a href="https://honorsystem.vt.edu/" target="_blank" data-keywords="荣誉代码 Honor Code"><i class="fas fa-link"></i> 荣誉代码办公室</a></li>
                             </ul>
                         </div>
                     </div>
 
-                    <div class="category-card" data-keywords="财务 援助 支付 账单 经济 FAFSA 奖学金">
+                    <div class="category-card" data-keywords="钱包 生计 Finances Employment Hokie Wallet 学费 账单 经济援助 奖学金 Handshake 工作 实习">
                         <div class="category-header">
-                            <img data-src="https://images.unsplash.com/photo-1579621970795-87f54f5955c3?auto=format&fit=crop&w=800&q=60" alt="Money and finance">
-                            <i class="fas fa-dollar-sign category-icon"></i><h3>财务与援助</h3>
+                            <img data-src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=800&q=60" alt="Wallet with money">
+                            <i class="fas fa-wallet category-icon"></i><h3>钱包与生计</h3>
                         </div>
                         <div class="category-content">
                             <ul class="resource-list">
-                                <li><a href="https://wallet.vt.edu/" target="_blank" data-keywords="Hokie Wallet 支付"><i class="fas fa-link"></i> Hokie Wallet支付</a></li>
-                                <li><a href="https://finaid.vt.edu/" target="_blank" data-keywords="经济援助办公室"><i class="fas fa-link"></i> 经济援助办公室</a></li>
-                                <li><a href="https://studentaid.gov/h/apply-for-aid/fafsa" target="_blank" data-keywords="FAFSA 申请"><i class="fas fa-link"></i> FAFSA申请</a></li>
-                                <li><a href="https://vt.academicworks.com/" target="_blank" data-keywords="奖学金申请"><i class="fas fa-link"></i> 奖学金申请</a></li>
-                                <li><a href="https://hr.vt.edu/jobs.html" target="_blank" data-keywords="学生就业"><i class="fas fa-link"></i> 学生就业</a></li>
+                                <li><a href="https://www.bursar.vt.edu/" target="_blank" data-keywords="Bursar Office 学费账单"><i class="fas fa-link"></i> 财务处 (学费账单)</a></li>
+                                <li><a href="https://finaid.vt.edu/" target="_blank" data-keywords="Financial Aid 经济援助"><i class="fas fa-link"></i> 经济援助办公室</a></li>
+                                <li><a href="https://vt.academicworks.com/" target="_blank" data-keywords="Scholarships 奖学金"><i class="fas fa-link"></i> 奖学金申请</a></li>
+                                <li><a href="https://vt.joinhandshake.com/" target="_blank" data-keywords="Handshake 校内外工作 实习"><i class="fas fa-link"></i> Handshake (工作/实习)</a></li>
+                                <li><a href="https://www.seo.vt.edu/" target="_blank" data-keywords="学生就业办公室"><i class="fas fa-link"></i> 学生就业办公室</a></li>
+                                <li><a href="https://hokiepassport.vt.edu/" target="_blank" data-keywords="Hokie Wallet 校园卡支付 Hokie Passport"><i class="fas fa-link"></i> Hokie Passport (校园卡)</a></li>
                             </ul>
                         </div>
                     </div>
 
-                    <div class="category-card" data-keywords="校园生活 社团 GobblerConnect 文化 CCC">
+                    <div class="category-card" data-keywords="生存 必需 Campus Life Logistics 吃 住 行 住宿 餐饮 邮件 包裹 公交 停车 地图">
                         <div class="category-header">
-                            <img data-src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=60" alt="Students socializing on campus">
-                            <i class="fas fa-users category-icon"></i><h3>校园生活</h3>
+                            <img data-src="https://images.unsplash.com/photo-1543336398-3e2c1b7022ec?auto=format&fit=crop&w=800&q=60" alt="Burruss Hall at Virginia Tech">
+                            <i class="fas fa-utensils category-icon"></i><h3>生存必需</h3>
                         </div>
                         <div class="category-content">
                             <ul class="resource-list">
-                                <li><a href="https://gobblerconnect.vt.edu/" target="_blank" data-keywords="GobblerConnect 社团"><i class="fas fa-link"></i> GobblerConnect 学生组织</a></li>
-                                <li><a href="https://ccc.vt.edu/" target="_blank" data-keywords="文化与社区中心 CCC"><i class="fas fa-link"></i> 文化与社区中心</a></li>
-                                <li><a href="https://fsl.vt.edu/" target="_blank" data-keywords="兄弟会 姐妹会"><i class="fas fa-link"></i> 兄弟会与姐妹会</a></li>
+                                <li><a href="https://vt.starrezhousing.com/StarRezPortalX/" target="_blank" data-keywords="StarRez 住宿"><i class="fas fa-link"></i> StarRez (住宿)</a></li>
+                                <li><a href="https://dining.vt.edu/" target="_blank" data-keywords="Dining Services 餐饮服务 菜单"><i class="fas fa-link"></i> 餐饮服务/菜单</a></li>
+                                <li><a href="https://mailservices.vt.edu/student-mail.html" target="_blank" data-keywords="Mail Services 邮件包裹"><i class="fas fa-link"></i> 邮件包裹服务</a></li>
+                                <li><a href="https://ridebt.org/" target="_blank" data-keywords="BT Transit 黑堡公交"><i class="fas fa-link"></i> BT Transit (黑堡公交)</a></li>
+                                <li><a href="https://parking.vt.edu/" target="_blank" data-keywords="停车服务"><i class="fas fa-link"></i> 停车服务</a></li>
+                                <li><a href="https://www.vt.edu/about/locations/maps.html" target="_blank" data-keywords="校园地图"><i class="fas fa-link"></i> 校园地图</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="category-card" data-keywords="健康 安全 Health Safety 医疗 心理 Schiffert Cook 警报 警察 VTPD Safe Ride">
+                        <div class="category-header">
+                            <img data-src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=60" alt="Person doing yoga for health">
+                            <i class="fas fa-shield-alt category-icon"></i><h3>健康与安全</h3>
+                        </div>
+                        <div class="category-content">
+                            <ul class="resource-list">
+                                <li><a href="https://healthcenter.vt.edu/" target="_blank" data-keywords="Schiffert 健康中心 校医院"><i class="fas fa-link"></i> Schiffert 健康中心</a></li>
+                                <li><a href="https://ucc.vt.edu/" target="_blank" data-keywords="Cook 咨询中心 心理健康"><i class="fas fa-link"></i> Cook 咨询中心</a></li>
+                                <li><a href="https://www.alerts.vt.edu/" target="_blank" data-keywords="VT Alerts 紧急警报系统"><i class="fas fa-link"></i> VT Alerts 紧急警报</a></li>
+                                <li><a href="https://police.vt.edu/" target="_blank" data-keywords="校园警察 VTPD"><i class="fas fa-link"></i> 校园警察 (VTPD)</a></li>
+                                <li><a href="https://police.vt.edu/saferide.html" target="_blank" data-keywords="Safe Ride 夜间安全送回服务"><i class="fas fa-link"></i> Safe Ride 夜间护送</a></li>
+                                <li><a href="https://recsports.vt.edu/" target="_blank" data-keywords="娱乐体育 Recreational Sports 健身"><i class="fas fa-link"></i> 娱乐体育 (健身房)</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="category-card" data-keywords="社交 成长 Involvement Career GobblerConnect 社团 活动 职业 CPD 研究生 创业 转学生">
+                        <div class="category-header">
+                            <img data-src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=60" alt="Group of students collaborating">
+                            <i class="fas fa-users category-icon"></i><h3>社交与成长</h3>
+                        </div>
+                        <div class="category-content">
+                            <ul class="resource-list">
+                                <li><a href="https://gobblerconnect.vt.edu/" target="_blank" data-keywords="GobblerConnect 学生社团"><i class="fas fa-link"></i> GobblerConnect (学生社团)</a></li>
                                 <li><a href="https://news.vt.edu/events.html" target="_blank" data-keywords="大学活动日历"><i class="fas fa-link"></i> 大学活动日历</a></li>
-                                <li><a href="https://housing.vt.edu/experience/theme/Transfer_Experience.html" target="_blank" data-keywords="转学生"><i class="fas fa-link"></i> 转学生资源</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="category-card" data-keywords="健康 安全 医疗 心理 咨询 Schiffert Cook 警察">
-                        <div class="category-header">
-                            <img data-src="https://images.unsplash.com/photo-1588776814546-1ff208a3def4?auto=format&fit=crop&w=800&q=60" alt="Health and wellness concept">
-                            <i class="fas fa-heartbeat category-icon"></i><h3>健康与安全</h3>
-                        </div>
-                        <div class="category-content">
-                            <ul class="resource-list">
-                                <li><a href="https://healthcenter.vt.edu/" target="_blank" data-keywords="Schiffert 健康中心"><i class="fas fa-link"></i> Schiffert健康中心</a></li>
-                                <li><a href="https://ucc.vt.edu/" target="_blank" data-keywords="Cook 咨询中心 心理"><i class="fas fa-link"></i> Cook咨询中心</a></li>
-                                <li><a href="https://ucc.vt.edu/timelycare.html" target="_blank" data-keywords="TimelyCare 远程医疗"><i class="fas fa-link"></i> TimelyCare远程医疗</a></li>
-                                <li><a href="https://www.alerts.vt.edu/" target="_blank" data-keywords="VT警报系统"><i class="fas fa-link"></i> VT警报系统</a></li>
-                                <li><a href="https://police.vt.edu/" target="_blank" data-keywords="校园警察 VTPD"><i class="fas fa-link"></i> 校园警察(VTPD)</a></li>
+                                <li><a href="https://career.vt.edu/" target="_blank" data-keywords="职业与专业发展中心 CPD"><i class="fas fa-link"></i> 职业与专业发展中心</a></li>
+                                <li><a href="https://graduateschool.vt.edu/" target="_blank" data-keywords="研究生院信息"><i class="fas fa-link"></i> 研究生院信息</a></li>
+                                <li><a href="https://apex.vt.edu/" target="_blank" data-keywords="Apex 创业中心"><i class="fas fa-link"></i> Apex 创业中心</a></li>
+                                <li><a href="https://studentsuccess.vt.edu/transfer-student-initiatives.html" target="_blank" data-keywords="转学生资源"><i class="fas fa-link"></i> 转学生资源</a></li>
                             </ul>
                         </div>
                     </div>
                     
-                    <div class="category-card" data-keywords="职业 发展 简历 工作 研究生院 实习 招聘会 CPD">
+                    <div class="category-card" data-keywords="技术 支持 Tech IT 4Help 软件 eduroam Duo">
                         <div class="category-header">
-                            <img data-src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=60" alt="Professional development meeting">
-                            <i class="fas fa-briefcase category-icon"></i><h3>职业与发展</h3>
+                            <img data-src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=60" alt="Laptop with code on screen">
+                            <i class="fas fa-laptop-code category-icon"></i><h3>技术支持</h3>
                         </div>
                         <div class="category-content">
                             <ul class="resource-list">
-                                <li><a href="https://career.vt.edu/" target="_blank" data-keywords="职业与专业发展中心 CPD"><i class="fas fa-link"></i> 职业与专业发展中心</a></li>
-                                <li><a href="https://graduateschool.vt.edu/" target="_blank" data-keywords="研究生院"><i class="fas fa-link"></i> 研究生院</a></li>
-                                <li><a href="https://career.vt.edu/jobs-internships-coops.html" target="_blank" data-keywords="实习 Co-op"><i class="fas fa-link"></i> 实习与Co-op机会</a></li>
-                                <li><a href="https://career.vt.edu/events.html" target="_blank" data-keywords="招聘会信息"><i class="fas fa-link"></i> 招聘会信息</a></li>
-                                <li><a href="https://career.vt.edu/cover-letter-resume.html" target="_blank" data-keywords="简历 制作"><i class="fas fa-link"></i> 简历制作工具</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="category-card" data-keywords="生活 后勤 餐饮 菜单 邮件 包裹 技术 4Help 软件">
-                        <div class="category-header">
-                            <img data-src="https://images.unsplash.com/photo-1544383835-bda2bc66a22d?auto=format&fit=crop&w=800&q=60" alt="Campus life logistics">
-                            <i class="fas fa-home category-icon"></i><h3>生活与后勤</h3>
-                        </div>
-                        <div class="category-content">
-                            <ul class="resource-list">
-                                <li><a href="https://dining.vt.edu/" target="_blank" data-keywords="餐饮服务 菜单"><i class="fas fa-link"></i> 餐饮服务与菜单</a></li>
-                                <li><a href="https://mailservices.vt.edu/" target="_blank" data-keywords="邮件包裹服务"><i class="fas fa-link"></i> 邮件包裹服务</a></li>
-                                <li><a href="https://4help.vt.edu/" target="_blank" data-keywords="4Help 技术支持"><i class="fas fa-link"></i> 4Help技术支持</a></li>
-                                <li><a href="https://software.vt.edu/" target="_blank" data-keywords="软件下载"><i class="fas fa-link"></i> 软件下载</a></li>
-                                <li><a href="https://dos.vt.edu/studentconduct.html" target="_blank" data-keywords="学生行为准则"><i class="fas fa-link"></i> 学生行为准则</a></li>
+                                <li><a href="https://4help.vt.edu/" target="_blank" data-keywords="4Help IT服务台"><i class="fas fa-link"></i> 4Help (IT服务台)</a></li>
+                                <li><a href="https://software.vt.edu/" target="_blank" data-keywords="软件下载中心"><i class="fas fa-link"></i> 软件下载中心</a></li>
+                                <li><a href="https://4help.vt.edu/sp?id=kb_article&sys_id=e7000d070f360a40d3244b9ce1050e93" target="_blank" data-keywords="eduroam Wifi 设置指南"><i class="fas fa-link"></i> eduroam设置指南</a></li>
+                                <li><a href="https://it.vt.edu/services/2fa.html" target="_blank" data-keywords="Duo 双因素认证"><i class="fas fa-link"></i> Duo双因素认证</a></li>
                             </ul>
                         </div>
                     </div>
@@ -580,8 +587,8 @@
 
     <footer>
         <div class="container">
-            <p class="copyright">&copy; Hokie Ehall - 弗吉尼亚理工学生资源门户</p>
-            <p class="credit">设计&开发：<a href="https://shimmer0007.github.io" target="_blank">Shimmer</a></p>
+            <p class="copyright">&copy; 2025 Hokie Ehall - 弗吉尼亚理工学生资源门户</p>
+            <p class="credit"> <a href="https://shimmer0007.github.io" target="_blank">Shimmer</a> ：设计&开发</p>
         </div>
     </footer>
 
@@ -610,12 +617,13 @@
 
             // --- Scroll Animations & Lazy Loading with IntersectionObserver ---
             const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
+                entries.forEach((entry, index) => {
                     if (entry.isIntersecting) {
-                        // Trigger animation
-                        entry.target.classList.add('visible');
+                        // Apply a staggered delay to the animation
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, index * 100);
 
-                        // Handle lazy loading for images within the card
                         const img = entry.target.querySelector('img[data-src]');
                         if (img) {
                             img.src = img.dataset.src;
@@ -623,11 +631,10 @@
                                 img.classList.add('loaded');
                             };
                         }
-                        // Stop observing once visible to save resources
                         observer.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.1 }); // Trigger when 10% of the item is visible
+            }, { threshold: 0.1 });
 
             document.querySelectorAll('.category-card').forEach(card => {
                 observer.observe(card);
@@ -644,22 +651,22 @@
                     const keywords = card.dataset.keywords.toLowerCase();
                     const resourceList = card.querySelectorAll('.resource-list li');
                     let matchesInList = false;
+                    let hasVisibleLinks = false;
                     
                     resourceList.forEach(li => {
                         const linkKeywords = li.querySelector('a').dataset.keywords.toLowerCase();
                         if (linkKeywords.includes(searchTerm)) {
                             li.style.display = '';
-                            matchesInList = true;
+                            hasVisibleLinks = true;
                         } else {
                             li.style.display = 'none';
                         }
                     });
 
-                    // Show card if the card's keywords match OR any of its links match
-                    if (keywords.includes(searchTerm) || matchesInList) {
+                    if (keywords.includes(searchTerm) || hasVisibleLinks) {
                         card.style.display = '';
-                        // If card keyword match but list doesn't, show all items in list
-                        if (keywords.includes(searchTerm) && !matchesInList) {
+                        // If card title matches, show all links within
+                        if (keywords.includes(searchTerm) && !hasVisibleLinks) {
                              resourceList.forEach(li => li.style.display = '');
                         }
                     } else {
