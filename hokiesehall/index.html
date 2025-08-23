@@ -3,50 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hokie Hub - 弗吉尼亚理工大学学生资源门户</title>
+    <title>Hokie Ehall - 弗吉尼亚理工一站式资源门户</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         :root {
-            --primary: #861F41;
-            --secondary: #E87722;
-            --accent1: #5D9732;
-            --accent2: #007749;
-            --accent3: #343E87;
+            --primary: #861F41; /* VT Maroon */
+            --secondary: #E87722; /* VT Orange */
             --light: #F8F9FA;
             --dark: #212529;
             --gray: #6C757D;
+            --bg: #121212;
+            --card-bg: rgba(30, 30, 30, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            background-color: #f5f5f5;
-            color: var(--dark);
-            line-height: 1.6;
+            background-color: var(--bg);
+            color: var(--light);
+            font-family: var(--font-family);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* --- Aurora Background --- */
+        .aurora-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .aurora {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.3;
+        }
+
+        .aurora-1 {
+            width: 50vw;
+            height: 50vw;
+            background: var(--primary);
+            top: -20%;
+            left: -10%;
+            animation: move-aurora-1 25s infinite alternate ease-in-out;
+        }
+        .aurora-2 {
+            width: 40vw;
+            height: 40vw;
+            background: var(--secondary);
+            bottom: -20%;
+            right: -15%;
+            animation: move-aurora-2 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes move-aurora-1 {
+            from { transform: translate(0, 0) rotate(0deg); }
+            to { transform: translate(20vw, 30vh) rotate(90deg); }
+        }
+        @keyframes move-aurora-2 {
+            from { transform: translate(0, 0) rotate(0deg); }
+            to { transform: translate(-25vw, -20vh) rotate(-70deg); }
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 0 15px;
+            padding: 0 20px;
+        }
+
+        /* --- Reading Progress Bar --- */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            width: 0%;
+            z-index: 101;
+            transition: width 0.1s linear;
         }
         
-        /* 导航栏样式 */
+        /* --- Header & Navigation (Frosted Glass) --- */
         header {
-            background: linear-gradient(135deg, var(--primary) 0%, #6A1A36 100%);
-            color: white;
-            padding: 15px 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 20px 0;
             position: sticky;
             top: 0;
             z-index: 100;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
         
+        header.scrolled {
+            background-color: rgba(18, 18, 18, 0.5); /* Semi-transparent background */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* For Safari */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
         .nav-container {
             display: flex;
             justify-content: space-between;
@@ -56,7 +127,9 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            color: var(--light);
+            text-decoration: none;
         }
         
         .logo h1 {
@@ -65,84 +138,83 @@
         }
         
         .logo-icon {
-            font-size: 2rem;
+            font-size: 2.2rem;
+            color: var(--secondary);
         }
         
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 20px;
-        }
+        nav ul { display: flex; list-style: none; gap: 25px; }
+        nav a { color: var(--light); text-decoration: none; font-weight: 600; padding: 8px 12px; border-radius: 8px; transition: background-color 0.3s, color 0.3s; }
+        nav a:hover { background-color: var(--primary); }
         
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 5px 10px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        
-        nav a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        /* 搜索区域样式 */
+        /* --- Hero Search Section --- */
         .search-section {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80') center/cover no-repeat;
-            color: white;
-            padding: 60px 0;
             text-align: center;
+            padding: 80px 0;
         }
         
         .search-section h2 {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
             margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--light), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .search-section p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 40px;
         }
         
         .search-box {
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
             display: flex;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 50px;
             overflow: hidden;
+            box-shadow: 0 8px 30px var(--shadow-color);
+            backdrop-filter: blur(5px);
         }
         
         .search-box input {
             flex: 1;
-            padding: 15px 20px;
+            padding: 18px 25px;
             border: none;
             font-size: 1.1rem;
+            background: transparent;
+            color: var(--light);
+            font-family: var(--font-family);
         }
+        .search-box input:focus { outline: none; }
         
         .search-box button {
             background-color: var(--secondary);
             color: white;
             border: none;
-            padding: 0 25px;
+            padding: 0 30px;
             cursor: pointer;
             font-size: 1.2rem;
             transition: background-color 0.3s;
         }
+        .search-box button:hover { background-color: #d36a1a; }
         
-        .search-box button:hover {
-            background-color: #d36a1a;
-        }
-        
-        /* 快速链接区域 */
+        /* --- Quick Links Section --- */
         .quick-links {
-            padding: 40px 0;
-            background-color: white;
+            padding: 50px 0;
         }
         
         .section-title {
             text-align: center;
-            margin-bottom: 30px;
-            color: var(--primary);
-            font-size: 2rem;
+            margin-bottom: 50px;
+            color: var(--light);
+            font-size: 2.5rem;
             position: relative;
             padding-bottom: 15px;
+            font-weight: 700;
         }
         
         .section-title::after {
@@ -151,431 +223,464 @@
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 80px;
+            width: 100px;
             height: 4px;
-            background-color: var(--secondary);
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             border-radius: 2px;
         }
         
         .quick-link-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        
-        .quick-link-card {
-            background: white;
-            border-radius: 10px;
-            padding: 25px 20px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-        }
-        
-        .quick-link-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        
-        .quick-link-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: var(--primary);
-        }
-        
-        .quick-link-card h3 {
-            margin-bottom: 10px;
-            color: var(--dark);
-        }
-        
-        /* 分类区域 */
-        .categories {
-            padding: 50px 0;
-            background-color: #f9f9f9;
-        }
-        
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 25px;
         }
         
-        .category-card {
-            background: white;
+        .quick-link-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            transition: transform 0.3s;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--light);
         }
         
+        .quick-link-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px var(--shadow-color);
+            border-color: var(--secondary);
+        }
+        
+        .quick-link-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            transition: transform 0.3s;
+        }
+        .quick-link-card:hover .quick-link-icon { transform: scale(1.1); }
+        
+        .quick-link-card h3 {
+            margin-bottom: 10px;
+            color: var(--light);
+            font-size: 1.2rem;
+        }
+
+        .quick-link-card p {
+            color: var(--gray);
+        }
+        
+        /* --- Categories Section with Scroll Animations --- */
+        .categories { padding: 80px 0; }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        
+        .category-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px var(--shadow-color);
+            transition: transform 0.4s ease, border-color 0.4s ease;
+            opacity: 0; /* Hidden for animation */
+            transform: translateY(30px); /* Start position for animation */
+        }
+        
+        .category-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .category-card:hover {
+            border-color: var(--primary);
             transform: translateY(-5px);
         }
         
         .category-header {
-            background-color: var(--primary);
-            color: white;
-            padding: 20px;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), var(--image-placeholder) center/cover;
+            padding: 25px;
             display: flex;
             align-items: center;
             gap: 15px;
+            height: 120px;
+            position: relative;
+        }
+        .category-header img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            transition: opacity 0.5s ease-in-out;
+            filter: blur(5px); /* Start blurred */
+        }
+        .category-header img.loaded {
+            opacity: 1;
+            filter: blur(0);
         }
         
-        .category-icon {
-            font-size: 1.8rem;
-        }
-        
-        .category-content {
-            padding: 20px;
-        }
-        
-        .resource-list {
-            list-style: none;
-        }
-        
-        .resource-list li {
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .resource-list li:last-child {
-            border-bottom: none;
-        }
+        .category-icon { font-size: 2.2rem; color: var(--light); text-shadow: 0 2px 5px #000; }
+        .category-header h3 { font-size: 1.5rem; color: var(--light); text-shadow: 0 2px 5px #000; }
+
+        .category-content { padding: 25px; }
+        .resource-list { list-style: none; }
+        .resource-list li { padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+        .resource-list li:last-child { border-bottom: none; }
         
         .resource-list a {
-            color: var(--dark);
+            color: var(--light);
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 10px;
-            transition: color 0.3s;
+            gap: 12px;
+            transition: color 0.3s, transform 0.3s;
+            font-weight: 600;
         }
         
         .resource-list a:hover {
-            color: var(--primary);
-        }
-        
-        .resource-list i {
             color: var(--secondary);
-            font-size: 0.9rem;
+            transform: translateX(5px);
         }
+        .resource-list i { color: var(--gray); font-size: 0.9rem; }
         
-        /* 页脚样式 */
+        /* --- Footer --- */
         footer {
             background-color: var(--dark);
             color: white;
-            padding: 40px 0 20px;
+            padding: 50px 0 25px;
+            margin-top: 50px;
+            text-align: center;
+            border-top: 2px solid var(--primary);
         }
-        
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-        
-        .footer-column h3 {
-            color: var(--secondary);
-            margin-bottom: 20px;
-            font-size: 1.3rem;
-        }
-        
-        .footer-column ul {
-            list-style: none;
-        }
-        
-        .footer-column ul li {
-            margin-bottom: 10px;
-        }
-        
-        .footer-column a {
-            color: #ddd;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .footer-column a:hover {
+        .copyright { color: var(--gray); font-size: 0.9rem; }
+        .credit { margin-top: 10px; color: var(--secondary); font-weight: 500; }
+        .credit a { color: var(--secondary); text-decoration: none; }
+
+        /* --- Back to Top Button --- */
+        #back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--secondary);
             color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
         }
-        
-        .copyright {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid #444;
-            color: #aaa;
-            font-size: 0.9rem;
+        #back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
-        
-        .credit {
-            text-align: center;
-            margin-top: 10px;
-            color: var(--secondary);
-            font-weight: 500;
-        }
-        
-        /* 响应式设计 */
+
+        /* --- Responsive Design --- */
         @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .search-section h2 {
-                font-size: 2rem;
-            }
-            
-            .category-grid {
-                grid-template-columns: 1fr;
-            }
+            .nav-container { flex-direction: column; gap: 20px; }
+            nav ul { flex-wrap: wrap; justify-content: center; }
+            .aurora-1 { width: 80vw; height: 80vw; }
+            .aurora-2 { width: 70vw; height: 70vw; }
         }
     </style>
 </head>
 <body>
-    <!-- 导航栏 -->
+
+    <div id="progress-bar"></div>
+    <div class="aurora-background">
+        <div class="aurora aurora-1"></div>
+        <div class="aurora aurora-2"></div>
+    </div>
+    
     <header>
         <div class="container nav-container">
-            <div class="logo">
+            <a href="#" class="logo">
                 <i class="fas fa-graduation-cap logo-icon"></i>
-                <h1>Hokie Hub</h1>
-            </div>
+                <h1>Hokie Ehall</h1>
+            </a>
             <nav>
                 <ul>
-                    <li><a href="#"><i class="fas fa-home"></i> 首页</a></li>
-                    <li><a href="#"><i class="fas fa-info-circle"></i> 关于</a></li>
-                    <li><a href="#"><i class="fas fa-envelope"></i> 联系</a></li>
-                    <li><a href="#"><i class="fas fa-globe"></i> 英文版</a></li>
+                    <li><a href="#quick-links-section"><i class="fas fa-bolt"></i> 快速链接</a></li>
+                    <li><a href="#categories-section"><i class="fas fa-th-large"></i> 资源分类</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <!-- 搜索区域 -->
-    <section class="search-section">
-        <div class="container">
-            <h2>弗吉尼亚理工大学一站式资源门户</h2>
-            <p>查找所有学校服务与资源的集中平台</p>
-            <div class="search-box">
-                <input type="text" placeholder="搜索服务或资源...">
-                <button><i class="fas fa-search"></i></button>
-            </div>
-        </div>
-    </section>
-
-    <!-- 快速链接区域 -->
-    <section class="quick-links">
-        <div class="container">
-            <h2 class="section-title">常用快速链接</h2>
-            <div class="quick-link-grid">
-                <div class="quick-link-card">
-                    <i class="fas fa-book-open quick-link-icon"></i>
-                    <h3>Canvas</h3>
-                    <p>学习管理系统</p>
-                </div>
-                <div class="quick-link-card">
-                    <i class="fas fa-user-circle quick-link-icon"></i>
-                    <h3>Hokie Spa</h3>
-                    <p>学生信息系统</p>
-                </div>
-                <div class="quick-link-card">
-                    <i class="fas fa-calendar-alt quick-link-icon"></i>
-                    <h3>校历</h3>
-                    <p>重要日期与截止时间</p>
-                </div>
-                <div class="quick-link-card">
-                    <i class="fas fa-envelope quick-link-icon"></i>
-                    <h3>VT邮箱</h3>
-                    <p>访问学生邮箱</p>
-                </div>
-                <div class="quick-link-card">
-                    <i class="fas fa-building quick-link-icon"></i>
-                    <h3>StarRez</h3>
-                    <p>住宿与餐饮门户</p>
-                </div>
-                <div class="quick-link-card">
-                    <i class="fas fa-handshake quick-link-icon"></i>
-                    <h3>Handshake</h3>
-                    <p>职业发展平台</p>
+    <main>
+        <section class="search-section">
+            <div class="container">
+                <h2>弗吉尼亚理工大学一站式资源门户</h2>
+                <p>查找所有学校服务与资源的集中平台</p>
+                <div class="search-box">
+                    <input type="text" placeholder="搜索服务、资源或关键词 (如 Canvas, 选课)...">
+                    <button aria-label="Search"><i class="fas fa-search"></i></button>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- 分类资源区域 -->
-    <section class="categories">
-        <div class="container">
-            <h2 class="section-title">资源分类</h2>
-            <div class="category-grid">
-                <!-- 学术与成功 -->
-                <div class="category-card">
-                    <div class="category-header">
-                        <i class="fas fa-graduation-cap category-icon"></i>
-                        <h3>学术与成功</h3>
-                    </div>
-                    <div class="category-content">
-                        <ul class="resource-list">
-                            <li><a href="#"><i class="fas fa-link"></i> 课程时间表</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 大学图书馆</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 学生成功中心</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 写作中心</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 学位审核报告(DARs)</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- 财务与援助 -->
-                <div class="category-card">
-                    <div class="category-header">
-                        <i class="fas fa-dollar-sign category-icon"></i>
-                        <h3>财务与援助</h3>
-                    </div>
-                    <div class="category-content">
-                        <ul class="resource-list">
-                            <li><a href="#"><i class="fas fa-link"></i> Hokie Wallet支付</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 经济援助办公室</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> FAFSA申请</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 奖学金申请</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 学生就业</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- 校园生活 -->
-                <div class="category-card">
-                    <div class="category-header">
-                        <i class="fas fa-users category-icon"></i>
-                        <h3>校园生活</h3>
-                    </div>
-                    <div class="category-content">
-                        <ul class="resource-list">
-                            <li><a href="#"><i class="fas fa-link"></i> GobblerConnect</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 文化与社区中心</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 兄弟会与姐妹会</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 大学活动日历</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 转学生资源</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- 健康与安全 -->
-                <div class="category-card">
-                    <div class="category-header">
-                        <i class="fas fa-heartbeat category-icon"></i>
-                        <h3>健康与安全</h3>
-                    </div>
-                    <div class="category-content">
-                        <ul class="resource-list">
-                            <li><a href="#"><i class="fas fa-link"></i> Schiffert健康中心</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> Cook咨询中心</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> TimelyCare远程医疗</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> VT警报系统</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 校园警察(VTPD)</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- 职业与发展 -->
-                <div class="category-card">
-                    <div class="category-header">
-                        <i class="fas fa-briefcase category-icon"></i>
-                        <h3>职业与发展</h3>
-                    </div>
-                    <div class="category-content">
-                        <ul class="resource-list">
-                            <li><a href="#"><i class="fas fa-link"></i> 职业与专业发展中心</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 简历制作工具</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 研究生院</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 实习机会</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 招聘会信息</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- 生活与后勤 -->
-                <div class="category-card">
-                    <div class="category-header">
-                        <i class="fas fa-home category-icon"></i>
-                        <h3>生活与后勤</h3>
-                    </div>
-                    <div class="category-content">
-                        <ul class="resource-list">
-                            <li><a href="#"><i class="fas fa-link"></i> 餐饮服务与菜单</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 邮件包裹服务</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 4Help技术支持</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 软件下载</a></li>
-                            <li><a href="#"><i class="fas fa-link"></i> 学生行为准则</a></li>
-                        </ul>
-                    </div>
+        <section id="quick-links-section" class="quick-links">
+            <div class="container">
+                <h2 class="section-title">常用快速链接</h2>
+                <div class="quick-link-grid">
+                    <a href="https://canvas.vt.edu/" target="_blank" class="quick-link-card">
+                        <i class="fas fa-book-open quick-link-icon"></i>
+                        <h3>Canvas</h3>
+                        <p>学习管理系统</p>
+                    </a>
+                    <a href="https://onecampus.vt.edu/task/all/hokiespa" target="_blank" class="quick-link-card">
+                        <i class="fas fa-user-circle quick-link-icon"></i>
+                        <h3>Hokie Spa</h3>
+                        <p>学生信息系统</p>
+                    </a>
+                    <a href="https://www.registrar.vt.edu/dates-deadlines/academic-calendar.html" target="_blank" class="quick-link-card">
+                        <i class="fas fa-calendar-alt quick-link-icon"></i>
+                        <h3>校历</h3>
+                        <p>重要日期</p>
+                    </a>
+                    <a href="https://gmail.com/" target="_blank" class="quick-link-card">
+                        <i class="fas fa-envelope quick-link-icon"></i>
+                        <h3>VT邮箱</h3>
+                        <p>访问学生邮箱</p>
+                    </a>
+                    <a href="https://vt.starrezhousing.com/StarRezPortalX/" target="_blank" class="quick-link-card">
+                        <i class="fas fa-building quick-link-icon"></i>
+                        <h3>StarRez</h3>
+                        <p>住宿与餐饮</p>
+                    </a>
+                    <a href="https://vt.joinhandshake.com/" target="_blank" class="quick-link-card">
+                        <i class="fas fa-handshake quick-link-icon"></i>
+                        <h3>Handshake</h3>
+                        <p>职业发展平台</p>
+                    </a>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- 页脚 -->
+        <section id="categories-section" class="categories">
+            <div class="container">
+                <h2 class="section-title">资源分类</h2>
+                <div class="category-grid">
+                    
+                    <div class="category-card" data-keywords="学术 成功 课程 注册 图书馆 写作 学位 DARs">
+                        <div class="category-header">
+                            <img data-src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=60" alt="Students studying">
+                            <i class="fas fa-graduation-cap category-icon"></i><h3>学术与成功</h3>
+                        </div>
+                        <div class="category-content">
+                            <ul class="resource-list">
+                                <li><a href="https://apps.es.vt.edu/ssb/vt/index.html" target="_blank" data-keywords="课程时间表 选课 Timetable of Classes"><i class="fas fa-link"></i> 课程时间表</a></li>
+                                <li><a href="https://lib.vt.edu/" target="_blank" data-keywords="大学图书馆"><i class="fas fa-link"></i> 大学图书馆</a></li>
+                                <li><a href="https://studentsuccess.vt.edu/" target="_blank" data-keywords="学生成功中心 辅导"><i class="fas fa-link"></i> 学生成功中心</a></li>
+                                <li><a href="https://studentsuccess.vt.edu/writing_center" target="_blank" data-keywords="写作中心"><i class="fas fa-link"></i> 写作中心</a></li>
+                                <li><a href="https://onecampus.vt.edu/task/all/degreeaudit" target="_blank" data-keywords="学位审核报告 DARs"><i class="fas fa-link"></i> 学位审核报告(DARs)</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="category-card" data-keywords="财务 援助 支付 账单 经济 FAFSA 奖学金">
+                        <div class="category-header">
+                            <img data-src="https://images.unsplash.com/photo-1579621970795-87f54f5955c3?auto=format&fit=crop&w=800&q=60" alt="Money and finance">
+                            <i class="fas fa-dollar-sign category-icon"></i><h3>财务与援助</h3>
+                        </div>
+                        <div class="category-content">
+                            <ul class="resource-list">
+                                <li><a href="https://wallet.vt.edu/" target="_blank" data-keywords="Hokie Wallet 支付"><i class="fas fa-link"></i> Hokie Wallet支付</a></li>
+                                <li><a href="https://finaid.vt.edu/" target="_blank" data-keywords="经济援助办公室"><i class="fas fa-link"></i> 经济援助办公室</a></li>
+                                <li><a href="https://studentaid.gov/h/apply-for-aid/fafsa" target="_blank" data-keywords="FAFSA 申请"><i class="fas fa-link"></i> FAFSA申请</a></li>
+                                <li><a href="https://vt.academicworks.com/" target="_blank" data-keywords="奖学金申请"><i class="fas fa-link"></i> 奖学金申请</a></li>
+                                <li><a href="https://hr.vt.edu/jobs.html" target="_blank" data-keywords="学生就业"><i class="fas fa-link"></i> 学生就业</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="category-card" data-keywords="校园生活 社团 GobblerConnect 文化 CCC">
+                        <div class="category-header">
+                            <img data-src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=60" alt="Students socializing on campus">
+                            <i class="fas fa-users category-icon"></i><h3>校园生活</h3>
+                        </div>
+                        <div class="category-content">
+                            <ul class="resource-list">
+                                <li><a href="https://gobblerconnect.vt.edu/" target="_blank" data-keywords="GobblerConnect 社团"><i class="fas fa-link"></i> GobblerConnect 学生组织</a></li>
+                                <li><a href="https://ccc.vt.edu/" target="_blank" data-keywords="文化与社区中心 CCC"><i class="fas fa-link"></i> 文化与社区中心</a></li>
+                                <li><a href="https://fsl.vt.edu/" target="_blank" data-keywords="兄弟会 姐妹会"><i class="fas fa-link"></i> 兄弟会与姐妹会</a></li>
+                                <li><a href="https://news.vt.edu/events.html" target="_blank" data-keywords="大学活动日历"><i class="fas fa-link"></i> 大学活动日历</a></li>
+                                <li><a href="https://housing.vt.edu/experience/theme/Transfer_Experience.html" target="_blank" data-keywords="转学生"><i class="fas fa-link"></i> 转学生资源</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="category-card" data-keywords="健康 安全 医疗 心理 咨询 Schiffert Cook 警察">
+                        <div class="category-header">
+                            <img data-src="https://images.unsplash.com/photo-1588776814546-1ff208a3def4?auto=format&fit=crop&w=800&q=60" alt="Health and wellness concept">
+                            <i class="fas fa-heartbeat category-icon"></i><h3>健康与安全</h3>
+                        </div>
+                        <div class="category-content">
+                            <ul class="resource-list">
+                                <li><a href="https://healthcenter.vt.edu/" target="_blank" data-keywords="Schiffert 健康中心"><i class="fas fa-link"></i> Schiffert健康中心</a></li>
+                                <li><a href="https://ucc.vt.edu/" target="_blank" data-keywords="Cook 咨询中心 心理"><i class="fas fa-link"></i> Cook咨询中心</a></li>
+                                <li><a href="https://ucc.vt.edu/timelycare.html" target="_blank" data-keywords="TimelyCare 远程医疗"><i class="fas fa-link"></i> TimelyCare远程医疗</a></li>
+                                <li><a href="https://www.alerts.vt.edu/" target="_blank" data-keywords="VT警报系统"><i class="fas fa-link"></i> VT警报系统</a></li>
+                                <li><a href="https://police.vt.edu/" target="_blank" data-keywords="校园警察 VTPD"><i class="fas fa-link"></i> 校园警察(VTPD)</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="category-card" data-keywords="职业 发展 简历 工作 研究生院 实习 招聘会 CPD">
+                        <div class="category-header">
+                            <img data-src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=60" alt="Professional development meeting">
+                            <i class="fas fa-briefcase category-icon"></i><h3>职业与发展</h3>
+                        </div>
+                        <div class="category-content">
+                            <ul class="resource-list">
+                                <li><a href="https://career.vt.edu/" target="_blank" data-keywords="职业与专业发展中心 CPD"><i class="fas fa-link"></i> 职业与专业发展中心</a></li>
+                                <li><a href="https://graduateschool.vt.edu/" target="_blank" data-keywords="研究生院"><i class="fas fa-link"></i> 研究生院</a></li>
+                                <li><a href="https://career.vt.edu/jobs-internships-coops.html" target="_blank" data-keywords="实习 Co-op"><i class="fas fa-link"></i> 实习与Co-op机会</a></li>
+                                <li><a href="https://career.vt.edu/events.html" target="_blank" data-keywords="招聘会信息"><i class="fas fa-link"></i> 招聘会信息</a></li>
+                                <li><a href="https://career.vt.edu/cover-letter-resume.html" target="_blank" data-keywords="简历 制作"><i class="fas fa-link"></i> 简历制作工具</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="category-card" data-keywords="生活 后勤 餐饮 菜单 邮件 包裹 技术 4Help 软件">
+                        <div class="category-header">
+                            <img data-src="https://images.unsplash.com/photo-1544383835-bda2bc66a22d?auto=format&fit=crop&w=800&q=60" alt="Campus life logistics">
+                            <i class="fas fa-home category-icon"></i><h3>生活与后勤</h3>
+                        </div>
+                        <div class="category-content">
+                            <ul class="resource-list">
+                                <li><a href="https://dining.vt.edu/" target="_blank" data-keywords="餐饮服务 菜单"><i class="fas fa-link"></i> 餐饮服务与菜单</a></li>
+                                <li><a href="https://mailservices.vt.edu/" target="_blank" data-keywords="邮件包裹服务"><i class="fas fa-link"></i> 邮件包裹服务</a></li>
+                                <li><a href="https://4help.vt.edu/" target="_blank" data-keywords="4Help 技术支持"><i class="fas fa-link"></i> 4Help技术支持</a></li>
+                                <li><a href="https://software.vt.edu/" target="_blank" data-keywords="软件下载"><i class="fas fa-link"></i> 软件下载</a></li>
+                                <li><a href="https://dos.vt.edu/studentconduct.html" target="_blank" data-keywords="学生行为准则"><i class="fas fa-link"></i> 学生行为准则</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+    </main>
+
     <footer>
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>关于Hokie Hub</h3>
-                    <ul>
-                        <li><a href="#">项目背景</a></li>
-                        <li><a href="#">开发团队</a></li>
-                        <li><a href="#">反馈建议</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>弗吉尼亚理工大学</h3>
-                    <ul>
-                        <li><a href="#">官方网站</a></li>
-                        <li><a href="#">招生信息</a></li>
-                        <li><a href="#">校园地图</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>联系信息</h3>
-                    <ul>
-                        <li><a href="#">技术支持</a></li>
-                        <li><a href="#">网站维护</a></li>
-                        <li><a href="#">贡献代码</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2023 Hokie Hub - 弗吉尼亚理工大学学生资源门户</p>
-                <p class="credit">由 Shimmer 设计与开发</p>
-            </div>
+            <p class="copyright">&copy; Hokie Ehall - 弗吉尼亚理工学生资源门户</p>
+            <p class="credit">设计&开发：<a href="https://shimmer0007.github.io" target="_blank">Shimmer</a></p>
         </div>
     </footer>
 
+    <button id="back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
     <script>
-        // 简单的搜索功能示例
-        document.querySelector('.search-box button').addEventListener('click', function() {
-            const searchTerm = document.querySelector('.search-box input').value;
-            if(searchTerm.trim() !== '') {
-                alert(`搜索: ${searchTerm}\n在实际应用中，这里会显示搜索结果。`);
-            }
-        });
+        document.addEventListener('DOMContentLoaded', () => {
 
-        // 快速链接点击效果
-        document.querySelectorAll('.quick-link-card').forEach(card => {
-            card.addEventListener('click', function() {
-                const title = this.querySelector('h3').textContent;
-                alert(`正在打开: ${title}\n在实际应用中，这里会跳转到相应页面。`);
+            // --- Sticky Header with Frosted Glass Effect ---
+            const header = document.querySelector('header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
             });
-        });
 
-        // 资源链接点击效果
-        document.querySelectorAll('.resource-list a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const title = this.textContent;
-                alert(`正在打开: ${title}\n在实际应用中，这里会跳转到相应页面。`);
+            // --- Reading Progress Bar ---
+            const progressBar = document.getElementById('progress-bar');
+            window.addEventListener('scroll', () => {
+                const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrolledPercentage = (window.scrollY / scrollableHeight) * 100;
+                progressBar.style.width = `${scrolledPercentage}%`;
             });
+
+            // --- Scroll Animations & Lazy Loading with IntersectionObserver ---
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Trigger animation
+                        entry.target.classList.add('visible');
+
+                        // Handle lazy loading for images within the card
+                        const img = entry.target.querySelector('img[data-src]');
+                        if (img) {
+                            img.src = img.dataset.src;
+                            img.onload = () => {
+                                img.classList.add('loaded');
+                            };
+                        }
+                        // Stop observing once visible to save resources
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 }); // Trigger when 10% of the item is visible
+
+            document.querySelectorAll('.category-card').forEach(card => {
+                observer.observe(card);
+            });
+
+            // --- Real-time Search Filter ---
+            const searchInput = document.querySelector('.search-box input');
+            const categoryCards = document.querySelectorAll('.category-card');
+
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                
+                categoryCards.forEach(card => {
+                    const keywords = card.dataset.keywords.toLowerCase();
+                    const resourceList = card.querySelectorAll('.resource-list li');
+                    let matchesInList = false;
+                    
+                    resourceList.forEach(li => {
+                        const linkKeywords = li.querySelector('a').dataset.keywords.toLowerCase();
+                        if (linkKeywords.includes(searchTerm)) {
+                            li.style.display = '';
+                            matchesInList = true;
+                        } else {
+                            li.style.display = 'none';
+                        }
+                    });
+
+                    // Show card if the card's keywords match OR any of its links match
+                    if (keywords.includes(searchTerm) || matchesInList) {
+                        card.style.display = '';
+                        // If card keyword match but list doesn't, show all items in list
+                        if (keywords.includes(searchTerm) && !matchesInList) {
+                             resourceList.forEach(li => li.style.display = '');
+                        }
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // --- Back to Top Button ---
+            const backToTopButton = document.getElementById('back-to-top');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
+            });
+            backToTopButton.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
         });
     </script>
 </body>
