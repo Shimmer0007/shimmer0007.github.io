@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hokie Ehall - 弗吉尼亚理工一站式资源门户</title>
+    <title>Hokie Ehall - 弗吉尼亚理工学生资源门户</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -411,7 +411,7 @@
     <header>
         <div class="container nav-container">
             <a href="#" class="logo">
-                <i class="fas fa-graduation-cap logo-icon"></i>
+                <i class="fas fa-feather-alt logo-icon"></i>
                 <h1>Hokie Ehall</h1>
             </a>
             <nav>
@@ -579,8 +579,23 @@
                             </ul>
                         </div>
                     </div>
-                    
-                </div>
+
+                    <div class="category-card" data-keywords="文化 娱乐 体育 艺术 户外 Hokie Sports Moss Center Venture Out 橄榄球 传统 精神 规定">
+                        <div class="category-header">
+                            <img data-src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=60" alt="Students in graduation gowns celebrating">
+                            <i class="fas fa-palette category-icon"></i><h3>校园文化与娱乐</h3>
+                        </div>
+                        <div class="category-content">
+                            <ul class="resource-list">
+                                <li><a href="https://hokiesports.com/" target="_blank" data-keywords="Hokie Sports 体育 竞技 橄榄球 篮球 Athletics"><i class="fas fa-link"></i> Hokie Sports (体育竞技)</a></li>
+                                <li><a href="https://artscenter.vt.edu/" target="_blank" data-keywords="Moss Arts Center 艺术中心 表演 展览"><i class="fas fa-link"></i> Moss Arts Center (艺术中心)</a></li>
+                                <li><a href="https://recsports.vt.edu/outdooractivities/trips.html" target="_blank" data-keywords="Venture Out 户外活动 探险 爬山"><i class="fas fa-link"></i> Venture Out (户外活动)</a></li>
+                                <li><a href="https://www.collegiatetimes.com/" target="_blank" data-keywords="Collegiate Times 校报 学生媒体 新闻"><i class="fas fa-link"></i> Collegiate Times (学生校报)</a></li>
+                                <li><a href="https://codeofconduct.vt.edu/" target="_blank" data-keywords="Student Code of Conduct 学生行为准则 规定"><i class="fas fa-link"></i> 学生行为准则</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    </div>
             </div>
         </section>
     </main>
@@ -588,7 +603,7 @@
     <footer>
         <div class="container">
             <p class="copyright">&copy; 2025 Hokie Ehall - 弗吉尼亚理工学生资源门户</p>
-            <p class="credit"> <a href="https://shimmer0007.github.io" target="_blank">Shimmer</a> ：设计&开发</p>
+            <p class="credit">由 <a href="https://shimmer0007.github.io" target="_blank">Shimmer</a> 设计 & 开发</p>
         </div>
     </footer>
 
@@ -650,7 +665,6 @@
                 categoryCards.forEach(card => {
                     const keywords = card.dataset.keywords.toLowerCase();
                     const resourceList = card.querySelectorAll('.resource-list li');
-                    let matchesInList = false;
                     let hasVisibleLinks = false;
                     
                     resourceList.forEach(li => {
@@ -666,7 +680,7 @@
                     if (keywords.includes(searchTerm) || hasVisibleLinks) {
                         card.style.display = '';
                         // If card title matches, show all links within
-                        if (keywords.includes(searchTerm) && !hasVisibleLinks) {
+                        if (keywords.includes(searchTerm) && searchTerm !== '') {
                              resourceList.forEach(li => li.style.display = '');
                         }
                     } else {
