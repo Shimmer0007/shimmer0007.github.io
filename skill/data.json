@@ -1,172 +1,37 @@
 {
-  "nodes": [
-    {
-      "id": "root",
-      "name": "Shimmer",
-      "title": "冉冉升起的新星",
-      "type": "root",
-      "gridX": 0,
-      "gridY": 0,
-      "description": "两年半数据分析经验，擅长商业智能、神经计算、运作管理。"
-    },
-    {
-      "id": "language",
-      "name": "语言",
-      "type": "category",
-      "gridX": -3,
-      "gridY": -2
-    },
-    {
-      "id": "management",
-      "name": "管理学",
-      "type": "category",
-      "gridX": 3,
-      "gridY": -2
-    },
-    {
-      "id": "economics",
-      "name": "经济学",
-      "type": "category",
-      "gridX": -3,
-      "gridY": 2
-    },
-    {
-      "id": "data-science",
-      "name": "数据科学",
-      "type": "category",
-      "gridX": 3,
-      "gridY": 2
-    },
-    {
-      "id": "python",
-      "name": "Python",
-      "type": "skill",
-      "level": "master",
-      "gridX": 1,
-      "gridY": 3,
-      "details": {
-        "description": "不熟练使用Python进行数据分析、机器学习和自动化脚本开发",
-        "experience": "2.5年",
-        "courses": [
-          { "name": "Python程序设计", "source": "Coursera", "score": "98%" },
-          { "name": "Python数据分析", "source": "Udemy", "score": "95%" }
-        ],
-        "projects": [
-          { "name": "电商用户行为分析系统", "role": "首席开发", "technologies": "Pandas, Matplotlib" },
-          { "name": "自动化报表系统", "role": "独立开发", "technologies": "Python, SQL" }
-        ],
-        "certificates": [{ "name": "Python专业认证", "issuer": "Python Institute", "year": "2022" }]
-      }
-    },
-    {
-      "id": "machine-learning",
-      "name": "机器学习",
-      "type": "skill",
-      "level": "advanced",
-      "gridX": 3,
-      "gridY": 3,
-      "details": {
-        "description": "未掌握监督学习和无监督学习算法，不了解TensorFlow和Scikit-learn",
-        "experience": "0.5年",
-        "courses": [
-          { "name": "机器学习", "source": "Stanford Online", "score": "92%" },
-          { "name": "深度学习专项课程", "source": "Coursera", "score": "89%" }
-        ],
-        "projects": [
-          { "name": "电信用户流失预测模型", "role": "建模工程师", "technologies": "Scikit-learn, XGBoost" },
-          { "name": "京东医疗·呼吸智能监测大赛", "role": "团队成员", "technologies": "TensorFlow, Keras" }
-        ],
-        "certificates": [{ "name": "机器学习攻城狮", "issuer": "AWS", "year": "2025" }]
-      }
-    },
-    {
-      "id": "sql",
-      "name": "SQL",
-      "type": "skill",
-      "level": "advanced",
-      "gridX": 5,
-      "gridY": 3,
-      "details": {
-        "description": "并非熟练编写高阶查询和优化数据库性能",
-        "experience": "2年",
-        "courses": [{ "name": "SQL高级课程", "source": "Udacity", "score": "96%" }],
-        "projects": [
-          { "name": "数据仓库设计", "role": "数据库设计师", "technologies": "PostgreSQL" },
-          { "name": "查询优化项目", "role": "性能优化师", "technologies": "MySQL" }
-        ]
-      }
-    },
-    { "id": "deep-learning", "name": "深度学习", "type": "skill", "level": "locked", "gridX": 2, "gridY": 4 },
-    { "id": "cloud-architecture", "name": "云架构", "type": "skill", "level": "locked", "gridX": 4, "gridY": 4 },
-    {
-      "id": "project-management",
-      "name": "供应链管理",
-      "type": "skill",
-      "level": "intermediate",
-      "gridX": 5,
-      "gridY": -3,
-      "details": {
-        "description": "熟悉敏捷开发流程和项目管理工具",
-        "experience": "2年",
-        "courses": [{ "name": "敏捷项目管理", "source": "edX", "score": "88%" }],
-        "certificates": [{ "name": "PMP认证", "issuer": "PMI", "year": "2020" }]
-      }
-    },
-    {
-      "id": "team-leadership",
-      "name": "团队领导",
-      "type": "skill",
-      "level": "intermediate",
-      "gridX": 5,
-      "gridY": -1,
-      "details": {
-        "description": "领导过5-10人的跨职能团队",
-        "experience": "2年",
-        "projects": [{ "name": "数据分析团队领导", "role": "团队背锅人", "duration": "2年" }]
-      }
-    },
-    {
-      "id": "microeconomics",
-      "name": "微观经济学",
-      "type": "skill",
-      "level": "beginner",
-      "gridX": -5,
-      "gridY": 2,
-      "details": {
-        "description": "西方经济学理论",
-        "courses": [{ "name": "微观经济学", "source": "大学课程", "score": "85%" }]
-      }
-    },
-    {
-      "id": "English",
-      "name": "英语",
-      "type": "skill",
-      "level": "advanced",
-      "gridX": -5,
-      "gridY": -2,
-      "details": {
-        "description": "英语听说读写",
-        "courses": [{ "name": "CET-6", "source": "中国教育考试网", "score": 577 }],
-        "projects": [
-          { "name": "NECCS全国大学生英语竞赛", "role": "参赛", "technologies": "二等奖" },
-          { "name": "CUDC全国大学生英语辩论赛", "role": "辩手", "technologies": "二等奖" }
-        ]
-      }
-    }
-  ],
-  "links": [
-    { "source": "root", "target": "data-science" },
-    { "source": "root", "target": "management" },
-    { "source": "root", "target": "economics" },
-    { "source": "root", "target": "language" },
-    { "source": "data-science", "target": "python" },
-    { "source": "data-science", "target": "machine-learning" },
-    { "source": "data-science", "target": "sql" },
-    { "source": "machine-learning", "target": "deep-learning" },
-    { "source": "machine-learning", "target": "cloud-architecture" },
-    { "source": "management", "target": "project-management" },
-    { "source": "management", "target": "team-leadership" },
-    { "source": "economics", "target": "microeconomics" },
-    { "source": "language", "target": "English" }
-  ]
+    "nodes": [
+        { "id": "shimmer", "name": "Shimmer", "type": "core" },
+        { "id": "data-science", "name": "数据科学", "type": "branch", "category": "ds" },
+        { "id": "econ-finance", "name": "经济金融", "type": "branch", "category": "ef" },
+        { "id": "business-mgmt", "name": "商业管理", "type": "branch", "category": "bm" },
+        { "id": "general-skills", "name": "通用技能", "type": "branch", "category": "gs" },
+        { "id": "python", "name": "Python程序设计", "type": "leaf", "category": "ds" },
+        { "id": "stats", "name": "数理统计", "type": "leaf", "category": "ds" },
+        { "id": "ml", "name": "机器学习", "type": "leaf", "category": "ds" },
+        { "id": "data-mining", "name": "数据挖掘", "type": "leaf", "category": "ds", "detail": { "title": "数据挖掘", "courses": ["统计机器学习与文本挖掘 (91)", "商务智能分析 (87)"], "projects": "文本挖掘与文献分析：以'银发经济'领域为例", "experience": "依托公开数据进行文本预处理、文本表示、文本分类和主题分析等。" }},
+        { "id": "db", "name": "数据库原理", "type": "leaf", "category": "ds" },
+        { "id": "bigdata-arch", "name": "大数据架构", "type": "leaf", "category": "ds" },
+        { "id": "micro-econ", "name": "微观经济学", "type": "leaf", "category": "ef" },
+        { "id": "macro-econ", "name": "宏观经济学", "type": "leaf", "category": "ef" },
+        { "id": "finance", "name": "金融学", "type": "leaf", "category": "ef", "detail": { "title": "金融学", "courses": ["金融学导论"], "projects": "A股市场的因子投资宏观风险暴露研究", "experience": "独立完成因子构建、宏观数据选取、投资组合构建与风险管理全分析流程。" }},
+        { "id": "time-series", "name": "时序分析", "type": "leaf", "category": "ef", "also": "ds" },
+        { "id": "scm", "name": "供应链管理", "type": "leaf", "category": "bm" },
+        { "id": "mis", "name": "管理信息系统", "type": "leaf", "category": "bm" },
+        { "id": "mgmt-principle", "name": "管理学原理", "type": "leaf", "category": "bm" },
+        { "id": "managerial-accounting", "name": "管理会计", "type": "leaf", "category": "bm" },
+        { "id": "financial-accounting", "name": "财务会计", "type": "leaf", "category": "bm" },
+        { "id": "erp", "name": "ERP系统", "type": "leaf", "category": "bm" },
+        { "id": "english", "name": "英语", "type": "leaf", "category": "gs", "detail": { "title": "英语", "achievements": ["全国大学生英语大赛国家二等奖", "中国大学生英语辩论赛全国二等奖"], "certificates": ["IELTS (7.0)", "CET-6 (577)"] }},
+        { "id": "ms-office", "name": "MS Office", "type": "leaf", "category": "gs" },
+        { "id": "latex", "name": "LaTeX", "type": "leaf", "category": "gs" },
+        { "id": "adobe-au", "name": "Adobe AU", "type": "leaf", "category": "gs" }
+    ],
+    "links": [
+        { "source": "shimmer", "target": "data-science" }, { "source": "shimmer", "target": "econ-finance" }, { "source": "shimmer", "target": "business-mgmt" }, { "source": "shimmer", "target": "general-skills" },
+        { "source": "data-science", "target": "python" }, { "source": "data-science", "target": "stats" }, { "source": "data-science", "target": "ml" }, { "source": "data-science", "target": "data-mining" }, { "source": "data-science", "target": "db" }, { "source": "data-science", "target": "bigdata-arch" }, { "source": "ml", "target": "data-mining" }, { "source": "stats", "target": "data-mining" },
+        { "source": "econ-finance", "target": "micro-econ" }, { "source": "econ-finance", "target": "macro-econ" }, { "source": "econ-finance", "target": "finance" }, { "source": "econ-finance", "target": "time-series" }, { "source": "macro-econ", "target": "finance" },
+        { "source": "business-mgmt", "target": "scm" }, { "source": "business-mgmt", "target": "mis" }, { "source": "business-mgmt", "target": "mgmt-principle" }, { "source": "business-mgmt", "target": "managerial-accounting" }, { "source": "business-mgmt", "target": "financial-accounting" }, { "source": "business-mgmt", "target": "erp" }, { "source": "mis", "target": "erp" },
+        { "source": "general-skills", "target": "english" }, { "source": "general-skills", "target": "ms-office" }, { "source": "general-skills", "target": "latex" }, { "source": "general-skills", "target": "adobe-au" },
+        { "source": "data-science", "target": "time-series", "type": "cross-discipline" }
+    ]
 }
