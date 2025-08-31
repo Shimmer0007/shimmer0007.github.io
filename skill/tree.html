@@ -3,11 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShimmerOS - 能力科技网</title>
+    <title>ShimmerOS - 技能树</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        /* --- 设计变量与全局样式 --- */
+        :root {
+            --ds-color: #00b8d4; /* 数据科学 */
+            --ef-color: #00c853; /* 经济金融 */
+            --bm-color: #ffab00; /* 商业管理 */
+            --gs-color: #d500f9; /* 通用技能 */
+            --core-color: #fafafa;
+            
+            --bg-color-dark: #0d1117;
+            --bg-color-light: #161b22;
+            --text-color: #e6edf3;
+            --text-color-muted: #8b949e;
+            --border-color: #30363d;
+            --transition-speed-fast: 0.2s;
+            --transition-speed-med: 0.5s;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color);
+            font-family: 'Exo 2', 'Noto Sans SC', sans-serif;
+            display: flex;
+            flex-direction: column;
+            font-weight: 300;
+        }
+
+        /* --- 头部 --- */
+        header {
+            padding: 1rem 1.5rem; text-align: center;
+            background: rgba(13, 17, 23, 0.7); backdrop-filter: blur(5px);
+            border-bottom: 1px solid var(--border-color); z-index: 10;
+        }
+        h1 {
+            font-size: 1.8rem; margin-bottom: 0.25rem; font-weight: 700;
+            background: linear-gradient(90deg, var(--ds-color), var(--ef-color), var(--bm-color), var(--gs-color));
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            letter-spacing: 1px;
+        }
+        .subtitle { font-size: 0.85rem; color: var(--text-color-muted); font-weight: 400; }
+
+        /* --- 核心布局 --- */
+        .container { display: flex; flex: 1; overflow: hidden; position: relative; }
+        #skills-graph {
+            flex: 1;
+            background-image: 
+                radial-gradient(circle at center, rgba(139, 148, 158, 0.08) 0%, transparent 60%),
+                linear-gradient(rgba(139, 148, 158, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 148, 158, 0.1) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+            background-position: center center; cursor: grab;
+        }
+        #skills-graph:active { cursor: grabbing; }
+
+        /* --- 详情面板 (桌面端为侧边栏) --- */
+        .detail-panel {
+            position: absolute; /* 默认绝对定位，方便响应式切换 */
+            top: 0; right: 0;
+            width: 380px; height: 100%;
+            background: rgba(22, 27, 34, 0.85); backdrop-filter: blur(10px);
+            border-left: 1px solid var(--border-color); padding: 1.5rem;
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: -10px 0 25px rgba(0, 0, 0, 0.5); z-index: 20;
+        }
+        .detail-panel.visible { transform: translateX(0); }
+
+        .detail-panel h2 {
+            margin-bottom: 1.5rem; font-size: 1.6rem; font-weight: 500;
+            border-bottom: 1px solid; padding-bottom: 0.8rem;
+            display: flex; align-items: center;
+        }
+        .detail-panel h2::before {
+            content: ''; width: 6px; height: 24px;
+            border-radius: 3px; margin-right: 12px; background: currentColor;
+        }
+        .detail-item { margin-bottom: 1.5rem; }
+        .detail-item h3 { font-size: 1.1rem; margin-bottom: 0.8rem; color: var(--text-color); font-weight: 400; }
+        .detail-item ul { list-style: none; }
+        .detail-item li {
+            margin-bottom: 0.5rem; line-height: 1.6; color: var(--text-color-muted);
+            padding-left: 1.2rem; position: relative;
+        }
+        .detail-item li::before { content: '»'; position: absolute; left: 0; color: currentColor; opacity: 0.6; }
+        .tag-container { margin-top: 1.5rem; }
+        .tag {
+            display: inline-block; padding: 0.3rem 0.8rem;
+            border-radius: 15px; font-size: 0.8rem;
+            margin: 0 0.5rem 0.5rem 0; border: 1px solid;
+            background-color: rgba(255, 255, 255, 0.05); font-weight: 500;
+        }
+        .close-btn {
+            position: absolute; top: 1.5rem; right: 1.5rem;
+            background: none; border: none; font-size: 1.5rem;
+            color: var(--text-color-muted); cursor: pointer;
+            transition: color var(--transition-speed-fast), transform var(--transition-speed-fast);
+        }
+        .close-btn:hover { color: var(--text-color); transform: rotate(90deg); }
+
+        /* --- 背景遮罩 --- */
+        .panel-backdrop {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); z-index: 15;
+            opacity: 0; pointer-events: none;
+            transition: opacity var(--transition-speed-med) ease;
+        }
+        .panel-backdrop.visible { opacity: 1; pointer-events: auto; }
+
+        /* --- 筛选器 --- */
+        .filters {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1rem;
+            padding: 0.8rem; background: var(--bg-color-dark);
+            border-bottom: 1px solid var(--border-color); z-index: 10;
+        }
+        .filter-btn {
+            padding: 0.5rem 1.2rem; border: 1px solid; border-radius: 20px;
+            background: transparent; cursor: pointer;
+            transition: all var(--transition-speed-fast) ease; font-family: 'Exo 2', sans-serif;
+            font-weight: 500; font-size: 0.9rem;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px -2px currentColor;
+            background: currentColor; color: var(--bg-color-dark) !important;
+        }
+        .filter-all { border-color: var(--text-color-muted); color: var(--text-color-muted); }
+        .filter-ds { border-color: var(--ds-color); color: var(--ds-color); }
+        .filter-ef { border-color: var(--ef-color); color: var(--ef-color); }
+        .filter-bm { border-color: var(--bm-color); color: var(--bm-color); }
+        .filter-gs { border-color: var(--gs-color); color: var(--gs-color); }
+        
+        /* --- SVG 元素样式 --- */
+        .link { stroke: var(--border-color); stroke-width: 1px; transition: all var(--transition-speed-med) ease; }
+        .link.cross-discipline { stroke-dasharray: 4 2; }
+        .link.is-highlighted { stroke-width: 2.5px; }
+
+        .node { cursor: pointer; transition: opacity var(--transition-speed-med) ease; }
+        .node-shape { stroke-width: 1.5px; fill-opacity: 0.15; transition: all var(--transition-speed-fast) ease; }
+        .node:hover .node-shape, .node.is-focused .node-shape { transform: scale(1.1); stroke-width: 3px; fill-opacity: 0.3; }
+        .node.is-pinned .node-shape { stroke-width: 3px; stroke-dasharray: 5 2; animation: pulse-stroke 2s infinite; }
+        @keyframes pulse-stroke { 50% { stroke-opacity: 0.5; } }
+
+        .node-text {
+            font-size: 12px; text-anchor: middle; pointer-events: none;
+            fill: var(--text-color-muted); font-weight: 400;
+            transition: all var(--transition-speed-fast) ease;
+            text-shadow: 0 0 5px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.9);
+        }
+        .node-branch .node-text { font-size: 14px; }
+        .node-core .node-text { font-size: 20px; }
+        .node:hover .node-text, .node.is-focused .node-text { font-weight: 700; fill: #fff; }
+
+        /* --- 交互控件 --- */
+        .controls {
+            position: absolute; bottom: 20px; right: 20px;
+            display: flex; flex-direction: column; gap: 10px; z-index: 5;
+            transition: right var(--transition-speed-med) cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        body.panel-visible .controls { right: 400px; } /* 桌面端 panel 展开时，向左移动 */
+        .control-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(30, 35, 45, 0.8); border: 1px solid var(--border-color);
+            color: white; font-size: 1.5rem; display: flex;
+            align-items: center; justify-content: center; cursor: pointer;
+            transition: all var(--transition-speed-fast) ease; backdrop-filter: blur(5px);
+        }
+        .control-btn:hover { background: rgba(50, 55, 65, 0.9); transform: scale(1.1); }
+
+        /* --- 响应式设计 (窄屏优化) --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.5rem; }
+            .subtitle { font-size: 0.8rem; }
+            
+            /* 详情面板变为底部抽屉 */
+            .detail-panel {
+                top: auto; bottom: 0; left: 0;
+                width: 100%; height: auto; max-height: 60vh; /* 最大高度为视口的60% */
+                border-left: none; border-top: 1px solid var(--border-color);
+                transform: translateY(100%);
+                box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.5);
+            }
+            .detail-panel.visible { transform: translateY(0); }
+
+            /* 控件位置在窄屏下保持不变 */
+            body.panel-visible .controls { right: 20px; }
+        }
+
+    </style>
 </head>
 <body>
     <header>
@@ -36,7 +228,268 @@
         <div class="control-btn" id="unpin-all" title="解锁所有固定的节点">🔓</div>
     </div>
 
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="assets/main.js"></script>
+    <script>
+        const skillsData = {
+            nodes: [
+                { id: "shimmer", name: "Shimmer", type: "core" },
+                { id: "data-science", name: "数据科学", type: "branch", category: "ds" },
+                { id: "econ-finance", name: "经济金融", type: "branch", category: "ef" },
+                { id: "business-mgmt", name: "商业管理", type: "branch", category: "bm" },
+                { id: "general-skills", name: "通用技能", type: "branch", category: "gs" },
+                { id: "python", name: "Python程序设计", type: "leaf", category: "ds" },
+                { id: "stats", name: "数理统计", type: "leaf", category: "ds" },
+                { id: "ml", name: "机器学习", type: "leaf", category: "ds" },
+                { id: "data-mining", name: "数据挖掘", type: "leaf", category: "ds", detail: { title: "数据挖掘", courses: ["统计机器学习与文本挖掘 (91)", "商务智能分析 (87)"], projects: "文本挖掘与文献分析：以'银发经济'领域为例", experience: "依托公开数据进行文本预处理、文本表示、文本分类和主题分析等。" }},
+                { id: "db", name: "数据库原理", type: "leaf", category: "ds" },
+                { id: "bigdata-arch", name: "大数据架构", type: "leaf", category: "ds" },
+                { id: "micro-econ", name: "微观经济学", type: "leaf", category: "ef" },
+                { id: "macro-econ", "name": "宏观经济学", type: "leaf", category: "ef" },
+                { id: "finance", name: "金融学", type: "leaf", category: "ef", detail: { title: "金融学", courses: ["金融学导论"], projects: "A股市场的因子投资宏观风险暴露研究", experience: "独立完成因子构建、宏观数据选取、投资组合构建与风险管理全分析流程。" }},
+                { id: "time-series", name: "时序分析", type: "leaf", category: "ef", also: "ds" },
+                { id: "scm", name: "供应链管理", type: "leaf", category: "bm" },
+                { id: "mis", name: "管理信息系统", type: "leaf", category: "bm" },
+                { id: "mgmt-principle", name: "管理学原理", type: "leaf", category: "bm" },
+                { id: "managerial-accounting", name: "管理会计", type: "leaf", category: "bm" },
+                { id: "financial-accounting", name: "财务会计", type: "leaf", category: "bm" },
+                { id: "erp", name: "ERP系统", type: "leaf", category: "bm" },
+                { id: "english", name: "英语", type: "leaf", category: "gs", detail: { title: "英语", achievements: ["全国大学生英语大赛国家二等奖", "中国大学生英语辩论赛全国二等奖"], certificates: ["IELTS (7.0)", "CET-6 (577)"] }},
+                { id: "ms-office", name: "MS Office", type: "leaf", category: "gs" },
+                { id: "latex", name: "LaTeX", type: "leaf", category: "gs" },
+                { id: "adobe-au", name: "Adobe AU", type: "leaf", category: "gs" }
+            ],
+            links: [
+                { source: "shimmer", target: "data-science" }, { source: "shimmer", target: "econ-finance" }, { source: "shimmer", target: "business-mgmt" }, { source: "shimmer", target: "general-skills" },
+                { source: "data-science", target: "python" }, { source: "data-science", target: "stats" }, { source: "data-science", target: "ml" }, { source: "data-science", target: "data-mining" }, { source: "data-science", target: "db" }, { source: "data-science", target: "bigdata-arch" }, { source: "ml", target: "data-mining" }, { source: "stats", target: "data-mining" },
+                { source: "econ-finance", target: "micro-econ" }, { source: "econ-finance", target: "macro-econ" }, { source: "econ-finance", target: "finance" }, { source: "econ-finance", target: "time-series" }, { source: "macro-econ", target: "finance" },
+                { source: "business-mgmt", target: "scm" }, { source: "business-mgmt", target: "mis" }, { source: "business-mgmt", target: "mgmt-principle" }, { source: "business-mgmt", target: "managerial-accounting" }, { source: "business-mgmt", target: "financial-accounting" }, { source: "business-mgmt", target: "erp" }, { source: "mis", target: "erp" },
+                { source: "general-skills", target: "english" }, { source: "general-skills", target: "ms-office" }, { source: "general-skills", target: "latex" }, { source: "general-skills", target: "adobe-au" },
+                { source: "data-science", target: "time-series", type: "cross-discipline" }
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- 配置项 ---
+            const CONFIG = {
+                colors: { ds: 'var(--ds-color)', ef: 'var(--ef-color)', bm: 'var(--bm-color)', gs: 'var(--gs-color)', core: 'var(--core-color)' },
+                radii: { core: 60, branch: 45, leaf: 35 },
+                forces: { charge: -450, linkDistance: { core: 250, branch: 120, leaf: 70 }, radialStrength: 0.8 }
+            };
+
+            // --- 全局变量 ---
+            const graphContainer = document.getElementById('skills-graph');
+            const detailPanel = document.getElementById('detail-panel');
+            const backdrop = document.getElementById('panel-backdrop');
+            let width = graphContainer.clientWidth, height = graphContainer.clientHeight;
+            let simulation, svg, g, link, node, zoom, initialTransform;
+            let currentFilter = 'all';
+
+            // --- 初始化流程 ---
+            initGraph();
+            initSimulation();
+            drawElements();
+            setupInteractions();
+            initAnimations();
+
+            // --- 1. 初始化SVG画布 ---
+            function initGraph() {
+                svg = d3.select('#skills-graph').append('svg').attr('width', '100%').attr('height', '100%');
+                g = svg.append('g');
+                // 为跨学科节点定义渐变色
+                const defs = svg.append('defs');
+                const tsGradient = defs.append('linearGradient').attr('id', 'grad-time-series').attr('gradientTransform', 'rotate(45)');
+                tsGradient.append('stop').attr('offset', '0%').attr('stop-color', CONFIG.colors.ds);
+                tsGradient.append('stop').attr('offset', '100%').attr('stop-color', CONFIG.colors.ef);
+            }
+
+            // --- 2. 初始化力导向模拟 ---
+            function initSimulation() {
+                simulation = d3.forceSimulation(skillsData.nodes)
+                    .force('link', d3.forceLink(skillsData.links).id(d => d.id)
+                        .distance(d => CONFIG.forces.linkDistance[d.source.type] || CONFIG.forces.linkDistance.leaf).strength(1))
+                    .force('charge', d3.forceManyBody().strength(CONFIG.forces.charge))
+                    .force('collision', d3.forceCollide().radius(d => getNodeRadius(d) + 10))
+                    .force('radial', d3.forceRadial(d => d.type === 'branch' ? CONFIG.forces.linkDistance.core : 0)
+                        .strength(d => d.type === 'branch' ? CONFIG.forces.radialStrength : 0))
+                    .force('center', d3.forceCenter(0, 0));
+            }
+
+            // --- 3. 绘制SVG元素 ---
+            function drawElements() {
+                link = g.append('g').selectAll('line').data(skillsData.links).enter()
+                    .append('line').attr('class', d => d.type === 'cross-discipline' ? 'link cross-discipline' : 'link');
+
+                node = g.append('g').selectAll('g').data(skillsData.nodes).enter()
+                    .append('g').attr('class', d => `node node-${d.type} node-${d.category || 'core'}`);
+
+                node.append('polygon').attr('class', 'node-shape')
+                    .attr('points', d => getHexagonPoints(getNodeRadius(d)))
+                    .attr('stroke', d => CONFIG.colors[d.category || 'core'])
+                    .attr('fill', d => d.id === 'time-series' ? 'url(#grad-time-series)' : CONFIG.colors[d.category || 'core']);
+
+                const text = node.append('text').attr('class', 'node-text').attr('dy', '0.3em');
+                text.each(function(d) { wrapText(d3.select(this), d.name, getNodeRadius(d) * 1.6); });
+
+                simulation.on('tick', () => {
+                    link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+                        .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+                    node.attr('transform', d => `translate(${d.x}, ${d.y})`);
+                });
+            }
+            
+            // --- 4. 设置所有交互事件 ---
+            function setupInteractions() {
+                // 缩放与拖拽
+                zoom = d3.zoom().scaleExtent([0.3, 5]).on('zoom', (event) => g.attr('transform', event.transform));
+                updateViewBox(); // 初始设置
+
+                // 节点交互
+                node.on('click', handleNodeClick)
+                    .on('dblclick', handleNodeDblClick)
+                    .on('mouseover', handleMouseOver)
+                    .on('mouseout', resetFocus);
+                
+                svg.on('click', () => { hideDetails(); resetFocus(); });
+                
+                node.call(d3.drag().on('start', dragstarted).on('drag', dragged).on('end', dragended));
+
+                // 控件与筛选器
+                setupControls();
+                setupFilters();
+
+                // 响应式处理
+                window.addEventListener('resize', debounce(handleResize, 200));
+            }
+
+            // --- 5. 入场动画 ---
+            function initAnimations() {
+                node.style('opacity', 0).attr('transform', 'scale(0.5)');
+                node.transition().duration(800).delay((d, i) => i * 15)
+                    .style('opacity', 1).attr('transform', 'scale(1)');
+            }
+
+            // --- 事件处理函数 ---
+            function handleNodeClick(event, d) { event.stopPropagation(); showDetails(d); focusOnNode(d); }
+            function handleNodeDblClick(event, d) {
+                event.stopPropagation(); d.fx = d.fx ? null : d.x; d.fy = d.fy ? null : d.y;
+                d3.select(this).classed('is-pinned', !!d.fx);
+                simulation.alpha(0.1).restart();
+            }
+            function handleMouseOver(event, d) {
+                const connectedIds = new Set([d.id]);
+                skillsData.links.forEach(l => { if (l.source.id === d.id) connectedIds.add(l.target.id); if (l.target.id === d.id) connectedIds.add(l.source.id); });
+                node.style('opacity', n => (currentFilter !== 'all' && !isVisible(n, currentFilter)) ? 0.1 : (connectedIds.has(n.id) ? 1 : 0.2));
+                link.style('stroke-opacity', l => (l.source.id === d.id || l.target.id === d.id) ? 1 : 0.1)
+                    .classed('is-highlighted', l => l.source.id === d.id || l.target.id === d.id)
+                    .style('stroke', l => { if (l.source.id === d.id || l.target.id === d.id) return CONFIG.colors[d.category || 'core']; return null; });
+            }
+            function dragstarted(event, d) { if (!event.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; }
+            function dragged(event, d) { d.fx = event.x; d.fy = event.y; }
+            function dragended(event, d) { if (!event.active) simulation.alphaTarget(0); if (!d3.select(this).classed('is-pinned')) { d.fx = null; d.fy = null; } }
+
+            // --- 核心功能函数 ---
+            function showDetails(d) {
+                if (!d.detail) { hideDetails(); return; }
+                document.body.classList.add('panel-visible');
+                backdrop.classList.add('visible');
+                const categoryColorVar = CONFIG.colors[d.category || 'core'];
+                detailPanel.style.color = categoryColorVar;
+                
+                let html = `<button class="close-btn" id="close-detail-btn">×</button><h2>${d.detail.title}</h2>`;
+                const detailMap = { courses: '相关课程', projects: '项目经验', experience: '经历详情', achievements: '竞赛成果', certificates: '技能证书' };
+                for(const [key, title] of Object.entries(detailMap)) {
+                    if(d.detail[key]) {
+                        html += `<div class="detail-item"><h3>${title}</h3><ul>`;
+                        const items = Array.isArray(d.detail[key]) ? d.detail[key] : [d.detail[key]];
+                        items.forEach(item => { html += `<li>${item}</li>`; });
+                        html += `</ul></div>`;
+                    }
+                }
+                html += `<div class="tag-container"><span class="tag" style="border-color: ${categoryColorVar}; color: ${categoryColorVar};">${getCategoryName(d.category)}</span>`;
+                if(d.also) { html += `<span class="tag" style="border-color: ${CONFIG.colors[d.also]}; color: ${CONFIG.colors[d.also]};">${getCategoryName(d.also)}</span>`; }
+                html += '</div>';
+
+                detailPanel.innerHTML = html;
+                detailPanel.classList.add('visible');
+                document.getElementById('close-detail-btn').onclick = (e) => { e.stopPropagation(); hideDetails(); resetFocus(); };
+            }
+            function hideDetails() { detailPanel.classList.remove('visible'); backdrop.classList.remove('visible'); document.body.classList.remove('panel-visible'); }
+            function focusOnNode(d) {
+                node.classed('is-focused', n => n.id === d.id);
+                const scale = 1.2, x = -d.x * scale, y = -d.y * scale;
+                svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(scale));
+            }
+            function resetFocus() {
+                node.classed('is-focused', false);
+                filterNodes(currentFilter); // 恢复到当前筛选状态的透明度
+                link.style('stroke-opacity', null).style('stroke', null).classed('is-highlighted', false);
+            }
+            function filterNodes(category) {
+                currentFilter = category;
+                node.style('opacity', d => isVisible(d, category) ? 1 : 0.1)
+                    .style('pointer-events', d => isVisible(d, category) ? 'all' : 'none');
+                link.style('stroke-opacity', l => (isVisible(l.source, category) && isVisible(l.target, category)) ? 1 : 0.05);
+            }
+
+            // --- 控件与筛选器设置 ---
+            function setupControls() {
+                document.getElementById('zoom-in').addEventListener('click', () => svg.transition().duration(500).call(zoom.scaleBy, 1.2));
+                document.getElementById('zoom-out').addEventListener('click', () => svg.transition().duration(500).call(zoom.scaleBy, 0.8));
+                document.getElementById('reset-view').addEventListener('click', () => svg.transition().duration(750).call(zoom.transform, initialTransform));
+                document.getElementById('unpin-all').addEventListener('click', () => {
+                    skillsData.nodes.forEach(n => { n.fx = null; n.fy = null; });
+                    node.classed('is-pinned', false);
+                    simulation.alpha(0.3).restart();
+                });
+                backdrop.addEventListener('click', () => { hideDetails(); resetFocus(); });
+            }
+            function setupFilters() {
+                document.querySelectorAll('.filter-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        document.querySelector('.filter-btn.active').classList.remove('active');
+                        this.classList.add('active');
+                        filterNodes(this.dataset.category);
+                    });
+                });
+            }
+
+            // --- 辅助与响应式函数 ---
+            function updateViewBox() {
+                width = graphContainer.clientWidth;
+                height = graphContainer.clientHeight;
+                svg.attr('viewBox', [-width / 2, -height / 2, width, height]);
+                initialTransform = d3.zoomIdentity.translate(0, 0).scale(Math.min(width, height) / 1000); // 初始缩放
+                svg.call(zoom).call(zoom.transform, initialTransform);
+            }
+            function handleResize() { updateViewBox(); simulation.alpha(0.1).restart(); }
+            function getNodeRadius(d) { return CONFIG.radii[d.type] || CONFIG.radii.leaf; }
+            function getCategoryName(c) { return {'ds':'数据科学','ef':'经济金融','bm':'商业管理','gs':'通用技能'}[c]||c; }
+            function isVisible(d, category) {
+                if (category === 'all' || d.type === 'core') return true;
+                const branchMap = skillsData.links.reduce((acc, l) => { if (l.source.type === 'branch') acc[l.target.id] = l.source.category; return acc; }, {});
+                return d.category === category || d.also === category || branchMap[d.id] === category;
+            }
+            function getHexagonPoints(r) { return Array.from({length: 6}, (_, i) => [r * Math.cos(Math.PI/3*i+Math.PI/6), r * Math.sin(Math.PI/3*i+Math.PI/6)]).map(p=>p.join(',')).join(' '); }
+            function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), wait); }; }
+            function wrapText(textEl, text, width) {
+                textEl.each(function() {
+                    let textNode = d3.select(this), words = text.replace(/-/g, '- ').split(/\s+/).reverse(), word, line = [],
+                        lineNum = 0, lineHeight = 1.1, y = textNode.attr("y"), dy = parseFloat(textNode.attr("dy")),
+                        tspan = textNode.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+                    while (word = words.pop()) {
+                        line.push(word); tspan.text(line.join(" "));
+                        if (tspan.node().getComputedTextLength() > width) {
+                            line.pop(); tspan.text(line.join(" ")); line = [word];
+                            tspan = textNode.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNum*lineHeight+dy+"em").text(word);
+                        }
+                    }
+                    const tspans = textNode.selectAll('tspan');
+                    if (tspans.size() > 1) {
+                        const vOffset = -( (tspans.size() - 1) * lineHeight / 2 );
+                        tspans.attr('dy', (d, i) => (parseFloat(tspans.nodes()[0].getAttribute('dy')) + vOffset + i * lineHeight) + 'em');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
