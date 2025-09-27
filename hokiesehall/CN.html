@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hokie Ehall - 弗吉尼亚理工学生资源门户</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #861F41; /* VT Maroon */
+            --secondary: #E87722; /* VT Orange */
+            --light: #F8F9FA;
+            --dark: #212529;
+            --gray: #6C757D;
+            --bg: #121212;
+            --card-bg: rgba(30, 30, 30, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* --- 浅色主题变量 --- */
+        body[data-theme="light"] {
+            --light: #212529; /* Text color becomes dark */
+            --dark: #F8F9FA;  /* Footer bg becomes light */
+            --gray: #6C757D;
+            --bg: #f0f2f5;    /* Main background */
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.15);
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--light);
+            font-family: var(--font-family);
+            line-height: 1.7;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* --- Aurora Background --- */
+        .aurora-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            transition: opacity 0.5s ease;
+        }
+        
+        body[data-theme="light"] .aurora-background {
+            opacity: 0;
+        }
+
+        .aurora {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.3;
+        }
+
+        .aurora-1 {
+            width: 50vw;
+            height: 50vw;
+            background: var(--primary);
+            top: -20%;
+            left: -10%;
+            animation: move-aurora-1 25s infinite alternate ease-in-out;
+        }
+        .aurora-2 {
+            width: 40vw;
+            height: 40vw;
+            background: var(--secondary);
+            bottom: -20%;
+            right: -15%;
+            animation: move-aurora-2 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes move-aurora-1 {
+            from { transform: translate(0, 0) rotate(0deg); }
+            to { transform: translate(20vw, 30vh) rotate(90deg); }
+        }
+        @keyframes move-aurora-2 {
+            from { transform: translate(0, 0) rotate(0deg); }
+            to { transform: translate(-25vw, -20vh) rotate(-70deg); }
+        }
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- Reading Progress Bar --- */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            width: 0%;
+            z-index: 101;
+            transition: width 0.1s linear;
+        }
+        
+        /* --- Header & Navigation (Frosted Glass) --- */
+        header {
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        header.scrolled {
+            background-color: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px var(--shadow-color);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--light);
+            text-decoration: none;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo-icon {
+            font-size: 2.2rem;
+            color: var(--secondary);
+        }
+        
+        nav ul { display: flex; list-style: none; gap: 25px; }
+        nav a { color: var(--light); text-decoration: none; font-weight: 600; padding: 8px 12px; border-radius: 8px; transition: background-color 0.3s, color 0.3s; }
+        nav a:hover { background-color: var(--primary); color: #fff; }
+        
+        /* --- Hero Search Section --- */
+        .search-section {
+            text-align: center;
+            padding: 80px 0;
+        }
+        
+        .search-section h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--light), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .search-section p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 40px;
+        }
+        
+        .search-box {
+            max-width: 650px;
+            margin: 0 auto;
+            display: flex;
+            position: relative;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px var(--shadow-color);
+            backdrop-filter: blur(5px);
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 18px 60px 18px 25px;
+            border: none;
+            font-size: 1.1rem;
+            background: transparent;
+            color: var(--light);
+            font-family: var(--font-family);
+        }
+        .search-box input:focus { outline: none; }
+        
+        .search-box .clear-button {
+            position: absolute;
+            right: 85px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.8rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 10px;
+            display: none;
+            transition: color 0.2s;
+        }
+        .search-box .clear-button:hover {
+            color: var(--light);
+        }
+
+        .search-box button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0 30px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background-color 0.3s;
+        }
+        .search-box button:hover { background-color: #d36a1a; }
+        
+        /* --- Search Highlight Style --- */
+        mark {
+            background-color: var(--secondary);
+            color: #121212;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* --- Dashboard Section --- */
+        .dashboard {
+            padding: 50px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--light);
+            font-size: 2.5rem;
+            position: relative;
+            padding-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: auto auto;
+            gap: 25px;
+            grid-template-areas:
+                "canvas canvas hokiespa hokiespa"
+                "calendar onecampus starrez handshake";
+        }
+
+        .dashboard-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px var(--shadow-color);
+            border-color: var(--secondary);
+        }
+        
+        .dashboard-card.canvas { grid-area: canvas; }
+        .dashboard-card.hokiespa { grid-area: hokiespa; }
+        .dashboard-card.calendar { grid-area: calendar; }
+        .dashboard-card.onecampus { grid-area: onecampus; }
+        .dashboard-card.starrez { grid-area: starrez; }
+        .dashboard-card.handshake { grid-area: handshake; }
+
+        .dashboard-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            transition: transform 0.3s;
+        }
+        .dashboard-card:hover .dashboard-icon { transform: scale(1.1); }
+        
+        .dashboard-card h3 {
+            margin-bottom: 8px;
+            color: var(--light);
+            font-size: 1.3rem;
+        }
+
+        .dashboard-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+
+        .dashboard-card.canvas, .dashboard-card.hokiespa {
+            flex-direction: row;
+            justify-content: flex-start;
+            gap: 20px;
+            text-align: left;
+            padding: 25px;
+        }
+        .dashboard-card.canvas .dashboard-icon, .dashboard-card.hokiespa .dashboard-icon {
+            font-size: 3.5rem;
+            margin-bottom: 0;
+        }
+        .dashboard-card.canvas .dashboard-text, .dashboard-card.hokiespa .dashboard-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* --- Categories Section with Scroll Animations --- */
+        .categories { padding: 80px 0; }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        
+        .category-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px var(--shadow-color);
+            transition: transform 0.4s ease, border-color 0.4s ease, opacity 0.5s ease, transform 0.5s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .category-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .category-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px) !important;
+        }
+        
+        .category-header {
+            background-color: rgba(0,0,0,0.3);
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            height: 120px;
+            position: relative;
+        }
+        .category-header img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            opacity: 0.5;
+            filter: blur(2px);
+            transition: opacity 0.5s ease-in-out, filter 0.5s ease-in-out;
+        }
+        .category-header img.loaded {
+            opacity: 1;
+            filter: blur(0);
+        }
+        
+        .category-icon { font-size: 2.2rem; color: var(--light); text-shadow: 0 2px 5px #000; }
+        .category-header h3 { font-size: 1.5rem; color: var(--light); text-shadow: 0 2px 5px #000; font-weight: 700; }
+
+        .category-content { padding: 25px; }
+        .resource-list { list-style: none; }
+        .resource-list li { padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+        .resource-list li:last-child { border-bottom: none; }
+        
+        .resource-list a {
+            color: var(--light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: color 0.3s, transform 0.3s;
+            font-weight: 600;
+        }
+        
+        .resource-list a:hover {
+            color: var(--secondary);
+            transform: translateX(5px);
+        }
+        .resource-list i { color: var(--gray); font-size: 0.9rem; }
+
+        /* --- No Results Message --- */
+        .no-results-message {
+            display: none;
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 20px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+        .no-results-message i {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+        .no-results-message h3 {
+            font-size: 1.5rem;
+            color: var(--light);
+        }
+        .no-results-message p {
+            color: var(--gray);
+            max-width: 400px;
+            margin: 10px auto 0;
+        }
+        
+        /* --- Footer --- */
+        footer {
+            background-color: var(--dark);
+            color: var(--light);
+            padding: 50px 0 25px;
+            margin-top: 50px;
+            text-align: center;
+            border-top: 2px solid var(--primary);
+        }
+        .copyright { color: var(--gray); font-size: 0.9rem; }
+        .credit { margin-top: 10px; color: var(--secondary); font-weight: 500; }
+        .credit a { color: var(--secondary); text-decoration: none; }
+
+        /* --- Back to Top Button --- */
+        #back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+        }
+        #back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-areas:
+                    "canvas canvas"
+                    "hokiespa hokiespa"
+                    "calendar onecampus"
+                    "starrez handshake";
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-container { flex-direction: column; gap: 20px; }
+            nav ul { flex-wrap: wrap; justify-content: center; }
+            .aurora-1 { width: 80vw; height: 80vw; }
+            .aurora-2 { width: 70vw; height: 70vw; }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "canvas"
+                    "hokiespa"
+                    "calendar"
+                    "onecampus"
+                    "starrez"
+                    "handshake";
+            }
+            .dashboard-card.canvas, .dashboard-card.hokiespa {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            .dashboard-card.canvas .dashboard-icon, .dashboard-card.hokiespa .dashboard-icon {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="progress-bar"></div>
+    <div class="aurora-background">
+        <div class="aurora aurora-1"></div>
+        <div class="aurora aurora-2"></div>
+    </div>
+    
+    <header>
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-feather-alt logo-icon"></i>
+                <h1>Hokie Ehall</h1>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#dashboard-section"><i class="fas fa-tachometer-alt"></i> 核心仪表盘</a></li>
+                    <li><a href="#categories-section"><i class="fas fa-th-large"></i> 资源分类</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="search-section">
+            <div class="container">
+                <h2>弗吉尼亚理工一站式资源门户</h2>
+                <p>一个符合VT学生使用直觉的导航网站</p>
+                <form class="search-box" id="search-form">
+                    <input type="text" placeholder="搜索服务、资源或关键词 (如 Canvas, 选课)...">
+                    <button type="button" id="clear-search" class="clear-button" aria-label="Clear search">&times;</button>
+                    <button type="submit" id="search-button" aria-label="Search"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+        </section>
+
+        <section id="dashboard-section" class="dashboard">
+            <div class="container">
+                <h2 class="section-title">核心仪表盘</h2>
+                <div class="dashboard-grid">
+                    <a href="https://canvas.vt.edu/" target="_blank" class="dashboard-card canvas">
+                        <i class="fas fa-book-open dashboard-icon"></i>
+                        <div class="dashboard-text">
+                            <h3>Canvas</h3>
+                            <p>日常课程学习、作业提交与成绩反馈</p>
+                        </div>
+                    </a>
+                    <a href="https://hokiespa.vt.edu/" target="_blank" class="dashboard-card hokiespa">
+                        <i class="fas fa-user-circle dashboard-icon"></i>
+                        <div class="dashboard-text">
+                            <h3>Hokie Spa</h3>
+                            <p>官方成绩、课程注册与财务中心</p>
+                        </div>
+                    </a>
+                    <a href="https://www.registrar.vt.edu/dates-deadlines/academic-calendar.html" target="_blank" class="dashboard-card calendar">
+                        <i class="fas fa-calendar-alt dashboard-icon"></i>
+                        <h3>校历</h3>
+                        <p>学期与假期关键日期</p>
+                    </a>
+                    <a href="https://onecampus.vt.edu/" target="_blank" class="dashboard-card onecampus">
+                        <i class="fas fa-th-large dashboard-icon"></i>
+                        <h3>OneCampus</h3>
+                        <p>服务与应用快速访问入口</p>
+                    </a>
+                    <a href="https://vt.starrezhousing.com/StarRezPortalX/" target="_blank" class="dashboard-card starrez">
+                        <i class="fas fa-building dashboard-icon"></i>
+                        <h3>StarRez</h3>
+                        <p>住宿与餐饮计划管理</p>
+                    </a>
+                    <a href="https://vt.joinhandshake.com/" target="_blank" class="dashboard-card handshake">
+                        <i class="fas fa-handshake dashboard-icon"></i>
+                        <h3>Handshake</h3>
+                        <p>寻找实习与职业咨询</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="categories-section" class="categories">
+            <div class="container">
+                <h2 class="section-title">资源分类</h2>
+                <div class="category-grid" id="category-grid">
+                    <div id="no-results" class="no-results-message">
+                        <i class="fas fa-search-minus"></i>
+                        <h3>未找到匹配的资源</h3>
+                        <p>请尝试更换关键词或检查拼写。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p class="copyright">&copy; 2025 Hokie Ehall - 弗吉尼亚理工学生资源门户</p>
+            <p class="credit">由 <a href="https://shimmer0007.github.io" target="_blank">Shimmer</a> 设计 & 开发</p>
+        </div>
+    </footer>
+
+    <button id="back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /* --- 主题同步逻辑 --- */
+            // 1. 监听来自父页面的消息
+            window.addEventListener('message', (event) => {
+                // 为安全起见，可以检查 event.origin，但对于本地文件或同源则非必需
+                if (event.data && event.data.type === 'theme-change') {
+                    const theme = event.data.theme;
+                    document.body.dataset.theme = theme; // 应用主题
+                }
+            });
+            // 2. 页面加载完成后，向父页面请求当前主题
+            window.parent.postMessage({ type: 'get-theme' }, '*');
+
+            // --- Debounce function for performance optimization ---
+            const debounce = (func, delay) => {
+                let timeoutId;
+                return (...args) => {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        func.apply(this, args);
+                    }, delay);
+                };
+            }; // <-- ✅ 修正点：这里多余的 `};` 已被移除
+
+            // --- Data source for all categories and resources ---
+            const resourceData = [
+                {
+                    title: "学业命脉",
+                    icon: "fas fa-graduation-cap",
+                    img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=60",
+                    keywords: "学业 命脉 Academics Success 课程 注册 成绩 时间表 校历 图书馆 辅导 写作 荣誉 Genio AI TLOS",
+                    resources: [
+                        { name: "课程时间表", url: "https://apps.es.vt.edu/ssb/vt/index.html", keywords: "Timetable 选课" },
+                        { name: "Genio (AI学习工具)", url: "https://tlos.vt.edu/tools/genio.html", keywords: "人工智能 笔记" },
+                        { name: "TLOS 学术工具集", url: "https://tlos.vt.edu/tools.html", keywords: "Kaltura Gradescope Turnitin" },
+                        { name: "大学图书馆", url: "https://lib.vt.edu/", keywords: "Library" },
+                        { name: "学生成功中心 (辅导)", url: "https://studentsuccess.vt.edu/", keywords: "tutoring" },
+                        { name: "写作中心", url: "https://studentsuccess.vt.edu/writing_center", keywords: "writing center" },
+                        { name: "荣誉代码办公室", url: "https://honorsystem.vt.edu/", keywords: "Honor Code" }
+                    ]
+                },
+                {
+                    title: "钱包与生计",
+                    icon: "fas fa-wallet",
+                    img: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=800&q=60",
+                    keywords: "钱包 生计 Finances Employment Hokie Wallet 学费 账单 经济援助 奖学金 工作 实习",
+                    resources: [
+                        { name: "财务处 (学费账单)", url: "https://www.bursar.vt.edu/", keywords: "Bursar Office tuition bill" },
+                        { name: "经济援助办公室", url: "https://finaid.vt.edu/", keywords: "Financial Aid" },
+                        { name: "奖学金申请", url: "https://vt.academicworks.com/", keywords: "Scholarships" },
+                        { name: "学生就业办公室", url: "https://www.seo.vt.edu/", keywords: "student employment" },
+                        { name: "Hokie Passport (校园卡)", url: "https://hokiepassport.vt.edu/", keywords: "Hokie Wallet 校园卡支付" }
+                    ]
+                },
+                {
+                    title: "生存必需",
+                    icon: "fas fa-utensils",
+                    img: "https://images.unsplash.com/photo-1543336398-3e2c1b7022ec?auto=format&fit=crop&w=800&q=60",
+                    keywords: "生存 必需 Campus Life Logistics 吃 住 行 住宿 餐饮 邮件 包裹 公交 停车 地图",
+                    resources: [
+                        { name: "餐饮服务/菜单", url: "https://dining.vt.edu/", keywords: "Dining Services" },
+                        { name: "邮件包裹服务", url: "https://mailservices.vt.edu/student-mail.html", keywords: "Mail Services" },
+                        { name: "BT Transit (黑堡公交)", url: "https://ridebt.org/", keywords: "bus" },
+                        { name: "停车服务", url: "https://parking.vt.edu/", keywords: "Parking" },
+                        { name: "校园地图", url: "https://www.vt.edu/about/locations/maps.html", keywords: "map" }
+                    ]
+                },
+                {
+                    title: "健康与安全",
+                    icon: "fas fa-shield-alt",
+                    img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=60",
+                    keywords: "健康 安全 Health Safety 医疗 心理 Schiffert Cook 警报 警察 VTPD Safe Ride",
+                    resources: [
+                        { name: "Schiffert 健康中心", url: "https://healthcenter.vt.edu/", keywords: "校医院 medical" },
+                        { name: "Cook 咨询中心", url: "https://ucc.vt.edu/", keywords: "心理健康 counseling" },
+                        { name: "VT Alerts 紧急警报", url: "https://www.alerts.vt.edu/", keywords: "Emergency Alert System" },
+                        { name: "校园警察 (VTPD)", url: "https://police.vt.edu/", keywords: "police" },
+                        { name: "Safe Ride 夜间护送", url: "https://police.vt.edu/saferide.html", keywords: "夜间安全送回服务" },
+                        { name: "娱乐体育 (健身房)", url: "https://recsports.vt.edu/", keywords: "Recreational Sports gym" }
+                    ]
+                },
+                {
+                    title: "社交与成长",
+                    icon: "fas fa-users",
+                    img: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=60",
+                    keywords: "社交 成长 Involvement Career GobblerConnect 社团 活动 职业 CPD 研究生 创业 转学生",
+                    resources: [
+                        { name: "GobblerConnect (学生社团)", url: "https://gobblerconnect.vt.edu/", keywords: "clubs organizations" },
+                        { name: "大学活动日历", url: "https://news.vt.edu/events.html", keywords: "events calendar" },
+                        { name: "职业与专业发展中心", url: "https://career.vt.edu/", keywords: "CPD" },
+                        { name: "研究生院信息", url: "https://graduateschool.vt.edu/", keywords: "graduate school" },
+                        { name: "Apex 创业中心", url: "https://apex.vt.edu/", keywords: "entrepreneurship" },
+                        { name: "转学生资源", url: "https://studentsuccess.vt.edu/transfer-student-initiatives.html", keywords: "transfer students" }
+                    ]
+                },
+                {
+                    title: "技术支持",
+                    icon: "fas fa-laptop-code",
+                    img: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=60",
+                    keywords: "技术 支持 Tech IT 4Help 软件 eduroam Duo",
+                    resources: [
+                        { name: "4Help (IT服务台)", url: "https://4help.vt.edu/", keywords: "IT help desk" },
+                        { name: "软件下载中心", url: "https://software.vt.edu/", keywords: "software download" },
+                        { name: "eduroam设置指南", url: "https://4help.vt.edu/sp?id=kb_article&sys_id=e7000d070f360a40d3244b9ce1050e93", keywords: "Wifi" },
+                        { name: "Duo双因素认证", url: "https://it.vt.edu/services/2fa.html", keywords: "two factor authentication" }
+                    ]
+                },
+                {
+                    title: "校园文化与娱乐",
+                    icon: "fas fa-palette",
+                    img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=60",
+                    keywords: "文化 娱乐 体育 艺术 户外 Hokie Sports Moss Center Venture Out 橄榄球 传统 精神 规定",
+                    resources: [
+                        { name: "Hokie Sports (体育竞技)", url: "https://hokiesports.com/", keywords: "体育 竞技 橄榄球 篮球 Athletics" },
+                        { name: "Moss Arts Center (艺术中心)", url: "https://artscenter.vt.edu/", keywords: "表演 展览" },
+                        { name: "Venture Out (户外活动)", url: "https://recsports.vt.edu/outdooractivities/trips.html", keywords: "探险 爬山" },
+                        { name: "Collegiate Times (学生校报)", url: "https://www.collegiatetimes.com/", keywords: "校报 学生媒体 新闻" },
+                        { name: "学生行为准则", url: "https://codeofconduct.vt.edu/", keywords: "Student Code of Conduct 规定" }
+                    ]
+                }
+            ];
+
+            const categoryGrid = document.getElementById('category-grid');
+            let observer;
+
+            // --- Function to render cards from data ---
+            const renderContent = (data) => {
+                const noResultsNode = document.getElementById('no-results');
+                categoryGrid.innerHTML = ''; 
+                categoryGrid.appendChild(noResultsNode);
+
+                if (!data || data.length === 0) {
+                    return;
+                }
+
+                data.forEach(category => {
+                    const card = document.createElement('div');
+                    card.className = 'category-card';
+                    
+                    const resourceLinks = category.resources.map(link => `
+                        <li>
+                            <a href="${link.url}" target="_blank" data-keywords="${link.keywords || ''}">
+                                <i class="fas fa-link"></i>
+                                <span class="link-text">${link.name}</span>
+                            </a>
+                        </li>
+                    `).join('');
+
+                    card.innerHTML = `
+                        <div class="category-header">
+                            <img data-src="${category.img}" alt="${category.title}">
+                            <i class="${category.icon} category-icon"></i>
+                            <h3 class="category-title">${category.title}</h3>
+                        </div>
+                        <div class="category-content">
+                            <ul class="resource-list">
+                                ${resourceLinks}
+                            </ul>
+                        </div>
+                    `;
+                    card.dataset.keywords = category.keywords.toLowerCase();
+                    card.dataset.originalTitle = category.title;
+                    
+                    categoryGrid.insertBefore(card, noResultsNode);
+                });
+                
+                setupObserver();
+            };
+            
+            // --- Sticky Header with Frosted Glass Effect ---
+            const header = document.querySelector('header');
+            window.addEventListener('scroll', () => {
+                header.classList.toggle('scrolled', window.scrollY > 50);
+            });
+
+            // --- Reading Progress Bar ---
+            const progressBar = document.getElementById('progress-bar');
+            window.addEventListener('scroll', () => {
+                const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrolledPercentage = (window.scrollY / scrollableHeight) * 100;
+                progressBar.style.width = `${scrolledPercentage}%`;
+            });
+
+            // --- Scroll Animations & Lazy Loading Setup ---
+            const setupObserver = () => {
+                observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry, index) => {
+                        if (entry.isIntersecting) {
+                            setTimeout(() => {
+                                entry.target.classList.add('visible');
+                            }, index * 100);
+
+                            const img = entry.target.querySelector('img[data-src]');
+                            if (img && !img.src) {
+                                img.src = img.dataset.src;
+                                img.onload = () => img.classList.add('loaded');
+                            }
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                document.querySelectorAll('.category-card').forEach(card => {
+                    observer.observe(card);
+                });
+            };
+
+            // --- Real-time Fuzzy Search Filter ---
+            const searchForm = document.getElementById('search-form');
+            const searchInput = document.querySelector('.search-box input');
+            const clearSearchBtn = document.getElementById('clear-search');
+            const noResultsMessage = document.getElementById('no-results');
+
+            const updateURL = (term) => {
+                const url = new URL(window.location);
+                if (term) {
+                    url.searchParams.set('q', term);
+                } else {
+                    url.searchParams.delete('q');
+                }
+                window.history.replaceState({ search: term }, '', url.toString());
+            };
+
+            const escapeRegExp = (string) => {
+                return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            };
+
+            const createFuzzyRegex = (term) => {
+                if (!term) return null;
+                const escapedTerm = escapeRegExp(term);
+                const fuzzyPattern = escapedTerm.split('').join('.*?');
+                return new RegExp(fuzzyPattern, 'gi');
+            };
+
+            const handleFilter = () => {
+                const searchTerm = searchInput.value.trim();
+                const searchTermLower = searchTerm.toLowerCase();
+                const fuzzyRegex = createFuzzyRegex(searchTermLower);
+                let overallResultsFound = false;
+
+                updateURL(searchTerm);
+
+                clearSearchBtn.style.display = searchTerm.length > 0 ? 'block' : 'none';
+
+                const allCards = categoryGrid.querySelectorAll('.category-card');
+
+                allCards.forEach(card => {
+                    const cardTitle = card.dataset.originalTitle;
+                    const cardKeywords = card.dataset.keywords;
+                    const cardContent = (cardTitle + ' ' + cardKeywords).toLowerCase();
+                    
+                    const resourceLinks = card.querySelectorAll('.resource-list li');
+                    let hasVisibleLinks = false;
+
+                    card.querySelector('.category-title').innerHTML = cardTitle;
+                    resourceLinks.forEach(li => {
+                        const linkTextElement = li.querySelector('.link-text');
+                        if(linkTextElement) linkTextElement.innerHTML = linkTextElement.parentElement.text.trim();
+                    });
+
+                    if (!searchTermLower) {
+                        card.style.display = '';
+                        resourceLinks.forEach(li => li.style.display = '');
+                        overallResultsFound = true;
+                        return;
+                    }
+
+                    resourceLinks.forEach(li => {
+                        const link = li.querySelector('a');
+                        const linkText = link.textContent.trim().toLowerCase();
+                        const linkKeywords = (link.dataset.keywords || '').toLowerCase();
+                        const linkContent = linkText + ' ' + linkKeywords;
+                        
+                        if (fuzzyRegex.test(linkContent)) {
+                            li.style.display = '';
+                            hasVisibleLinks = true;
+                            overallResultsFound = true;
+                            
+                            fuzzyRegex.lastIndex = 0;
+                            const linkTextElement = li.querySelector('.link-text');
+                            const originalLinkText = link.text.trim();
+                            linkTextElement.innerHTML = originalLinkText.replace(new RegExp(fuzzyRegex.source, 'gi'), (match) => `<mark>${match}</mark>`);
+
+                        } else {
+                            li.style.display = 'none';
+                        }
+                    });
+                    
+                    fuzzyRegex.lastIndex = 0;
+                    const cardTitleMatches = fuzzyRegex.test(cardContent);
+                    if (cardTitleMatches) {
+                        resourceLinks.forEach(li => li.style.display = '');
+                        fuzzyRegex.lastIndex = 0;
+                        card.querySelector('.category-title').innerHTML = cardTitle.replace(new RegExp(fuzzyRegex.source, 'gi'), (match) => `<mark>${match}</mark>`);
+                    }
+
+                    if (hasVisibleLinks || cardTitleMatches) {
+                        card.style.display = '';
+                        overallResultsFound = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                noResultsMessage.style.display = (searchTermLower !== '' && !overallResultsFound) ? 'block' : 'none';
+            };
+            
+            const debouncedHandleFilter = debounce(handleFilter, 200);
+            searchInput.addEventListener('input', debouncedHandleFilter);
+
+            searchForm.addEventListener('submit', (event) => {
+                event.preventDefault(); 
+                handleFilter();
+                document.getElementById('categories-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                searchInput.blur();
+            });
+
+            clearSearchBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                handleFilter();
+                searchInput.focus();
+            });
+
+            // --- Back to Top Button ---
+            const backToTopButton = document.getElementById('back-to-top');
+            window.addEventListener('scroll', () => {
+                backToTopButton.classList.toggle('visible', window.scrollY > 300);
+            });
+            backToTopButton.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // --- Initial Render ---
+            renderContent(resourceData);
+
+            // --- Read URL on load and apply filter ---
+            const initialLoad = () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const query = urlParams.get('q');
+                if (query) {
+                    searchInput.value = query;
+                    handleFilter();
+                }
+            };
+            initialLoad();
+            
+        });
+    </script>
+</body>
+</html>
