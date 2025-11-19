@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShimmerOS</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ShimmerOS</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap"
+            rel="stylesheet">
+        <style>
         /* --- Modern Theme & Color Scheme --- */
         :root {
             --bg-color: #1a1d24;
@@ -222,175 +224,325 @@
             .github-user-profile { flex-direction: column; align-items: center; text-align: center; }
         }
     </style>
-</head>
-<body data-theme="dark">
+    </head>
+    <body data-theme="dark">
 
-    <div id="shimmer-boot-screen">
-        <div class="shimmer-logo">Shimmer<span>OS</span></div>
-        <div class="progress-bar"><div id="progress-bar-inner" class="progress-bar-inner"></div></div>
-    </div>
-    
-    <div id="desktop">
-        <div class="desktop-icon" data-window-id="blog-window"><div class="icon-image">📝</div><span class="icon-label" data-lang-key="icon_blog"></span></div>
-        <div class="desktop-icon" data-window-id="notes-window"><div class="icon-image">📚</div><span class="icon-label" data-lang-key="icon_notes"></span></div>
-        <div class="desktop-icon" data-window-id="skills-window"><div class="icon-image">🌱</div><span class="icon-label" data-lang-key="icon_skills"></span></div>
-        <div class="desktop-icon" data-window-id="about-window"><div class="icon-image">🧑‍🚀</div><span class="icon-label" data-lang-key="icon_about"></span></div>
-        <div class="desktop-icon" data-window-id="project-window"><div class="icon-image">📂</div><span class="icon-label" data-lang-key="icon_projects"></span></div>
-        <div class="desktop-icon" data-window-id="hokiehub-window"><div class="icon-image">🦃</div><span class="icon-label" data-lang-key="icon_hokiehub"></span></div>
-        <div class="desktop-icon" data-window-id="api-window"><div class="icon-image">🛰️</div><span class="icon-label" data-lang-key="icon_github"></span></div>
-        <div class="desktop-icon" data-window-id="settings-window"><div class="icon-image">⚙️</div><span class="icon-label" data-lang-key="icon_settings"></span></div>
-        <div class="desktop-icon" data-window-id="anniversary-window"><div class="icon-image">🎂</div><span class="icon-label" data-lang-key="icon_anniversary"></span></div>
-        <div class="desktop-icon" data-window-id="travel-window"><div class="icon-image">🗺️</div><span class="icon-label" data-lang-key="icon_travel"></span></div>
-        <div class="desktop-icon" data-window-id="plan-window"><div class="icon-image">📅</div><span class="icon-label" data-lang-key="icon_plan"></span></div>
-        <div class="desktop-icon" data-window-id="links-window"><div class="icon-image">🤝</div><span class="icon-label" data-lang-key="icon_links"></span></div>
-    </div>
-
-    <div id="hokiehub-window" class="window" style="top: 10%; left: 10%; width: 80%; height: 80%;">
-        <div class="title-bar"><span data-lang-key="title_hokiehub"></span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body" style="padding:0; overflow:hidden;">
-            <iframe src="hokiesehall/hokiesehall.html" style="width:100%; height:100%; border:0;"></iframe>
+        <div id="shimmer-boot-screen">
+            <div class="shimmer-logo">Shimmer<span>OS</span></div>
+            <div class="progress-bar"><div id="progress-bar-inner"
+                    class="progress-bar-inner"></div></div>
         </div>
-    </div>
 
-    <div id="about-window" class="window" style="top: 15%; left: 30%; width: 50%; height: 70%;">
-        <div class="title-bar"><span data-lang-key="title_about"></span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body" style="padding:0; overflow:hidden;">
-            <iframe src="about/me.html" style="width:100%; height:100%; border:0;"></iframe>
+        <div id="desktop">
+            <div class="desktop-icon" data-window-id="blog-window"><div
+                    class="icon-image">📝</div><span class="icon-label"
+                    data-lang-key="icon_blog"></span></div>
+            <div class="desktop-icon" data-window-id="notes-window"><div
+                    class="icon-image">📚</div><span class="icon-label"
+                    data-lang-key="icon_notes"></span></div>
+            <div class="desktop-icon" data-window-id="skills-window"><div
+                    class="icon-image">🌱</div><span class="icon-label"
+                    data-lang-key="icon_skills"></span></div>
+            <div class="desktop-icon" data-window-id="about-window"><div
+                    class="icon-image">🧑‍🚀</div><span class="icon-label"
+                    data-lang-key="icon_about"></span></div>
+            <div class="desktop-icon" data-window-id="project-window"><div
+                    class="icon-image">📂</div><span class="icon-label"
+                    data-lang-key="icon_projects"></span></div>
+            <div class="desktop-icon" data-window-id="hokiehub-window"><div
+                    class="icon-image">🦃</div><span class="icon-label"
+                    data-lang-key="icon_hokiehub"></span></div>
+            <div class="desktop-icon" data-window-id="api-window"><div
+                    class="icon-image">🛰️</div><span class="icon-label"
+                    data-lang-key="icon_github"></span></div>
+            <div class="desktop-icon" data-window-id="settings-window"><div
+                    class="icon-image">⚙️</div><span class="icon-label"
+                    data-lang-key="icon_settings"></span></div>
+            <div class="desktop-icon" data-window-id="anniversary-window"><div
+                    class="icon-image">🎂</div><span class="icon-label"
+                    data-lang-key="icon_anniversary"></span></div>
+            <div class="desktop-icon" data-window-id="travel-window"><div
+                    class="icon-image">🗺️</div><span class="icon-label"
+                    data-lang-key="icon_travel"></span></div>
+            <div class="desktop-icon" data-window-id="plan-window"><div
+                    class="icon-image">📅</div><span class="icon-label"
+                    data-lang-key="icon_plan"></span></div>
+            <div class="desktop-icon" data-window-id="links-window"><div
+                    class="icon-image">🤝</div><span class="icon-label"
+                    data-lang-key="icon_links"></span></div>
         </div>
-    </div>
 
-    <div id="skills-window" class="window" style="top: 25%; left: 25%; width: 60%; height: 65%;">
-        <div class="title-bar"><span data-lang-key="title_skills"></span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body" style="padding:0; overflow:hidden;">
-            <iframe src="skill/tree.html" style="width:100%; height:100%; border:0;"></iframe>
-        </div>
-    </div>
-
-    <div id="terminal-window" class="window" style="top: 40%; left: 40%; width: 550px; height: 380px;">
-        <div class="title-bar"><span>ShimmerCMD</span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body" id="terminal-body" tabindex="0">
-            <div id="terminal-output"></div>
-            <div id="terminal-input-line">
-                <span class="terminal-prompt"></span>
-                <span id="terminal-input"></span>
-                <span class="cursor"></span>
+        <div id="hokiehub-window" class="window"
+            style="top: 10%; left: 10%; width: 80%; height: 80%;">
+            <div class="title-bar"><span
+                    data-lang-key="title_hokiehub"></span><div
+                    class="title-bar-controls"><div
+                        class="control-button close-btn"></div></div></div>
+            <div class="window-body" style="padding:0; overflow:hidden;">
+                <iframe src="hokiesehall/hokiesehall.html"
+                    style="width:100%; height:100%; border:0;"></iframe>
             </div>
-            <input type="text" id="hidden-terminal-input" style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; opacity: 0;" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         </div>
-    </div>
 
-    <div id="anniversary-window" class="window" style="top: 10%; left: 15%; width: 70vw; height: 75vh;">
-    <div class="title-bar">
-        <span data-lang-key="title_anniversary"></span>
-        <div class="title-bar-controls">
-            <div class="control-button close-btn"></div>
+        <div id="about-window" class="window"
+            style="top: 15%; left: 30%; width: 50%; height: 70%;">
+            <div class="title-bar"><span data-lang-key="title_about"></span><div
+                    class="title-bar-controls"><div
+                        class="control-button close-btn"></div></div></div>
+            <div class="window-body" style="padding:0; overflow:hidden;">
+                <iframe src="about/me.html"
+                    style="width:100%; height:100%; border:0;"></iframe>
+            </div>
         </div>
-    </div>
-        <div class="window-body" style="display:flex; align-items:center; justify-content:center;">
-            <div id="clock-widget">--:--:--</div>
-            <iframe src="anniversary/1st.html" style="width:100%; height:100%; border:0;"></iframe>
+
+        <div id="skills-window" class="window"
+            style="top: 25%; left: 25%; width: 60%; height: 65%;">
+            <div class="title-bar"><span
+                    data-lang-key="title_skills"></span><div
+                    class="title-bar-controls"><div
+                        class="control-button close-btn"></div></div></div>
+            <div class="window-body" style="padding:0; overflow:hidden;">
+                <iframe src="skill/tree.html"
+                    style="width:100%; height:100%; border:0;"></iframe>
+            </div>
         </div>
-    </div>
 
-    <div id="blog-window" class="window" style="top: 15%; left: 14%; width: 82%; height: 70%;"><div class="title-bar"><span data-lang-key="title_blog"></span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div><div class="window-body" style="padding:0; overflow:hidden;"><iframe src="blog/blognav.html" style="width:100%; height:100%; border:0;"></iframe></div></div>
-    <div id="notes-window" class="window" style="top: 20%; left: 25%; width: 60%; height: 70%;"><div class="title-bar"><span data-lang-key="title_notes"></span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div><div class="window-body" style="padding:0; overflow:hidden;"><iframe src="note/notenav.html" style="width:100%; height:100%; border:0;"></iframe></div></div>
-
-    <div id="project-window" class="window" style="top: 20%; left: 15%; width: 600px; height: 600px;">
-        <div class="title-bar"><span data-lang-key="title_projects"></span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body">
-            <div id="project-list-view">
+        <div id="terminal-window" class="window"
+            style="top: 40%; left: 40%; width: 550px; height: 380px;">
+            <div class="title-bar"><span>ShimmerCMD</span><div
+                    class="title-bar-controls"><div
+                        class="control-button close-btn"></div></div></div>
+            <div class="window-body" id="terminal-body" tabindex="0">
+                <div id="terminal-output"></div>
+                <div id="terminal-input-line">
+                    <span class="terminal-prompt"></span>
+                    <span id="terminal-input"></span>
+                    <span class="cursor"></span>
                 </div>
-            <div id="project-detail-view">
-                <span class="back-to-projects-btn" data-lang-key="project_back"></span>
-                <div id="project-detail-content"></div>
+                <input type="text" id="hidden-terminal-input"
+                    style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; opacity: 0;"
+                    autocomplete="off" autocorrect="off" autocapitalize="off"
+                    spellcheck="false">
             </div>
         </div>
-    </div>
-    <div id="api-window" class="window" style="top: 30%; left: 35%; width: 550px; height: auto; min-height: 350px;">
-        <div class="title-bar"><span data-lang-key="title_github"></span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body">
-            <div class="input-group">
-                <input type="text" id="github-username-input" data-lang-key-placeholder="github_placeholder">
-                <button id="github-query-btn" data-lang-key="github_query"></button>
-            </div>
-            <div id="github-response-area">
-                <p style="color: var(--text-medium);" data-lang-key="github_prompt"></p>
-            </div>
-        </div>
-    </div>
-    <div id="settings-window" class="window" style="top: 20%; left: 30%; width: 450px; height: auto;">
-        <div class="title-bar"><span data-lang-key="title_settings"></span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body">
-            <div class="settings-section">
-                <h3 data-lang-key="settings_theme"></h3>
-                <div class="theme-switcher">
-                    <button class="theme-button active" data-theme="dark" data-lang-key="settings_theme_dark"></button>
-                    <button class="theme-button" data-theme="light" data-lang-key="settings_theme_light"></button>
-                </div>
-            </div>
-            <div class="settings-section">
-                <h3 data-lang-key="settings_accent"></h3>
-                <div class="accent-colors">
-                    <div class="color-swatch active" style="background-color: #007aff;" data-color="#007aff" data-lang-key-title="color_blue_title"></div>
-                    <div class="color-swatch" style="background-color: #7b5ea7;" data-color="#7b5ea7" data-lang-key-title="color_purple_title"></div>
-                    <div class="color-swatch" style="background-color: #8a1d1d;" data-color="#c82a2a" data-lang-key-title="color_red_title"></div>
-                    <div class="color-swatch" style="background-color: #070707;" data-color="#070707" data-lang-key-title="color_black_title"></div>
-                    <div class="color-swatch" style="background-color: #fff133;" data-color="#fff133" data-lang-key-title="color_gold_title"></div>
+
+        <div id="anniversary-window" class="window"
+            style="top: 10%; left: 15%; width: 70vw; height: 75vh;">
+            <div class="title-bar">
+                <span data-lang-key="title_anniversary"></span>
+                <div class="title-bar-controls">
+                    <div class="control-button close-btn"></div>
                 </div>
             </div>
-             <div class="settings-section">
-                <h3 data-lang-key="settings_language"></h3>
-                <div class="language-switcher">
-                    <button class="lang-button" data-lang="zh" data-lang-key="lang_zh"></button>
-                    <button class="lang-button" data-lang="en" data-lang-key="lang_en"></button>
+            <div class="window-body"
+                style="display:flex; align-items:center; justify-content:center;">
+                <div id="clock-widget">--:--:--</div>
+                <iframe src="anniversary/1st.html"
+                    style="width:100%; height:100%; border:0;"></iframe>
+            </div>
+        </div>
+
+        <div id="blog-window" class="window"
+            style="top: 15%; left: 14%; width: 82%; height: 70%;"><div
+                class="title-bar"><span data-lang-key="title_blog"></span><div
+                    class="title-bar-controls"><div
+                        class="control-button close-btn"></div></div></div><div
+                class="window-body" style="padding:0; overflow:hidden;"><iframe
+                    src="blog/blognav.html"
+                    style="width:100%; height:100%; border:0;"></iframe></div></div>
+        <div id="notes-window" class="window"
+            style="top: 20%; left: 25%; width: 60%; height: 70%;"><div
+                class="title-bar"><span data-lang-key="title_notes"></span><div
+                    class="title-bar-controls"><div
+                        class="control-button close-btn"></div></div></div><div
+                class="window-body" style="padding:0; overflow:hidden;"><iframe
+                    src="note/notenav.html"
+                    style="width:100%; height:100%; border:0;"></iframe></div></div>
+
+        <div id="project-window" class="window"
+            style="top: 20%; left: 15%; width: 600px; height: 600px;">
+            <div class="title-bar"><span
+                    data-lang-key="title_projects"></span><div
+                    class="title-bar-controls"><div
+                        class="control-button close-btn"></div></div></div>
+            <div class="window-body">
+                <div id="project-list-view">
+                </div>
+                <div id="project-detail-view">
+                    <span class="back-to-projects-btn"
+                        data-lang-key="project_back"></span>
+                    <div id="project-detail-content"></div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div id="travel-window" class="window" style="top: 15%; left: 15%; width: 70vw; height: 75vh;">
-        <div class="title-bar"><span data-lang-key="title_travel"></span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body" style="padding:0; overflow:hidden;">
-            <iframe src="travelmap/map.html" style="width:100%; height:100%; border:0;"></iframe>
-        </div>
-    </div>
-
-    <div id="plan-window" class="window" style="top: 25%; left: 25%; width: 60%; height: 65%;">
-        <div class="title-bar">
-            <span data-lang-key="title_plan"></span>
-            <div class="title-bar-controls">
-                <div class="control-button close-btn"></div>
+        <div id="api-window" class="window"
+            style="top: 30%; left: 35%; width: 550px; height: auto; min-height: 350px;">
+            <div class="title-bar"><span
+                    data-lang-key="title_github"></span><div
+                    class="title-bar-controls"><div
+                        class="control-button close-btn"></div></div></div>
+            <div class="window-body">
+                <div class="input-group">
+                    <input type="text" id="github-username-input"
+                        data-lang-key-placeholder="github_placeholder">
+                    <button id="github-query-btn"
+                        data-lang-key="github_query"></button>
+                </div>
+                <div id="github-response-area">
+                    <p style="color: var(--text-medium);"
+                        data-lang-key="github_prompt"></p>
+                </div>
             </div>
         </div>
-        <div class="window-body" style="padding:0; overflow:hidden;">
-            <iframe src="plan/short.html" style="width:100%; height:100%; border:0;"></iframe>
+        <div id="settings-window" class="window"
+            style="top: 20%; left: 30%; width: 450px; height: auto;">
+            <div class="title-bar"><span
+                    data-lang-key="title_settings"></span><div
+                    class="title-bar-controls"><div
+                        class="control-button close-btn"></div></div></div>
+            <div class="window-body">
+                <div class="settings-section">
+                    <h3 data-lang-key="settings_theme"></h3>
+                    <div class="theme-switcher">
+                        <button class="theme-button active" data-theme="dark"
+                            data-lang-key="settings_theme_dark"></button>
+                        <button class="theme-button" data-theme="light"
+                            data-lang-key="settings_theme_light"></button>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3 data-lang-key="settings_accent"></h3>
+                    <div class="accent-colors">
+                        <div class="color-swatch active"
+                            style="background-color: #007aff;"
+                            data-color="#007aff"
+                            data-lang-key-title="color_blue_title"></div>
+                        <div class="color-swatch"
+                            style="background-color: #7b5ea7;"
+                            data-color="#7b5ea7"
+                            data-lang-key-title="color_purple_title"></div>
+                        <div class="color-swatch"
+                            style="background-color: #8a1d1d;"
+                            data-color="#c82a2a"
+                            data-lang-key-title="color_red_title"></div>
+                        <div class="color-swatch"
+                            style="background-color: #070707;"
+                            data-color="#070707"
+                            data-lang-key-title="color_black_title"></div>
+                        <div class="color-swatch"
+                            style="background-color: #fff133;"
+                            data-color="#fff133"
+                            data-lang-key-title="color_gold_title"></div>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3 data-lang-key="settings_language"></h3>
+                    <div class="language-switcher">
+                        <button class="lang-button" data-lang="zh"
+                            data-lang-key="lang_zh"></button>
+                        <button class="lang-button" data-lang="en"
+                            data-lang-key="lang_en"></button>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div id="links-window" class="window" style="top: 30%; left: 40%; width: 380px; height: 420px;">
-        <div class="title-bar"><span data-lang-key="title_links"></span><div class="title-bar-controls"><div class="control-button close-btn"></div></div></div>
-        <div class="window-body">
-            <h3 data-lang-key="links_header"></h3>
-            <ul style="list-style: none; padding-left: 0;">
-                <li style="margin-bottom: 15px;"><a href="https://shimmer0007.github.io/wonderbox/" target="_blank" style="color: var(--primary-accent); text-decoration: none;" data-lang-key="link_1"></a></li>
-                <li style="margin-bottom: 15px;"><a href="https://hyacehila.github.io/" target="_blank" style="color: var(--primary-accent); text-decoration: none;" data-lang-key="link_2"></a></li>
-                <li style="margin-bottom: 15px;"><a href="https://xducy.github.io/" target="_blank" style="color: var(--primary-accent); text-decoration: none;" data-lang-key="link_3"></a></li>
-                <li style="margin-bottom: 15px;"><a href="https://nexmoe.com/" target="_blank" style="color: var(--primary-accent); text-decoration: none;" data-lang-key="link_4"></a></li>
+        <div id="travel-window" class="window"
+            style="top: 15%; left: 15%; width: 70vw; height: 75vh;">
+            <div class="title-bar"><span
+                    data-lang-key="title_travel"></span><div
+                    class="title-bar-controls"><div
+                        class="control-button close-btn"></div></div></div>
+            <div class="window-body" style="padding:0; overflow:hidden;">
+                <iframe src="travelmap/map.html"
+                    style="width:100%; height:100%; border:0;"></iframe>
+            </div>
+        </div>
+
+        <div id="plan-window" class="window"
+            style="top: 25%; left: 25%; width: 60%; height: 65%;">
+            <div class="title-bar">
+                <span data-lang-key="title_plan"></span>
+                <div class="title-bar-controls">
+                    <div class="control-button close-btn"></div>
+                </div>
+            </div>
+            <div class="window-body" style="padding:0; overflow:hidden;">
+                <iframe src="plan/short.html"
+                    style="width:100%; height:100%; border:0;"></iframe>
+            </div>
+        </div>
+
+        <div id="links-window" class="window"
+            style="top: 30%; left: 40%; width: 380px; height: 420px;">
+            <div class="title-bar"><span data-lang-key="title_links"></span><div
+                    class="title-bar-controls"><div
+                        class="control-button close-btn"></div></div></div>
+            <div class="window-body">
+                <h3 data-lang-key="links_header"></h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li style="margin-bottom: 15px;"><a
+                            href="https://shimmer0007.github.io/wonderbox/"
+                            target="_blank"
+                            style="color: var(--primary-accent); text-decoration: none;"
+                            data-lang-key="link_1"></a></li>
+                    <li style="margin-bottom: 15px;"><a
+                            href="https://hyacehila.github.io/" target="_blank"
+                            style="color: var(--primary-accent); text-decoration: none;"
+                            data-lang-key="link_2"></a></li>
+                    <li style="margin-bottom: 15px;"><a
+                            href="https://xducy.github.io/" target="_blank"
+                            style="color: var(--primary-accent); text-decoration: none;"
+                            data-lang-key="link_3"></a></li>
+                    <li style="margin-bottom: 15px;"><a
+                            href="https://nexmoe.com/" target="_blank"
+                            style="color: var(--primary-accent); text-decoration: none;"
+                            data-lang-key="link_4"></a></li>
+                    <li style="margin-bottom: 15px;"><a
+                            href="https://emvyh.github.io/profile"
+                            target="_blank"
+                            style="color: var(--primary-accent); text-decoration: none;"
+                            data-lang-key="link_5"></a></li>
                 </ul>
+            </div>
         </div>
-    </div>
 
-    <div class="dock">
-        <button class="nav-button" id="lang-switch-btn" title="中/EN">中/EN</button>
-        <button class="nav-button" title="Terminal" data-window-id="terminal-window">📟</button>
-        <div class="nav-button" title="Back" onclick="window.history.back()">←</div>
-        <div class="nav-button" title="Home" onclick="window.location.reload()">⌂</div>
-    </div>
-    
-    <div id="context-menu"></div>
+        <div class="dock">
+            <button class="nav-button" id="lang-switch-btn"
+                title="中/EN">中/EN</button>
+            <button class="nav-button" title="Terminal"
+                data-window-id="terminal-window">📟</button>
+            <div class="nav-button" title="Back"
+                onclick="window.history.back()">←</div>
+            <div class="nav-button" title="Home"
+                onclick="window.location.reload()">⌂</div>
+        </div>
 
-<script>
+        <div id="context-menu"></div>
+
+        <script>
 document.addEventListener('DOMContentLoaded', () => {
+
+    /* --- [新增] Iframe主题同步逻辑 --- */
+    const hokiehubIframe = document.querySelector('#hokiehub-window iframe');
+
+    // 1. 监听来自 iframe 的消息 (例如，请求初始主题)
+    window.addEventListener('message', (event) => {
+        if (event.source === hokiehubIframe.contentWindow && event.data.type === 'get-theme') {
+            const currentTheme = document.body.dataset.theme || 'dark';
+            syncThemeToIframe(currentTheme);
+        }
+    });
+
+    // 2. 发送主题变化到 iframe 的函数
+    function syncThemeToIframe(theme) {
+        if (hokiehubIframe && hokiehubIframe.contentWindow) {
+            hokiehubIframe.contentWindow.postMessage({
+                type: 'theme-change',
+                theme: theme
+            }, '*'); // 在生产环境中，'*' 应替换为目标iframe的源
+        }
+    }
 
     // --- 1. INTERNATIONALIZATION (i18n) SETUP ---
     const translations = {
@@ -458,6 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
             link_2: '🌍 Hyacehila的博客',
             link_3: '🦁 招生总队张老师',
             link_4: '💡 Nexmoe的产品画廊',
+            link_5: 'Emily的个人站',
             // Context Menu
             ctx_open: '打开',
             ctx_settings: '显示设置',
@@ -559,6 +712,7 @@ document.addEventListener('DOMContentLoaded', () => {
             link_2: "🌍 Hyacehila's Blog",
             link_3: "🦁 Teacher Zhang of Admission Team",
             link_4: "💡 Nexmoe's Product Gallery",
+            link_5: "Emily's Personal Website",
             // Context Menu
             ctx_open: 'Open',
             ctx_settings: 'Display Settings',
@@ -892,6 +1046,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (theme === 'dark' || theme === 'light' || theme === 'd' || theme === 'l') {
                 const finalTheme = (theme === 'd' || theme === 'dark') ? 'dark' : 'light';
                 document.body.dataset.theme = finalTheme;
+                syncThemeToIframe(finalTheme); // <-- 调用同步函数
+                
                 document.querySelector(`.theme-button.active`).classList.remove('active');
                 document.querySelector(`.theme-button[data-theme=${finalTheme}]`).classList.add('active');
                 return translations[currentLang].term_theme_changed(finalTheme);
@@ -966,6 +1122,8 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', () => {
             const theme = button.dataset.theme;
             document.body.dataset.theme = theme;
+            syncThemeToIframe(theme); // <-- 调用同步函数
+
             settingsWindow.querySelector('.theme-button.active').classList.remove('active');
             button.classList.add('active');
         });
@@ -1103,5 +1261,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 </script>
-</body>
+    </body>
 </html>
