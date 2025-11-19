@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n-key="pageTitle">Hokie Ehall - 弗吉尼亚理工学生资源门户</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Hokie Ehall - 弗吉尼亚理工学生资源门户</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
         * {
             margin: 0;
             padding: 0;
@@ -159,31 +162,9 @@
             color: var(--secondary);
         }
         
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-        }
-        nav ul { display: flex; list-style: none; gap: 25px; margin: 0; }
+        nav ul { display: flex; list-style: none; gap: 25px; }
         nav a { color: var(--light); text-decoration: none; font-weight: 600; padding: 8px 12px; border-radius: 8px; transition: background-color 0.3s, color 0.3s; }
         nav a:hover { background-color: var(--primary); color: #fff; }
-
-        #lang-switcher {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--light);
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-family: var(--font-family);
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-        #lang-switcher:hover {
-            background-color: var(--secondary);
-            border-color: var(--secondary);
-            color: #fff;
-        }
         
         /* --- Hero Search Section --- */
         .search-section {
@@ -531,8 +512,7 @@
         
         @media (max-width: 768px) {
             .nav-container { flex-direction: column; gap: 20px; }
-            nav { flex-direction: column; width: 100%;}
-            nav ul { flex-wrap: wrap; justify-content: center; padding: 0;}
+            nav ul { flex-wrap: wrap; justify-content: center; }
             .aurora-1 { width: 80vw; height: 80vw; }
             .aurora-2 { width: 70vw; height: 70vw; }
         }
@@ -557,217 +537,346 @@
                 margin-bottom: 10px;
             }
         }
+        /* --- Lifecycle Roadmap Section (Silky SVG Path) --- */
+        .roadmap-section { 
+            padding: 80px 0; 
+            overflow: visible; 
+            min-height: 600px;
+        }
+        
+        .roadmap-wrapper {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            /* Height is now set dynamically by JS */
+        }
+
+        /* SVG Path Styling */
+        .roadmap-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: visible;
+        }
+        
+        .path-line {
+            fill: none;
+            stroke: var(--secondary);
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0.3;
+            filter: drop-shadow(0 0 5px var(--secondary));
+        }
+        
+        .path-line.active {
+            stroke: var(--primary);
+            opacity: 1;
+            stroke-dasharray: 8000; /* Increased to ensure full coverage */
+            stroke-dashoffset: 8000;
+            animation: drawPath 4s ease-out forwards;
+        }
+
+        @keyframes drawPath {
+            to { stroke-dashoffset: 0; }
+        }
+
+        /* Node Styling */
+        .roadmap-node {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: var(--card-bg);
+            border: 2px solid var(--secondary);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        .roadmap-node:hover, .roadmap-node.active {
+            transform: translate(-50%, -50%) scale(1.3);
+            background: var(--secondary);
+            border-color: var(--light);
+            box-shadow: 0 0 30px var(--secondary);
+            z-index: 10;
+        }
+
+        .node-number {
+            font-weight: 700;
+            color: var(--light);
+            font-size: 1.1rem;
+        }
+
+        /* Tooltip / Content Card */
+        .node-content {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 280px;
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--secondary);
+            border-radius: 12px;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        
+        /* Tooltip Arrow */
+        .node-content::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid var(--secondary);
+        }
+
+        .roadmap-node:hover .node-content,
+        .roadmap-node:focus .node-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        /* Adjust tooltip position for items on edges */
+        .roadmap-node[data-col="3"] .node-content { left: auto; right: -20px; transform: translateX(0) translateY(10px); }
+        .roadmap-node[data-col="3"] .node-content::before { left: auto; right: 35px; }
+        .roadmap-node[data-col="3"]:hover .node-content { transform: translateX(0) translateY(0); }
+        
+        .roadmap-node[data-col="0"] .node-content { left: -20px; right: auto; transform: translateX(0) translateY(10px); }
+        .roadmap-node[data-col="0"] .node-content::before { left: 35px; right: auto; }
+        .roadmap-node[data-col="0"]:hover .node-content { transform: translateX(0) translateY(0); }
+
+        .node-content h3 {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        .node-content p {
+            font-size: 0.85rem;
+            color: var(--light);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .node-content a {
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .node-content a:hover { text-decoration: underline; }
+
+        /* Mobile Fallback */
+        @media (max-width: 768px) {
+            .roadmap-wrapper { height: auto; padding-left: 40px; }
+            .roadmap-svg { display: none; } /* Hide SVG on mobile */
+            
+            .roadmap-node {
+                position: relative;
+                transform: none !important;
+                left: auto !important;
+                top: auto !important;
+                margin-bottom: 30px;
+                display: inline-flex;
+            }
+            
+            /* Vertical line for mobile */
+            .roadmap-wrapper::before {
+                content: '';
+                position: absolute;
+                left: 24px; /* Center of 50px node */
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: var(--border-color);
+                z-index: 0;
+            }
+
+            .node-content {
+                position: relative;
+                top: 10px;
+                left: 0;
+                transform: none !important;
+                width: 100%;
+                opacity: 1;
+                visibility: visible;
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+                margin-bottom: 40px;
+                text-align: left;
+            }
+            .node-content::before { display: none; }
+            
+            .roadmap-node[data-col] .node-content { left: 0; right: auto; }
+        }
     </style>
-</head>
-<body>
+    </head>
+    <body>
 
-    <div id="progress-bar"></div>
-    <div class="aurora-background">
-        <div class="aurora aurora-1"></div>
-        <div class="aurora aurora-2"></div>
-    </div>
-    
-    <header>
-        <div class="container nav-container">
-            <a href="#" class="logo">
-                <i class="fas fa-feather-alt logo-icon"></i>
-                <h1 data-i18n-key="logoTitle">Hokie Ehall</h1>
-            </a>
-            <nav>
-                <ul>
-                    <li><a href="#dashboard-section" data-i18n-key="navDashboard"><i class="fas fa-tachometer-alt"></i> 核心仪表盘</a></li>
-                    <li><a href="#categories-section" data-i18n-key="navCategories"><i class="fas fa-th-large"></i> 资源分类</a></li>
-                </ul>
-                <button id="lang-switcher">EN / 中文</button>
-            </nav>
+        <div id="progress-bar"></div>
+        <div class="aurora-background">
+            <div class="aurora aurora-1"></div>
+            <div class="aurora aurora-2"></div>
         </div>
-    </header>
 
-    <main>
-        <section class="search-section">
-            <div class="container">
-                <h2 data-i18n-key="searchTitle">弗吉尼亚理工一站式资源门户</h2>
-                <p data-i18n-key="searchSubtitle">一个符合VT学生使用直觉的导航网站</p>
-                <form class="search-box" id="search-form">
-                    <input type="text" data-i18n-placeholder="searchPlaceholder" placeholder="搜索服务、资源或关键词 (如 Canvas, 选课)...">
-                    <button type="button" id="clear-search" class="clear-button" aria-label="Clear search">&times;</button>
-                    <button type="submit" id="search-button" aria-label="Search"><i class="fas fa-search"></i></button>
-                </form>
+        <header>
+            <div class="container nav-container">
+                <a href="#" class="logo">
+                    <i class="fas fa-feather-alt logo-icon"></i>
+                    <h1>Hokie Ehall</h1>
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="#dashboard-section"><i
+                                    class="fas fa-tachometer-alt"></i>
+                                核心仪表盘</a></li>
+                        <li><a href="#lifecycle-section"><i
+                                    class="fas fa-route"></i> 生命周期指南</a></li>
+                        <li><a href="#categories-section"><i
+                                    class="fas fa-th-large"></i> 资源分类</a></li>
+                    </ul>
+                </nav>
             </div>
-        </section>
+        </header>
 
-        <section id="dashboard-section" class="dashboard">
-            <div class="container">
-                <h2 class="section-title" data-i18n-key="dashboardTitle">核心仪表盘</h2>
-                <div class="dashboard-grid">
-                    <a href="https://canvas.vt.edu/" target="_blank" class="dashboard-card canvas">
-                        <i class="fas fa-book-open dashboard-icon"></i>
-                        <div class="dashboard-text">
-                            <h3 data-i18n-key="cardCanvasTitle">Canvas</h3>
-                            <p data-i18n-key="cardCanvasDesc">日常课程学习、作业提交与成绩反馈</p>
-                        </div>
-                    </a>
-                    <a href="https://hokiespa.vt.edu/" target="_blank" class="dashboard-card hokiespa">
-                        <i class="fas fa-user-circle dashboard-icon"></i>
-                        <div class="dashboard-text">
-                            <h3 data-i18n-key="cardHokieSpaTitle">Hokie Spa</h3>
-                            <p data-i18n-key="cardHokieSpaDesc">官方成绩、课程注册与财务中心</p>
-                        </div>
-                    </a>
-                    <a href="https://www.registrar.vt.edu/dates-deadlines/academic-calendar.html" target="_blank" class="dashboard-card calendar">
-                        <i class="fas fa-calendar-alt dashboard-icon"></i>
-                        <h3 data-i18n-key="cardCalendarTitle">校历</h3>
-                        <p data-i18n-key="cardCalendarDesc">学期与假期关键日期</p>
-                    </a>
-                    <a href="https://onecampus.vt.edu/" target="_blank" class="dashboard-card onecampus">
-                        <i class="fas fa-th-large dashboard-icon"></i>
-                        <h3 data-i18n-key="cardOneCampusTitle">OneCampus</h3>
-                        <p data-i18n-key="cardOneCampusDesc">服务与应用快速访问入口</p>
-                    </a>
-                    <a href="https://vt.starrezhousing.com/StarRezPortalX/" target="_blank" class="dashboard-card starrez">
-                        <i class="fas fa-building dashboard-icon"></i>
-                        <h3 data-i18n-key="cardStarRezTitle">StarRez</h3>
-                        <p data-i18n-key="cardStarRezDesc">住宿与餐饮计划管理</p>
-                    </a>
-                    <a href="https://vt.joinhandshake.com/" target="_blank" class="dashboard-card handshake">
-                        <i class="fas fa-handshake dashboard-icon"></i>
-                        <h3 data-i18n-key="cardHandshakeTitle">Handshake</h3>
-                        <p data-i18n-key="cardHandshakeDesc">寻找实习与职业咨询</p>
-                    </a>
+        <main>
+            <section class="search-section">
+                <div class="container">
+                    <h2>弗吉尼亚理工一站式资源门户</h2>
+                    <p>一个符合VT学生使用直觉的导航网站</p>
+                    <form class="search-box" id="search-form">
+                        <input type="text"
+                            placeholder="搜索服务、资源或关键词 (如 Canvas, 选课)...">
+                        <button type="button" id="clear-search"
+                            class="clear-button"
+                            aria-label="Clear search">&times;</button>
+                        <button type="submit" id="search-button"
+                            aria-label="Search"><i
+                                class="fas fa-search"></i></button>
+                    </form>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="categories-section" class="categories">
-            <div class="container">
-                <h2 class="section-title" data-i18n-key="categoriesTitle">资源分类</h2>
-                <div class="category-grid" id="category-grid">
-                    <div id="no-results" class="no-results-message">
-                        <i class="fas fa-search-minus"></i>
-                        <h3 data-i18n-key="noResultsTitle">未找到匹配的资源</h3>
-                        <p data-i18n-key="noResultsDesc">请尝试更换关键词或检查拼写。</p>
+            <section id="dashboard-section" class="dashboard">
+                <div class="container">
+                    <h2 class="section-title">核心仪表盘</h2>
+                    <div class="dashboard-grid">
+                        <a href="https://canvas.vt.edu/" target="_blank"
+                            class="dashboard-card canvas">
+                            <i class="fas fa-book-open dashboard-icon"></i>
+                            <div class="dashboard-text">
+                                <h3>Canvas</h3>
+                                <p>日常课程学习、作业提交与成绩反馈</p>
+                            </div>
+                        </a>
+                        <a href="https://hokiespa.vt.edu/" target="_blank"
+                            class="dashboard-card hokiespa">
+                            <i class="fas fa-user-circle dashboard-icon"></i>
+                            <div class="dashboard-text">
+                                <h3>Hokie Spa</h3>
+                                <p>官方成绩、课程注册与财务中心</p>
+                            </div>
+                        </a>
+                        <a
+                            href="https://www.registrar.vt.edu/dates-deadlines/academic-calendar.html"
+                            target="_blank" class="dashboard-card calendar">
+                            <i class="fas fa-calendar-alt dashboard-icon"></i>
+                            <h3>校历</h3>
+                            <p>学期与假期关键日期</p>
+                        </a>
+                        <a href="https://onecampus.vt.edu/" target="_blank"
+                            class="dashboard-card onecampus">
+                            <i class="fas fa-th-large dashboard-icon"></i>
+                            <h3>OneCampus</h3>
+                            <p>服务与应用快速访问入口</p>
+                        </a>
+                        <a href="https://vt.starrezhousing.com/StarRezPortalX/"
+                            target="_blank" class="dashboard-card starrez">
+                            <i class="fas fa-building dashboard-icon"></i>
+                            <h3>StarRez</h3>
+                            <p>住宿与餐饮计划管理</p>
+                        </a>
+                        <a href="https://vt.joinhandshake.com/" target="_blank"
+                            class="dashboard-card handshake">
+                            <i class="fas fa-handshake dashboard-icon"></i>
+                            <h3>Handshake</h3>
+                            <p>寻找实习与职业咨询</p>
+                        </a>
                     </div>
                 </div>
+            </section>
+
+            <section id="lifecycle-section" class="roadmap-section">
+                <div class="container">
+                    <h2 class="section-title">黑堡留子生命周期指南</h2>
+                    <div class="roadmap-wrapper" id="roadmap-wrapper">
+                        <svg class="roadmap-svg" id="roadmap-svg">
+                            <!-- Path will be generated here -->
+                        </svg>
+                        <!-- Nodes will be generated here -->
+                    </div>
+                </div>
+            </section>
+
+            <section id="categories-section" class="categories">
+                <div class="container">
+                    <h2 class="section-title">资源分类</h2>
+                    <div class="category-grid" id="category-grid">
+                        <div id="no-results" class="no-results-message">
+                            <i class="fas fa-search-minus"></i>
+                            <h3>未找到匹配的资源</h3>
+                            <p>请尝试更换关键词或检查拼写。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="container">
+                <p class="copyright">&copy; 2025 Hokie Ehall - 弗吉尼亚理工学生资源门户</p>
+                <p class="credit">由 <a href="https://shimmer0007.github.io"
+                        target="_blank">Shimmer</a> 设计 & 开发</p>
             </div>
-        </section>
-    </main>
+        </footer>
 
-    <footer>
-        <div class="container">
-            <p class="copyright" data-i18n-key="footerCopyright">&copy; 2025 Hokie Ehall - 弗吉尼亚理工学生资源门户</p>
-            <p class="credit" data-i18n-key="footerCredit">由 <a href="https://shimmer0007.github.io" target="_blank">Shimmer</a> 设计 & 开发</p>
-        </div>
-    </footer>
+        <button id="back-to-top" aria-label="Back to top"><i
+                class="fas fa-arrow-up"></i></button>
 
-    <button id="back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
-
-    <script>
+        <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            /* --- 主题同步逻辑 (保留) --- */
+            /* --- 主题同步逻辑 --- */
+            // 1. 监听来自父页面的消息
             window.addEventListener('message', (event) => {
+                // 为安全起见，可以检查 event.origin，但对于本地文件或同源则非必需
                 if (event.data && event.data.type === 'theme-change') {
                     const theme = event.data.theme;
-                    document.body.dataset.theme = theme;
+                    document.body.dataset.theme = theme; // 应用主题
                 }
             });
+            // 2. 页面加载完成后，向父页面请求当前主题
             window.parent.postMessage({ type: 'get-theme' }, '*');
 
-            // =================================================================
-            // --- [新增] I18N 多语言支持 ---
-            // =================================================================
-            const translations = {
-                zh: {
-                    pageTitle: "Hokie Ehall - 弗吉尼亚理工学生资源门户",
-                    logoTitle: "Hokie Ehall",
-                    navDashboard: "核心仪表盘",
-                    navCategories: "资源分类",
-                    langButton: "EN",
-                    searchTitle: "弗吉尼亚理工一站式资源门户",
-                    searchSubtitle: "一个符合VT学生使用直觉的导航网站",
-                    searchPlaceholder: "搜索服务、资源或关键词 (如 Canvas, 选课)...",
-                    dashboardTitle: "核心仪表盘",
-                    cardCanvasTitle: "Canvas",
-                    cardCanvasDesc: "日常课程学习、作业提交与成绩反馈",
-                    cardHokieSpaTitle: "Hokie Spa",
-                    cardHokieSpaDesc: "官方成绩、课程注册与财务中心",
-                    cardCalendarTitle: "校历",
-                    cardCalendarDesc: "学期与假期关键日期",
-                    cardOneCampusTitle: "OneCampus",
-                    cardOneCampusDesc: "服务与应用快速访问入口",
-                    cardStarRezTitle: "StarRez",
-                    cardStarRezDesc: "住宿与餐饮计划管理",
-                    cardHandshakeTitle: "Handshake",
-                    cardHandshakeDesc: "寻找实习与职业咨询",
-                    categoriesTitle: "资源分类",
-                    noResultsTitle: "未找到匹配的资源",
-                    noResultsDesc: "请尝试更换关键词或检查拼写。",
-                    footerCopyright: "&copy; 2025 Hokie Ehall - 弗吉尼亚理工学生资源门户",
-                    footerCredit: `由 <a href="https://shimmer0007.github.io" target="_blank">Shimmer</a> 设计 & 开发`
-                },
-                en: {
-                    pageTitle: "Hokie Ehall - Virginia Tech Student Resource Portal",
-                    logoTitle: "Hokie Ehall",
-                    navDashboard: "Dashboard",
-                    navCategories: "Categories",
-                    langButton: "中文",
-                    searchTitle: "One-Stop Resource Portal for Virginia Tech",
-                    searchSubtitle: "An intuitive navigation hub designed for VT students",
-                    searchPlaceholder: "Search services or keywords (e.g., Canvas, Course Registration)...",
-                    dashboardTitle: "Core Dashboard",
-                    cardCanvasTitle: "Canvas",
-                    cardCanvasDesc: "For daily courses, assignments, and grade feedback.",
-                    cardHokieSpaTitle: "Hokie Spa",
-                    cardHokieSpaDesc: "Official transcripts, course registration, and financial center.",
-                    cardCalendarTitle: "Academic Calendar",
-                    cardCalendarDesc: "Key dates for semesters, breaks, and holidays.",
-                    cardOneCampusTitle: "OneCampus",
-                    cardOneCampusDesc: "A quick access portal for various services and applications.",
-                    cardStarRezTitle: "StarRez",
-                    cardStarRezDesc: "Manage your housing contracts and dining plans.",
-                    cardHandshakeTitle: "Handshake",
-                    cardHandshakeDesc: "Find internships, jobs, and career advising.",
-                    categoriesTitle: "Resource Categories",
-                    noResultsTitle: "No Matching Resources Found",
-                    noResultsDesc: "Please try different keywords or check your spelling.",
-                    footerCopyright: "&copy; 2025 Hokie Ehall - Virginia Tech Student Resource Portal",
-                    footerCredit: `Designed & Developed by <a href="https://shimmer0007.github.io" target="_blank">Shimmer</a>`
-                }
-            };
-
-            const langSwitcher = document.getElementById('lang-switcher');
-            let currentLang = 'zh';
-
-            const setLanguage = (lang) => {
-                if (!['zh', 'en'].includes(lang)) return;
-                currentLang = lang;
-                document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
-                localStorage.setItem('hokiehall_lang', lang);
-
-                document.querySelectorAll('[data-i18n-key]').forEach(el => {
-                    const key = el.dataset.i18nKey;
-                    if (translations[lang][key]) {
-                        el.innerHTML = translations[lang][key];
-                    }
-                });
-
-                document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                    const key = el.dataset.i18nPlaceholder;
-                    if (translations[lang][key]) {
-                        el.placeholder = translations[lang][key];
-                    }
-                });
-                
-                langSwitcher.textContent = translations[lang].langButton;
-                renderContent(resourceData); // Re-render dynamic content with new language
-            };
-
-            langSwitcher.addEventListener('click', () => {
-                const newLang = currentLang === 'zh' ? 'en' : 'zh';
-                setLanguage(newLang);
-            });
-
-            // --- Debounce function ... (rest of the script is unchanged)
+            // --- Debounce function for performance optimization ---
             const debounce = (func, delay) => {
                 let timeoutId;
                 return (...args) => {
@@ -776,117 +885,152 @@
                         func.apply(this, args);
                     }, delay);
                 };
-            };
+            }; // <-- ✅ 修正点：这里多余的 `};` 已被移除
 
-            // --- [修改] Data source for all categories and resources ---
+            // --- Blog Data & Rendering ---
+            const blogData = [
+                { title: "来美前夕行李清单", summary: "详细的行李打包清单，包括必备文件、衣物、药品及违禁品注意事项。", link: "#" },
+                { title: "起飞、中转与落地入境", summary: "从出发到落地的全流程指南，涵盖海关申报、转机技巧及入境面试常见问题。", link: "#" },
+                { title: "入境首日干什么", summary: "抵达后的第一天生存指南：报平安、倒时差、采购必需品及熟悉周边环境。", link: "#" },
+                { title: "医保与免疫", summary: "解读学校保险要求，疫苗接种记录上传流程及如何在美国看病就医。", link: "#" },
+                { title: "电话卡套餐与硬件适配", summary: "美国主流运营商对比，手机套餐选择建议及国内手机频段适配指南。", link: "#" },
+                { title: "打工、SSN和社会信用", summary: "校内打工申请流程，SSN社会安全号办理及美国信用分数体系详解。", link: "#" },
+                { title: "校园活动参与", summary: "如何融入校园生活？介绍Gobblerfest、社团招新及丰富多彩的学生活动。", link: "#" },
+                { title: "实测：各教学楼设施体验", summary: "校园主要教学楼的自习环境、插座分布及空调温度实地测评。", link: "#" },
+                { title: "餐厅分布、推荐菜品和点单指南", summary: "吃在VT：各食堂特色菜品推荐，点餐APP使用技巧及避雷指南。", link: "#" },
+                { title: "体育场馆和健身房", summary: "McComas与War Memorial健身房设施介绍，游泳馆、球场使用规则。", link: "#" },
+                { title: "反诈与应急安全", summary: "留学生常见诈骗套路解析，校园安全报警电话及紧急情况应对措施。", link: "#" },
+                { title: "线下与线上购物", summary: "黑堡周边超市购物攻略，以及Amazon、亚米网等线上购物平台省钱技巧。", link: "#" }
+            ];
+
+            const renderTimeline = (data) => {
+                const container = document.getElementById('timeline-container');
+                if (!container) return;
+                
+                // Keep the line
+                const line = container.querySelector('.timeline-line');
+                container.innerHTML = '';
+                container.appendChild(line);
+
+                data.forEach((post, index) => {
+                    const item = document.createElement('div');
+                    const side = index % 2 === 0 ? 'left' : 'right';
+                    item.className = `timeline-item ${side}`;
+                    
+                    item.innerHTML = `
+                        <div class="timeline-dot"></div>
+                        <a href="${post.link}" class="timeline-content">
+                            <h3>${post.title}</h3>
+                            <p>${post.summary}</p>
+                        </a>
+                    `;
+                    container.appendChild(item);
+                    
+                    // Observe for animation if observer is ready
+                    if (observer) observer.observe(item);
+                });
+            };
+            
+            // We call this AFTER setupObserver is called in renderContent
+            // But since renderContent calls setupObserver, and we call renderContent below,
+            // we need to make sure renderTimeline is called after renderContent.
+            // Actually, let's just call it at the end.
+
+            // --- Data source for all categories and resources ---
             const resourceData = [
-                 {
-                    id: "academics",
-                    title_zh: "学业命脉",
-                    title_en: "Academic Lifeline",
+                {
+                    title: "学业命脉",
                     icon: "fas fa-graduation-cap",
-                    img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=60",
+                    img: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=60",
                     keywords: "学业 命脉 Academics Success 课程 注册 成绩 时间表 校历 图书馆 辅导 写作 荣誉 Genio AI TLOS",
                     resources: [
-                        { name_zh: "课程时间表", name_en: "Timetable of Classes", url: "https://apps.es.vt.edu/ssb/vt/index.html", keywords: "Timetable 选课" },
-                        { name_zh: "Genio (AI学习工具)", name_en: "Genio (AI Learning Tool)", url: "https://tlos.vt.edu/tools/genio.html", keywords: "人工智能 笔记" },
-                        { name_zh: "TLOS 学术工具集", name_en: "TLOS Academic Toolkit", url: "https://tlos.vt.edu/tools.html", keywords: "Kaltura Gradescope Turnitin" },
-                        { name_zh: "大学图书馆", name_en: "University Libraries", url: "https://lib.vt.edu/", keywords: "Library" },
-                        { name_zh: "学生成功中心 (辅导)", name_en: "Student Success Center (Tutoring)", url: "https://studentsuccess.vt.edu/", keywords: "tutoring" },
-                        { name_zh: "写作中心", name_en: "Writing Center", url: "https://studentsuccess.vt.edu/writing_center", keywords: "writing center" },
-                        { name_zh: "荣誉代码办公室", name_en: "Honor Code Office", url: "https://honorsystem.vt.edu/", keywords: "Honor Code" }
+                        { name: "课程时间表", url: "https://apps.es.vt.edu/ssb/vt/index.html", keywords: "Timetable 选课" },
+                        { name: "Genio (AI学习工具)", url: "https://tlos.vt.edu/tools/genio.html", keywords: "人工智能 笔记" },
+                        { name: "TLOS 学术工具集", url: "https://tlos.vt.edu/tools.html", keywords: "Kaltura Gradescope Turnitin" },
+                        { name: "大学图书馆", url: "https://lib.vt.edu/", keywords: "Library" },
+                        { name: "学生成功中心 (辅导)", url: "https://studentsuccess.vt.edu/", keywords: "tutoring" },
+                        { name: "写作中心", url: "https://studentsuccess.vt.edu/writing_center", keywords: "writing center" },
+                        { name: "荣誉代码办公室", url: "https://honorsystem.vt.edu/", keywords: "Honor Code" }
                     ]
                 },
-                // ... (similarly update all other categories)
                 {
-                    id: "finances",
-                    title_zh: "钱包与生计",
-                    title_en: "Finances & Livelihood",
+                    title: "钱包与生计",
                     icon: "fas fa-wallet",
                     img: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=800&q=60",
                     keywords: "钱包 生计 Finances Employment Hokie Wallet 学费 账单 经济援助 奖学金 工作 实习",
                     resources: [
-                        { name_zh: "财务处 (学费账单)", name_en: "Bursar's Office (Tuition Bill)", url: "https://www.bursar.vt.edu/", keywords: "Bursar Office tuition bill" },
-                        { name_zh: "经济援助办公室", name_en: "Financial Aid Office", url: "https://finaid.vt.edu/", keywords: "Financial Aid" },
-                        { name_zh: "奖学金申请", name_en: "Scholarship Application", url: "https://vt.academicworks.com/", keywords: "Scholarships" },
-                        { name_zh: "学生就业办公室", name_en: "Student Employment Office", url: "https://www.seo.vt.edu/", keywords: "student employment" },
-                        { name_zh: "Hokie Passport (校园卡)", name_en: "Hokie Passport Services", url: "https://hokiepassport.vt.edu/", keywords: "Hokie Wallet 校园卡支付" }
+                        { name: "财务处 (学费账单)", url: "https://www.bursar.vt.edu/", keywords: "Bursar Office tuition bill" },
+                        { name: "经济援助办公室", url: "https://finaid.vt.edu/", keywords: "Financial Aid" },
+                        { name: "奖学金申请", url: "https://vt.academicworks.com/", keywords: "Scholarships" },
+                        { name: "学生就业办公室", url: "https://www.seo.vt.edu/", keywords: "student employment" },
+                        { name: "Hokie Passport (校园卡)", url: "https://hokiepassport.vt.edu/", keywords: "Hokie Wallet 校园卡支付" }
                     ]
                 },
                 {
-                    id: "campus_life",
-                    title_zh: "生存必需",
-                    title_en: "Campus Essentials",
+                    title: "生存必需",
                     icon: "fas fa-utensils",
-                    img: "https://images.unsplash.com/photo-1543336398-3e2c1b7022ec?auto=format&fit=crop&w=800&q=60",
+                    img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=60",
                     keywords: "生存 必需 Campus Life Logistics 吃 住 行 住宿 餐饮 邮件 包裹 公交 停车 地图",
                     resources: [
-                        { name_zh: "餐饮服务/菜单", name_en: "Dining Services / Menus", url: "https://dining.vt.edu/", keywords: "Dining Services" },
-                        { name_zh: "邮件包裹服务", name_en: "Mail Services", url: "https://mailservices.vt.edu/student-mail.html", keywords: "Mail Services" },
-                        { name_zh: "BT Transit (黑堡公交)", name_en: "Blacksburg Transit (BT)", url: "https://ridebt.org/", keywords: "bus" },
-                        { name_zh: "停车服务", name_en: "Parking Services", url: "https://parking.vt.edu/", keywords: "Parking" },
-                        { name_zh: "校园地图", name_en: "Campus Maps", url: "https://www.vt.edu/about/locations/maps.html", keywords: "map" }
+                        { name: "餐饮服务/菜单", url: "https://dining.vt.edu/", keywords: "Dining Services" },
+                        { name: "邮件包裹服务", url: "https://mailservices.vt.edu/student-mail.html", keywords: "Mail Services" },
+                        { name: "BT Transit (黑堡公交)", url: "https://ridebt.org/", keywords: "bus" },
+                        { name: "停车服务", url: "https://parking.vt.edu/", keywords: "Parking" },
+                        { name: "校园地图", url: "https://www.vt.edu/about/locations/maps.html", keywords: "map" }
                     ]
                 },
                 {
-                    id: "health",
-                    title_zh: "健康与安全",
-                    title_en: "Health & Safety",
+                    title: "健康与安全",
                     icon: "fas fa-shield-alt",
                     img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=60",
                     keywords: "健康 安全 Health Safety 医疗 心理 Schiffert Cook 警报 警察 VTPD Safe Ride",
                     resources: [
-                        { name_zh: "Schiffert 健康中心", name_en: "Schiffert Health Center", url: "https://healthcenter.vt.edu/", keywords: "校医院 medical" },
-                        { name_zh: "Cook 咨询中心", name_en: "Cook Counseling Center", url: "https://ucc.vt.edu/", keywords: "心理健康 counseling" },
-                        { name_zh: "VT Alerts 紧急警报", name_en: "VT Alerts Emergency System", url: "https://www.alerts.vt.edu/", keywords: "Emergency Alert System" },
-                        { name_zh: "校园警察 (VTPD)", name_en: "VT Police Dept. (VTPD)", url: "https://police.vt.edu/", keywords: "police" },
-                        { name_zh: "Safe Ride 夜间护送", name_en: "Safe Ride Program", url: "https://police.vt.edu/saferide.html", keywords: "夜间安全送回服务" },
-                        { name_zh: "娱乐体育 (健身房)", name_en: "Recreational Sports (Gym)", url: "https://recsports.vt.edu/", keywords: "Recreational Sports gym" }
+                        { name: "Student Medicover医疗保险", url: "https://smcovered.com/cn/", keywords: "insurance 医疗保险" },
+                        { name: "Schiffert 健康中心", url: "https://healthcenter.vt.edu/", keywords: "校医院 medical" },
+                        { name: "Cook 咨询中心", url: "https://ucc.vt.edu/", keywords: "心理健康 counseling" },
+                        { name: "VT Alerts 紧急警报", url: "https://www.alerts.vt.edu/", keywords: "Emergency Alert System" },
+                        { name: "校园警察 (VTPD)", url: "https://police.vt.edu/", keywords: "police" },
+                        { name: "Safe Ride 夜间护送", url: "https://police.vt.edu/vtpd-services/safe-ride.html", keywords: "夜间安全送回服务" },
+                        { name: "娱乐体育 (健身房)", url: "https://recsports.vt.edu/", keywords: "Recreational Sports gym" }
                     ]
                 },
                 {
-                    id: "involvement",
-                    title_zh: "社交与成长",
-                    title_en: "Involvement & Growth",
+                    title: "社交与成长",
                     icon: "fas fa-users",
                     img: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=60",
                     keywords: "社交 成长 Involvement Career GobblerConnect 社团 活动 职业 CPD 研究生 创业 转学生",
                     resources: [
-                        { name_zh: "GobblerConnect (学生社团)", name_en: "GobblerConnect (Student Orgs)", url: "https://gobblerconnect.vt.edu/", keywords: "clubs organizations" },
-                        { name_zh: "大学活动日历", name_en: "University Events Calendar", url: "https://news.vt.edu/events.html", keywords: "events calendar" },
-                        { name_zh: "职业与专业发展中心", name_en: "Career and Professional Development", url: "https://career.vt.edu/", keywords: "CPD" },
-                        { name_zh: "研究生院信息", name_en: "Graduate School", url: "https://graduateschool.vt.edu/", keywords: "graduate school" },
-                        { name_zh: "Apex 创业中心", name_en: "Apex Center for Entrepreneurship", url: "https://apex.vt.edu/", keywords: "entrepreneurship" },
-                        { name_zh: "转学生资源", name_en: "Transfer Student Resources", url: "https://studentsuccess.vt.edu/transfer-student-initiatives.html", keywords: "transfer students" }
+                        { name: "GobblerConnect (学生社团)", url: "https://gobblerconnect.vt.edu/", keywords: "clubs organizations" },
+                        { name: "大学活动日历", url: "https://news.vt.edu/events.html", keywords: "events calendar" },
+                        { name: "职业与专业发展中心", url: "https://career.vt.edu/", keywords: "CPD" },
+                        { name: "研究生院信息", url: "https://graduateschool.vt.edu/", keywords: "graduate school" },
+                        { name: "Apex 创业中心", url: "https://apex.vt.edu/", keywords: "entrepreneurship" },
+                        { name: "转学生资源", url: "https://studentsuccess.vt.edu/transfer-student-initiatives.html", keywords: "transfer students" }
                     ]
                 },
                 {
-                    id: "tech_support",
-                    title_zh: "技术支持",
-                    title_en: "Tech Support",
+                    title: "技术支持",
                     icon: "fas fa-laptop-code",
                     img: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=60",
                     keywords: "技术 支持 Tech IT 4Help 软件 eduroam Duo",
                     resources: [
-                        { name_zh: "4Help (IT服务台)", name_en: "4Help (IT Help Desk)", url: "https://4help.vt.edu/", keywords: "IT help desk" },
-                        { name_zh: "软件下载中心", name_en: "Software Service Center", url: "https://software.vt.edu/", keywords: "software download" },
-                        { name_zh: "eduroam设置指南", name_en: "eduroam Setup Guide", url: "https://4help.vt.edu/sp?id=kb_article&sys_id=e7000d070f360a40d3244b9ce1050e93", keywords: "Wifi" },
-                        { name_zh: "Duo双因素认证", name_en: "Duo 2-Factor Authentication", url: "https://it.vt.edu/services/2fa.html", keywords: "two factor authentication" }
+                        { name: "4Help (IT服务台)", url: "https://4help.vt.edu/", keywords: "IT help desk" },
+                        { name: "软件下载中心", url: "https://software.vt.edu/", keywords: "software download" },
+                        { name: "eduroam设置指南", url: "https://4help.vt.edu/sp?id=kb_article&sys_id=e7000d070f360a40d3244b9ce1050e93", keywords: "Wifi" },
+                        { name: "Duo双因素认证", url: "https://it.vt.edu/services/2fa.html", keywords: "two factor authentication" }
                     ]
                 },
                 {
-                    id: "culture",
-                    title_zh: "校园文化与娱乐",
-                    title_en: "Culture & Recreation",
+                    title: "校园文化与娱乐",
                     icon: "fas fa-palette",
                     img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=60",
                     keywords: "文化 娱乐 体育 艺术 户外 Hokie Sports Moss Center Venture Out 橄榄球 传统 精神 规定",
                     resources: [
-                        { name_zh: "Hokie Sports (体育竞技)", name_en: "Hokie Sports (Athletics)", url: "https://hokiesports.com/", keywords: "体育 竞技 橄榄球 篮球 Athletics" },
-                        { name_zh: "Moss Arts Center", name_en: "Moss Arts Center", url: "https://artscenter.vt.edu/", keywords: "表演 展览" },
-                        { name_zh: "Venture Out (户外活动)", name_en: "Venture Out (Outdoor Trips)", url: "https://recsports.vt.edu/outdooractivities/trips.html", keywords: "探险 爬山" },
-                        { name_zh: "Collegiate Times (学生校报)", name_en: "Collegiate Times (Student News)", url: "https://www.collegiatetimes.com/", keywords: "校报 学生媒体 新闻" },
-                        { name_zh: "学生行为准则", name_en: "Student Code of Conduct", url: "https://codeofconduct.vt.edu/", keywords: "Student Code of Conduct 规定" }
+                        { name: "Hokie Sports (体育竞技)", url: "https://hokiesports.com/", keywords: "体育 竞技 橄榄球 篮球 Athletics" },
+                        { name: "Moss Arts Center (艺术中心)", url: "https://artscenter.vt.edu/", keywords: "表演 展览" },
+                        { name: "Venture Out (户外活动)", url: "https://recsports.vt.edu/outdooractivities/trips.html", keywords: "探险 爬山" },
+                        { name: "Collegiate Times (学生校报)", url: "https://www.collegiatetimes.com/", keywords: "校报 学生媒体 新闻" },
+                        { name: "学生行为准则", url: "https://codeofconduct.vt.edu/", keywords: "Student Code of Conduct 规定" }
                     ]
                 }
             ];
@@ -894,37 +1038,34 @@
             const categoryGrid = document.getElementById('category-grid');
             let observer;
 
-            // --- [修改] Function to render cards from data ---
+            // --- Function to render cards from data ---
             const renderContent = (data) => {
                 const noResultsNode = document.getElementById('no-results');
                 categoryGrid.innerHTML = ''; 
                 categoryGrid.appendChild(noResultsNode);
 
-                if (!data || data.length === 0) return;
-
-                const langKey = currentLang === 'en' ? '_en' : '_zh';
+                if (!data || data.length === 0) {
+                    return;
+                }
 
                 data.forEach(category => {
                     const card = document.createElement('div');
                     card.className = 'category-card';
                     
-                    const resourceLinks = category.resources.map(link => {
-                        const linkName = link['name' + langKey];
-                        return `
+                    const resourceLinks = category.resources.map(link => `
                         <li>
                             <a href="${link.url}" target="_blank" data-keywords="${link.keywords || ''}">
                                 <i class="fas fa-link"></i>
-                                <span class="link-text">${linkName}</span>
+                                <span class="link-text">${link.name}</span>
                             </a>
                         </li>
-                    `}).join('');
+                    `).join('');
 
-                    const categoryTitle = category['title' + langKey];
                     card.innerHTML = `
                         <div class="category-header">
-                            <img data-src="${category.img}" alt="${categoryTitle}">
+                            <img data-src="${category.img}" alt="${category.title}">
                             <i class="${category.icon} category-icon"></i>
-                            <h3 class="category-title">${categoryTitle}</h3>
+                            <h3 class="category-title">${category.title}</h3>
                         </div>
                         <div class="category-content">
                             <ul class="resource-list">
@@ -933,21 +1074,21 @@
                         </div>
                     `;
                     card.dataset.keywords = category.keywords.toLowerCase();
-                    card.dataset.originalTitle = categoryTitle;
+                    card.dataset.originalTitle = category.title;
                     
                     categoryGrid.insertBefore(card, noResultsNode);
                 });
                 
                 setupObserver();
             };
-
-            // ... (The rest of the script: sticky header, progress bar, observer, search logic, etc. remains the same)
             
+            // --- Sticky Header with Frosted Glass Effect ---
             const header = document.querySelector('header');
             window.addEventListener('scroll', () => {
                 header.classList.toggle('scrolled', window.scrollY > 50);
             });
 
+            // --- Reading Progress Bar ---
             const progressBar = document.getElementById('progress-bar');
             window.addEventListener('scroll', () => {
                 const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -955,6 +1096,7 @@
                 progressBar.style.width = `${scrolledPercentage}%`;
             });
 
+            // --- Scroll Animations & Lazy Loading Setup ---
             const setupObserver = () => {
                 observer = new IntersectionObserver((entries) => {
                     entries.forEach((entry, index) => {
@@ -978,6 +1120,7 @@
                 });
             };
 
+            // --- Real-time Fuzzy Search Filter ---
             const searchForm = document.getElementById('search-form');
             const searchInput = document.querySelector('.search-box input');
             const clearSearchBtn = document.getElementById('clear-search');
@@ -1093,6 +1236,7 @@
                 searchInput.focus();
             });
 
+            // --- Back to Top Button ---
             const backToTopButton = document.getElementById('back-to-top');
             window.addEventListener('scroll', () => {
                 backToTopButton.classList.toggle('visible', window.scrollY > 300);
@@ -1101,13 +1245,126 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
-            // --- [修改] Initial Load ---
-            const initialLoad = () => {
-                const savedLang = localStorage.getItem('hokiehall_lang');
-                const browserLang = navigator.language.startsWith('en') ? 'en' : 'zh';
-                const initialLang = savedLang || browserLang;
-                setLanguage(initialLang); // This will also trigger the first renderContent
+            const renderRoadmap = (data) => {
+                const wrapper = document.getElementById('roadmap-wrapper');
+                const svg = document.getElementById('roadmap-svg');
+                if (!wrapper || !svg) return;
 
+                // Clear previous nodes (keep svg)
+                const existingNodes = wrapper.querySelectorAll('.roadmap-node');
+                existingNodes.forEach(n => n.remove());
+
+                // Configuration
+                const columns = 4; // 4 items per row
+                const rows = Math.ceil(data.length / columns);
+                const wrapperWidth = wrapper.offsetWidth || 1000; // Fallback
+                
+                // Dynamic Height Calculation (Reduced spacing)
+                const rowHeight = 120; // Significantly reduced from ~300px
+                const yPadding = 60;
+                const wrapperHeight = (rows - 1) * rowHeight + (yPadding * 2);
+                
+                // Set wrapper height explicitly
+                wrapper.style.height = `${wrapperHeight}px`;
+                
+                const xPadding = 80;
+                const availableWidth = wrapperWidth - (xPadding * 2);
+                
+                const colStep = availableWidth / (columns - 1);
+                // rowStep is now fixed
+                const rowStep = rowHeight;
+
+                let pathD = "";
+                const points = [];
+
+                // 1. Calculate Points
+                data.forEach((post, index) => {
+                    const row = Math.floor(index / columns);
+                    const isEvenRow = row % 2 === 0;
+                    
+                    // Snake logic for Column Index
+                    // Row 0: 0, 1, 2, 3
+                    // Row 1: 3, 2, 1, 0
+                    let colIndex = index % columns;
+                    if (!isEvenRow) {
+                        colIndex = (columns - 1) - colIndex;
+                    }
+
+                    const x = xPadding + (colIndex * colStep);
+                    const y = yPadding + (row * rowStep);
+                    
+                    points.push({x, y, data: post, colIndex});
+                });
+
+                // 2. Generate SVG Path
+                if (points.length > 0) {
+                    pathD = `M ${points[0].x} ${points[0].y}`;
+                    
+                    for (let i = 0; i < points.length - 1; i++) {
+                        const curr = points[i];
+                        const next = points[i+1];
+                        
+                        // If same row, straight line
+                        if (curr.y === next.y) {
+                            pathD += ` L ${next.x} ${next.y}`;
+                        } else {
+                            // Changing row: Curve
+                            // We want a nice "C" curve or "S" curve connecting the ends
+                            // Control points:
+                            // CP1: (curr.x, curr.y + rowStep/2)
+                            // CP2: (next.x, next.y - rowStep/2)
+                            // But since next.x == curr.x (vertical drop at the edge), 
+                            // we can use a cubic bezier to make a nice U-turn.
+                            
+                            // Actually, for a snake, the drop is vertical at the edge.
+                            // Let's make it a bit wider curve for "silky" feel.
+                            const cp1x = curr.x + (curr.x > wrapperWidth/2 ? 80 : -80); // Bulge out
+                            const cp1y = curr.y;
+                            const cp2x = next.x + (next.x > wrapperWidth/2 ? 80 : -80);
+                            const cp2y = next.y;
+                            
+                            // Simple cubic bezier
+                            pathD += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${next.x} ${next.y}`;
+                        }
+                    }
+                }
+
+                // Draw Path
+                svg.innerHTML = `<path d="${pathD}" class="path-line active" />`;
+
+                // 3. Render Nodes
+                points.forEach((p, i) => {
+                    const node = document.createElement('div');
+                    node.className = 'roadmap-node';
+                    node.style.left = `${p.x}px`;
+                    node.style.top = `${p.y}px`;
+                    node.dataset.col = p.colIndex; // For tooltip positioning
+                    
+                    node.innerHTML = `
+                        <span class="node-number">${i + 1}</span>
+                        <div class="node-content">
+                            <h3>${p.data.title}</h3>
+                            <p>${p.data.summary}</p>
+                            <a href="${p.data.link}">查看详情 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    `;
+                    
+                    wrapper.appendChild(node);
+                });
+            };
+
+            // --- Initial Render ---
+            renderContent(resourceData);
+            // Delay roadmap render slightly to ensure container has width
+            setTimeout(() => renderRoadmap(blogData), 100);
+            
+            // Re-render on resize
+            window.addEventListener('resize', debounce(() => {
+                 if(window.innerWidth > 768) renderRoadmap(blogData);
+            }, 300));
+
+            // --- Read URL on load and apply filter ---
+            const initialLoad = () => {
                 const urlParams = new URLSearchParams(window.location.search);
                 const query = urlParams.get('q');
                 if (query) {
@@ -1119,5 +1376,5 @@
             
         });
     </script>
-</body>
+    </body>
 </html>
