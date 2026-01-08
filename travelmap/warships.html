@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>指挥官战术终端 - 全美舰船打卡地图</title>
+
+        <link rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700&family=Noto+Sans+SC:wght@300;500&display=swap"
+            rel="stylesheet">
+
+        <style>
+        :root {
+            --al-blue: #1a2a6c;
+            --al-gold: #f1c40f;
+            --al-purple: #8e44ad;
+            --bg-dark: #0f172a;
+            --panel-bg: rgba(30, 41, 59, 0.85);
+            --text-main: #f8fafc;
+        }
+
+        body, html { 
+            margin: 0; padding: 0; height: 100%; 
+            font-family: 'Exo 2', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        /* 地图容器 */
+        #map { height: 100vh; width: 100%; z-index: 1; }
+
+        /* 侧边栏设计 - 玻璃拟态 */
+        #terminal {
+            position: absolute; top: 20px; left: 20px; width: 380px; height: calc(100vh - 40px);
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            z-index: 1000;
+            display: flex; flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        .header { padding: 20px; border-bottom: 2px solid var(--al-gold); }
+        .header h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; color: var(--al-gold); }
+        .header p { margin: 5px 0 0; font-size: 0.8rem; opacity: 0.8; }
+
+        /* 搜索和过滤 */
+        .controls { padding: 15px; background: rgba(0,0,0,0.2); }
+        #searchBar {
+            width: 100%; padding: 10px; border-radius: 5px; border: none;
+            background: #334155; color: white; margin-bottom: 10px; box-sizing: border-box;
+        }
+        .filters { display: flex; gap: 5px; flex-wrap: wrap; }
+        .filter-btn {
+            padding: 4px 10px; border-radius: 4px; border: 1px solid var(--al-gold);
+            background: transparent; color: var(--al-gold); cursor: pointer; font-size: 0.75rem;
+            transition: 0.3s;
+        }
+        .filter-btn.active, .filter-btn:hover { background: var(--al-gold); color: black; }
+
+        /* 列表区域 */
+        #ship-list { flex: 1; overflow-y: auto; padding: 10px; scrollbar-width: thin; }
+        .ship-card {
+            background: rgba(255,255,255,0.05); border-left: 4px solid #ccc;
+            margin-bottom: 10px; padding: 12px; border-radius: 4px; cursor: pointer;
+            transition: 0.2s; position: relative;
+        }
+        .ship-card:hover { background: rgba(255,255,255,0.15); transform: translateX(5px); }
+        .ship-card.BB { border-color: #ef4444; }
+        .ship-card.CV { border-color: #f59e0b; }
+        .ship-card.SS { border-color: #10b981; }
+        .ship-card.DD { border-color: #3b82f6; }
+
+        .ship-name { font-weight: bold; font-size: 1rem; display: block; }
+        .ship-meta { font-size: 0.75rem; opacity: 0.7; margin-top: 4px; }
+        .dist-tag { position: absolute; top: 12px; right: 12px; font-size: 0.7rem; color: var(--al-gold); }
+        .al-tag { color: #c084fc; font-size: 0.8rem; margin-top: 6px; display: block; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px; }
+
+        /* 地图 Marker 样式 */
+        .custom-marker {
+            width: 30px; height: 30px; border-radius: 50% 50% 50% 0;
+            background: var(--al-blue); border: 2px solid white;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: bold; font-size: 10px;
+            transform: rotate(-45deg);
+        }
+        .custom-marker span { transform: rotate(45deg); }
+        
+        /* VT Marker 脉冲效果 */
+        .vt-pulse {
+            width: 15px; height: 15px; background: #861f41; border-radius: 50%;
+            box-shadow: 0 0 0 rgba(134, 31, 65, 0.4); animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(134, 31, 65, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(134, 31, 65, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(134, 31, 65, 0); }
+        }
+    </style>
+    </head>
+    <body>
+
+        <div id="terminal">
+            <div class="header">
+                <h1>COMMANDER TERMINAL</h1>
+                <p>Current Port: <b>Virginia Tech, Blacksburg</b></p>
+            </div>
+
+            <div class="controls">
+                <input type="text" id="searchBar" placeholder="搜索舰名或关联网名...">
+                <div class="filters">
+                    <button class="filter-btn active"
+                        data-type="ALL">全部</button>
+                    <button class="filter-btn" data-type="BB">战列</button>
+                    <button class="filter-btn" data-type="CV">航母</button>
+                    <button class="filter-btn" data-type="DD">驱逐/巡洋</button>
+                    <button class="filter-btn" data-type="SS">潜艇</button>
+                </div>
+            </div>
+
+            <div id="ship-list">
+            </div>
+        </div>
+
+        <div id="map"></div>
+
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script>
+    // 基础配置
+    const vtPos = [37.2284, -80.4234];
+    const map = L.map('map', { zoomControl: false }).setView([38.0, -96.0], 5);
+    
+    // 使用深色底图
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; CartoDB'
+    }).addTo(map);
+
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    // 完整的50条数据（精炼版）
+    const shipData = [
+        { name: "USS Wisconsin", type: "BB", loc: [36.8484, -76.2934], city: "Norfolk, VA", al: "衣阿华级·冷战改" },
+        { name: "USS New Jersey", type: "BB", loc: [39.9395, -75.1330], city: "Camden, NJ", al: "花园 (UR)" },
+        { name: "USS North Carolina", type: "BB", loc: [34.2364, -77.9544], city: "Wilmington, NC", al: "北卡罗来纳 (兔兔)" },
+        { name: "USS Yorktown (II)", type: "CV", loc: [32.7904, -79.9080], city: "Charleston, SC", al: "约克城II (UR)" },
+        { name: "USS Laffey (II)", type: "DD", loc: [32.7905, -79.9081], city: "Charleston, SC", al: "拉菲II (UR)" },
+        { name: "USS Massachusetts", type: "BB", loc: [41.7061, -71.1631], city: "Fall River, MA", al: "马萨诸塞 (大马)" },
+        { name: "USS Alabama", type: "BB", loc: [30.6818, -88.0145], city: "Mobile, AL", al: "阿拉巴马 (南胖级)" },
+        { name: "USS Missouri", type: "BB", loc: [21.3621, -157.9534], city: "Honolulu, HI", al: "密苏里 (投降舰)" },
+        { name: "USS Iowa", type: "BB", loc: [33.7420, -118.2770], city: "Los Angeles, CA", al: "衣阿华" },
+        { name: "USS Intrepid", type: "CV", loc: [40.7645, -73.9996], city: "New York, NY", al: "无畏" },
+        { name: "USS Lexington (II)", type: "CV", loc: [27.8144, -97.3892], city: "Corpus Christi, TX", al: "列克星敦" },
+        { name: "USS Hornet (II)", type: "CV", loc: [37.7725, -122.3028], city: "Alameda, CA", al: "大黄蜂II" },
+        { name: "USS Midway", type: "CV", loc: [32.7137, -117.1751], city: "San Diego, CA", al: "中途岛级首舰" },
+        { name: "USS Kidd", type: "DD", loc: [30.4439, -91.1920], city: "Baton Rouge, LA", al: "基德 (弗莱彻级)" },
+        { name: "USS Cassin Young", type: "DD", loc: [42.3734, -71.0558], city: "Boston, MA", al: "弗莱彻级" },
+        { name: "USS The Sullivans", type: "DD", loc: [42.8778, -78.8797], city: "Buffalo, NY", al: "苏利文五兄弟" },
+        { name: "USS Little Rock", type: "DD", loc: [42.8779, -78.8800], city: "Buffalo, NY", al: "克利夫兰级 (改)" },
+        { name: "USS Salem", type: "DD", loc: [42.2440, -70.9700], city: "Quincy, MA", al: "德梅因级重巡" },
+        { name: "USS Cavalla", type: "SS", loc: [29.3362, -94.7736], city: "Galveston, TX", al: "棘鳍 (大凤一生之敌)" },
+        { name: "USS Torsk", type: "SS", loc: [39.2858, -76.6084], city: "Baltimore, MD", al: "黑鳕鱼" },
+        { name: "USS Bowfin", loc: [21.3688, -157.9392], type: "SS", al: "长鳍鲔", city: "Honolulu, HI" },
+        { name: "USS Pampanito", loc: [37.8099, -122.4172], type: "SS", al: "潘帕尼托", city: "San Francisco, CA" },
+        { name: "USS Nautilus", loc: [41.3869, -72.0880], type: "SS", al: "鹦鹉螺 (核动力)", city: "Groton, CT" },
+        { name: "USS Silversides", loc: [43.2307, -86.3338], type: "SS", al: "银侧鱼", city: "Muskegon, MI" },
+        { name: "USS Cobia", loc: [44.0898, -87.6583], type: "SS", al: "海鲡", city: "Manitowoc, WI" },
+        { name: "USS Drum", loc: [30.6820, -88.0146], type: "SS", al: "鼓鱼", city: "Mobile, AL" },
+        { name: "USS Cod", loc: [41.5085, -81.6924], type: "SS", al: "鳕鱼", city: "Cleveland, OH" },
+        { name: "USS Requin", loc: [40.4449, -80.0180], type: "SS", al: "长吻鱼", city: "Pittsburgh, PA" },
+        { name: "USS Becuna", loc: [39.9436, -75.1415], type: "SS", al: "白鲑", city: "Philadelphia, PA" },
+        { name: "USS Growler", loc: [40.7646, -73.9997], type: "SS", al: "咆哮者", city: "New York, NY" },
+        { name: "USS Lionfish", loc: [41.7062, -71.1632], type: "SS", al: "狮子鱼", city: "Fall River, MA" },
+        { name: "USS Batfish", loc: [35.7925, -95.3248], type: "SS", al: "蝙蝠鱼", city: "Muskogee, OK" },
+        { name: "USS Blueback", loc: [45.5117, -122.6659], type: "SS", al: "青背鱼", city: "Portland, OR" },
+        { name: "USS Ling", loc: [40.8841, -74.0326], type: "SS", al: "铃鱼", city: "Hackensack, NJ" },
+        { name: "USS Croaker", loc: [42.8780, -78.8798], type: "SS", al: "石首鱼", city: "Buffalo, NY" },
+        { name: "USS Arizona Mem.", loc: [21.3650, -157.9497], type: "BB", al: "亚利桑那 (安息)", city: "Pearl Harbor, HI" },
+        { name: "LST-325", loc: [37.9678, -87.5750], type: "DD", al: "坦克登陆舰", city: "Evansville, IN" },
+        { name: "USS Olympia", loc: [39.9435, -75.1414], type: "DD", al: "老前辈 (1892)", city: "Philadelphia, PA" },
+        { name: "USS Joseph Kennedy", loc: [41.7060, -71.1630], type: "DD", al: "基林级", city: "Fall River, MA" },
+        { name: "USS Orleck", loc: [30.3235, -81.6560], type: "DD", al: "基林级", city: "Jacksonville, FL" },
+        { name: "USS Stewart", loc: [29.3361, -94.7735], type: "DD", al: "护航驱逐舰", city: "Galveston, TX" },
+        { name: "USS Turner Joy", loc: [47.5620, -122.6220], type: "DD", al: "谢尔曼级", city: "Bremerton, WA" },
+        { name: "USS Edson", loc: [43.6120, -83.8680], type: "DD", al: "谢尔曼级", city: "Bay City, MI" },
+        { name: "USS Slater", loc: [42.6430, -73.7510], type: "DD", al: "大炮 (DE)", city: "Albany, NY" },
+        { name: "USS Hazard", loc: [41.2720, -95.9180], type: "DD", al: "扫雷舰", city: "Omaha, NE" }
+    ];
+
+    // 计算距离 (Haversine formula)
+    function getDist(lat1, lon1, lat2, lon2) {
+        const R = 3958.8; // 英里
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+        return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+    }
+
+    // 渲染主函数
+    const listEl = document.getElementById('ship-list');
+    let markers = [];
+
+    function renderShips(filterType = 'ALL', searchTerm = '') {
+        listEl.innerHTML = '';
+        markers.forEach(m => map.removeLayer(m));
+        markers = [];
+
+        shipData
+            .map(s => ({ ...s, dist: getDist(vtPos[0], vtPos[1], s.loc[0], s.loc[1]) }))
+            .sort((a, b) => a.dist - b.dist)
+            .filter(s => (filterType === 'ALL' || s.type === filterType) && 
+                         (s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.al.includes(searchTerm)))
+            .forEach(ship => {
+                // 地图 Marker
+                const marker = L.marker(ship.loc, {
+                    icon: L.divIcon({
+                        className: '',
+                        html: `<div class="custom-marker" style="background:${getColor(ship.type)}"><span>${ship.type}</span></div>`
+                    })
+                }).addTo(map);
+                
+                marker.bindPopup(`<b>${ship.name}</b><br>${ship.city}<br><hr>${ship.al}`);
+                markers.push(marker);
+
+                // 侧边栏卡片
+                const card = document.createElement('div');
+                card.className = `ship-card ${ship.type}`;
+                card.innerHTML = `
+                    <span class="dist-tag">📏 ${ship.dist} mi</span>
+                    <span class="ship-name">${ship.name}</span>
+                    <div class="ship-meta">📍 ${ship.city} | ${ship.type}</div>
+                    <span class="al-tag">💠 ${ship.al}</span>
+                `;
+                card.onclick = () => {
+                    map.flyTo(ship.loc, 10, { duration: 1.5 });
+                    marker.openPopup();
+                };
+                listEl.appendChild(card);
+            });
+    }
+
+    function getColor(type) {
+        if(type === 'BB') return '#ef4444';
+        if(type === 'CV') return '#f59e0b';
+        if(type === 'SS') return '#10b981';
+        return '#3b82f6';
+    }
+
+    // VT Home Marker
+    L.marker(vtPos, {
+        icon: L.divIcon({ className: '', html: '<div class="vt-pulse"></div>' })
+    }).addTo(map).bindPopup("<b>母港: Virginia Tech</b>");
+
+    // 事件监听
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.onclick = (e) => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            renderShips(e.target.dataset.type, document.getElementById('searchBar').value);
+        };
+    });
+
+    document.getElementById('searchBar').oninput = (e) => {
+        const activeType = document.querySelector('.filter-btn.active').dataset.type;
+        renderShips(activeType, e.target.value);
+    };
+
+    renderShips();
+</script>
+    </body>
+</html>
