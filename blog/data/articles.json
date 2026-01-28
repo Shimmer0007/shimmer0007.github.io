@@ -1,5 +1,23 @@
 [
   {
+    "id": "python-ast-humor",
+    "title": "Python AST：当代码开始\"整活\"",
+    "date": "2026-01-28",
+    "category": "tech",
+    "summary": "看到两段用AST写Hello World的代码，差点笑出内伤。这就是传说中的\"杀鸡用牛刀\"和\"脱裤子放屁\"的完美结合！",
+    "tags": ["Python", "AST", "代码吐槽", "元编程"],
+    "file": "articles/20260128pythonast.md"
+  },
+  {
+    "id": "test-markdown",
+    "title": "Markdown 渲染测试",
+    "date": "2026-01-28",
+    "category": "tech",
+    "summary": "测试博客系统的 Markdown 渲染功能，包括数学公式、代码高亮、表格等完整特性。",
+    "tags": ["Markdown", "测试", "数学公式"],
+    "file": "articles/20260127testmarkdown.md"
+  },
+  {
     "id": "peking-underground",
     "title": "北京地铁：伟大的十号坏线",
     "date": "2025-07-24",
