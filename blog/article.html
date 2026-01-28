@@ -1,14 +1,35 @@
 <!DOCTYPE html>
 <html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文章详情</title> <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/toc.css">
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>文章详情</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="assets/css/main.css">
+        <link rel="stylesheet" href="assets/css/toc.css">
+
+        <!-- Markdown 渲染支持 -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+
+        <!-- KaTeX 数学公式支持 -->
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+        <script
+            src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+        <!-- Highlight.js 代码高亮 -->
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.css">
+        <script
+            src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/highlight.min.js"></script>
+        <style>
         /* 页面特有布局 */
         body {
             padding-top: 40px;
@@ -68,38 +89,98 @@
         .post-navigation .nav-label { font-size: 0.9em; margin-bottom: 5px; }
         .post-navigation .nav-title { font-weight: bold; color: var(--text-light); }
 
+        /* Markdown 渲染内容的额外样式 */
+        .article-content pre {
+            background: var(--input-bg);
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+        .article-content pre code {
+            background: none;
+            padding: 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+        .article-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+        }
+        .article-content table th,
+        .article-content table td {
+            border: 1px solid var(--border-color);
+            padding: 10px 13px;
+            text-align: left;
+        }
+        .article-content table th {
+            background: var(--input-bg);
+            font-weight: 600;
+        }
+        .article-content blockquote {
+            padding: 10px 20px;
+            margin: 16px 0;
+            color: var(--text-medium);
+            border-left: 4px solid var(--primary-accent);
+            background: var(--input-bg);
+        }
+        .article-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin: 16px 0;
+        }
+        .article-content hr {
+            height: 2px;
+            background: var(--border-color);
+            border: none;
+            margin: 24px 0;
+        }
+        /* KaTeX 数学公式样式 */
+        .katex {
+            font-size: 1.1em;
+        }
+        .katex-display {
+            margin: 20px 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
         /* 在小屏幕上隐藏目录 */
         @media (max-width: 1024px) {
             .toc-container { display: none; }
         }
     </style>
-</head>
-<body data-theme="dark">
+    </head>
+    <body data-theme="dark">
 
-    <div class="article-layout">
-        <main class="article-main" id="article-main">
-            <header class="article-header">
-                <a href="blognav.html" style="color: var(--primary-accent); text-decoration: none; font-size: 14px;">&larr; 返回列表</a>
-                <h1 id="article-title">正在加载...</h1>
-                <div class="article-meta" id="article-meta"></div>
-            </header>
-            
-            <article class="article-content" id="article-content">
+        <div class="article-layout">
+            <main class="article-main" id="article-main">
+                <header class="article-header">
+                    <a href="blognav.html"
+                        style="color: var(--primary-accent); text-decoration: none; font-size: 14px;">&larr;
+                        返回列表</a>
+                    <h1 id="article-title">正在加载...</h1>
+                    <div class="article-meta" id="article-meta"></div>
+                </header>
+
+                <article class="article-content" id="article-content">
                 </article>
 
-            <nav class="post-navigation" id="post-navigation">
+                <nav class="post-navigation" id="post-navigation">
                 </nav>
-        </main>
+            </main>
 
-        <aside class="toc-container" id="toc-container">
-            <h3>目录</h3>
-            <div class="toc-progress"><div class="toc-progress-bar" id="toc-progress-bar"></div></div>
-            <ul class="toc-list" id="toc-list">
+            <aside class="toc-container" id="toc-container">
+                <h3>目录</h3>
+                <div class="toc-progress"><div class="toc-progress-bar"
+                        id="toc-progress-bar"></div></div>
+                <ul class="toc-list" id="toc-list">
                 </ul>
-        </aside>
-    </div>
+            </aside>
+        </div>
 
-    <script>
+        <script>
         // /blog/assets/js/theme.js 的内容 (复用)
         class ThemeSync {
             constructor() { this.iframeBody = document.body; this.parentBody = window.parent.document.body; this.init(); }
@@ -118,7 +199,7 @@
         }
         new ThemeSync();
     </script>
-    <script>
+        <script>
         // /blog/assets/js/toc.js 的内容 (*** 已修正 ***)
         class TableOfContents {
             constructor(contentSelector, tocSelector, progressSelector) {
@@ -230,8 +311,114 @@
             }
         }
     </script>
-    <script>
-        // /blog/assets/js/article.js 的内容 (无重大修改，保持原样)
+        <script>
+        // /blog/assets/js/article.js 的内容 (*** 已增强支持 Markdown ***)
+        
+        // 数学公式占位符存储
+        let mathPlaceholders = [];
+        
+        // 预处理：提取并保护数学公式
+        function protectMath(markdown) {
+            mathPlaceholders = [];
+            let counter = 0;
+            
+            // 保护块级公式 $$...$$
+            markdown = markdown.replace(/\$\$[\s\S]*?\$\$/g, (match) => {
+                const placeholder = `MATH_BLOCK_${counter++}`;
+                mathPlaceholders.push({ placeholder, content: match });
+                return placeholder;
+            });
+            
+            // 保护行内公式 $...$
+            markdown = markdown.replace(/\$([^\$\n]+?)\$/g, (match) => {
+                const placeholder = `MATH_INLINE_${counter++}`;
+                mathPlaceholders.push({ placeholder, content: match });
+                return placeholder;
+            });
+            
+            // 保护 \[...\] 和 \(...\)
+            markdown = markdown.replace(/\\\[[\s\S]*?\\\]/g, (match) => {
+                const placeholder = `MATH_BRACKET_${counter++}`;
+                mathPlaceholders.push({ placeholder, content: match });
+                return placeholder;
+            });
+            
+            markdown = markdown.replace(/\\\([\s\S]*?\\\)/g, (match) => {
+                const placeholder = `MATH_PAREN_${counter++}`;
+                mathPlaceholders.push({ placeholder, content: match });
+                return placeholder;
+            });
+            
+            return markdown;
+        }
+        
+        // 后处理：恢复数学公式
+        function restoreMath(html) {
+            mathPlaceholders.forEach(({ placeholder, content }) => {
+                html = html.replace(new RegExp(placeholder, 'g'), content);
+            });
+            return html;
+        }
+        
+        // 配置 Marked.js
+        if (typeof marked !== 'undefined') {
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                headerIds: true,
+                mangle: false
+            });
+            
+            // 自定义渲染器
+            const renderer = new marked.Renderer();
+            renderer.heading = function(text, level) {
+                const id = text.toLowerCase()
+                    .replace(/[^\w\u4e00-\u9fa5]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+                return `<h${level} id="${id}">${text}</h${level}>`;
+            };
+            marked.use({ renderer });
+        }
+        
+        // 渲染 Markdown 内容
+        function renderMarkdown(markdown) {
+            // 预处理：保护数学公式
+            markdown = protectMath(markdown);
+            
+            // 转换 Markdown 为 HTML
+            let html = marked.parse(markdown);
+            
+            // 后处理：恢复数学公式
+            html = restoreMath(html);
+            
+            return html;
+        }
+        
+        // 应用数学公式和代码高亮
+        function applyEnhancements() {
+            const contentEl = document.getElementById('article-content');
+            
+            // 渲染数学公式
+            if (typeof renderMathInElement !== 'undefined') {
+                renderMathInElement(contentEl, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\[', right: '\\]', display: true},
+                        {left: '\\(', right: '\\)', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+            
+            // 代码高亮
+            if (typeof hljs !== 'undefined') {
+                contentEl.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+            }
+        }
+        
         document.addEventListener('DOMContentLoaded', () => {
             const titleEl = document.getElementById('article-title');
             const metaEl = document.getElementById('article-meta');
@@ -261,24 +448,40 @@
                         return;
                     }
 
-                    const articleHtmlRes = await fetch(articleData.file);
-                    // 如果文章的html文件本身不存在，也跳转到404
-                    if (!articleHtmlRes.ok) {
+                    const articleFileRes = await fetch(articleData.file);
+                    // 如果文章文件本身不存在，也跳转到404
+                    if (!articleFileRes.ok) {
                         window.location.href = '../404.html';
                         return;
                     }
-                    const articleHtml = await articleHtmlRes.text();
-        
-                    contentEl.innerHTML = articleHtml;
+                    
+                    const articleContent = await articleFileRes.text();
+                    
+                    // 检测文件类型：根据文件扩展名判断
+                    const isMarkdown = articleData.file.endsWith('.md');
+                    
+                    if (isMarkdown) {
+                        // Markdown 文件：渲染后插入
+                        const renderedHtml = renderMarkdown(articleContent);
+                        contentEl.innerHTML = renderedHtml;
+                        
+                        // 应用数学公式和代码高亮
+                        applyEnhancements();
+                    } else {
+                        // HTML 文件：直接插入
+                        contentEl.innerHTML = articleContent;
+                    }
         
                     document.title = `${articleData.title} - 微光博客`;
                     titleEl.textContent = articleData.title;
                     metaEl.innerHTML = `<span>📅 ${articleData.date}</span>`;
 
+                    // 生成目录
                     const toc = new TableOfContents('#article-content', '#toc-list', '#toc-progress-bar');
                     toc.build();
                     toc.initScrollSync();
 
+                    // 上一篇/下一篇导航
                     const articleIndex = allArticles.findIndex(a => a.id === articleId);
                     const prevArticle = allArticles[articleIndex + 1];
                     const nextArticle = allArticles[articleIndex - 1];
@@ -309,5 +512,5 @@
             loadArticle();
         });
     </script>
-</body>
+    </body>
 </html>
