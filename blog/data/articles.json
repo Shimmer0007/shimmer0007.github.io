@@ -1,11 +1,20 @@
 [
   {
+    "id": "markdown-html-integration",
+    "title": "Markdown与HTML的嵌套",
+    "date": "2026-01-28",
+    "category": "tech",
+    "summary": "探索Markdown原生支持HTML的特性，在保持简洁的同时获得完整的表现力。",
+    "tags": ["Markdown", "HTML", "前端", "排版"],
+    "file": "articles/20260128markdownhtml.md"
+  },
+  {
     "id": "python-ast-humor",
-    "title": "Python AST：当代码开始\"整活\"",
+    "title": "Python AST",
     "date": "2026-01-28",
     "category": "tech",
     "summary": "这也是测试Markdown渲染功能",
-    "tags": ["Python", "AST", "代码吐槽", "元编程"],
+    "tags": ["Python", "AST", "吐槽", "元编程"],
     "file": "articles/20260128pythonast.md"
   },
   {
