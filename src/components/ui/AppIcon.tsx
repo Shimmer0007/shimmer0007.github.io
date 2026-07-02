@@ -1,6 +1,6 @@
 // src/components/ui/AppIcon.tsx
 // SVG 应用图标注册表 — 统一风格，渐变描边，不用 Emoji
-import type { SVGProps, ReactElement } from 'react';
+import type { SVGProps } from 'react';
 
 interface AppIconProps extends SVGProps<SVGSVGElement> {
   appId: string;
@@ -16,7 +16,7 @@ const BASE = {
   strokeLinejoin: 'round' as const,
 };
 
-const ICONS: Record<string, (id: string) => ReactElement> = {
+const ICONS: Record<string, (id: string) => JSX.Element> = {
   about: (id) => (
     <svg {...BASE} xmlns="http://www.w3.org/2000/svg">
       <defs>

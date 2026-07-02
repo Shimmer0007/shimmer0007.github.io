@@ -44,7 +44,7 @@ export const useOSStore = create<OSState>()(
     }),
     {
       name: 'shimmeros-settings',
-      partialize: (state) => ({
+      partialState: (state) => ({
         theme:    state.theme,
         lang:     state.lang,
         accentId: state.accentId,
