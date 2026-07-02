@@ -1,6 +1,6 @@
 // src/components/window/WindowManager.tsx
 // 窗口管理器 — 渲染所有已开窗口，懒加载各 App
-import { lazy, Suspense, Component, type ReactNode } from 'react';
+import { lazy, Suspense } from 'react';
 import { useWindowsStore } from '../../store/windows';
 import Window from './Window';
 import './WindowManager.css';
@@ -16,23 +16,6 @@ const ToolboxApp  = lazy(() => import('../apps/ToolboxApp'));
 const LinksApp    = lazy(() => import('../apps/LinksApp'));
 const SettingsApp = lazy(() => import('../apps/SettingsApp'));
 const Terminal    = lazy(() => import('../terminal/Terminal'));
-
-// 隔离舱：防应用崩溃牵连系统
-class AppErrorBoundary extends Component<{ children: ReactNode; fallback: ReactNode }, { hasError: boolean }> {
-  state = { hasError: false };
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-  componentDidCatch(error: any, errorInfo: any) {
-    console.error("App crashed:", error, errorInfo);
-  }
-  render() {
-    if (this.state.hasError) {
-      return this.props.fallback;
-    }
-    return this.props.children;
-  }
-}
 
 const APP_COMPONENTS: Record<string, React.ComponentType> = {
   about:    AboutApp,
@@ -66,11 +49,9 @@ export default function WindowManager() {
 
         return (
           <Window key={win.id} win={win}>
-            <AppErrorBoundary fallback={<div style={{padding: '20px', color: 'var(--color-red)', fontFamily: 'var(--font-sans)', fontSize: '0.82rem'}}>⚠️ 应用载入发生严重错误。已安全沙盒化隔离。</div>}>
-              <Suspense fallback={<AppLoader />}>
-                <AppComponent />
-              </Suspense>
-            </AppErrorBoundary>
+            <Suspense fallback={<AppLoader />}>
+              <AppComponent />
+            </Suspense>
           </Window>
         );
       })}

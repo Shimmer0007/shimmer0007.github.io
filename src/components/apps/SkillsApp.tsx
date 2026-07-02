@@ -120,7 +120,9 @@ export default function SkillsApp() {
         .id(d => d.id)
         .distance(d => {
           // 连线间距分配
-          if (d.source.type === 'core' || d.target.type === 'core') return 130;
+          const source = d.source as SkillNode;
+          const target = d.target as SkillNode;
+          if (source.type === 'core' || target.type === 'core') return 130;
           return 75;
         })
         .strength(1.0)
@@ -274,6 +276,16 @@ export default function SkillsApp() {
 
     // 初始缩放至中心
     svg.call(zoom.transform, d3.zoomIdentity.translate(0, 0).scale(0.95));
+
+    // 响应式处理
+    const handleResize = () => {
+      const w = container.clientWidth || 550;
+      const h = container.clientHeight || 450;
+      d3.select(svgEl).attr('viewBox', `0 0 ${w} ${h}`);
+      simulation.force('center', d3.forceCenter(w / 2, h / 2));
+      simulation.alpha(0.3).restart();
+    };
+    window.addEventListener('resize', handleResize);
 
     return () => {
       simulation.stop();

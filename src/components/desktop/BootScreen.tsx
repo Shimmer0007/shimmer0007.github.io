@@ -15,21 +15,14 @@ export default function BootScreen({ onComplete }: BootScreenProps) {
   const [hidden, setHidden] = useState(false);
   const theme = useOSStore(s => s.theme);
 
-  const onCompleteRef = useRef(onComplete);
   useEffect(() => {
-    onCompleteRef.current = onComplete;
-  }, [onComplete]);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout | number;
-
     // Phase 1: 文字出现 (0ms → 800ms)
     const t1 = setTimeout(() => setPhase('progress'), 900);
 
     // Phase 2: 进度条 (900ms → 2600ms)
     const t2 = setTimeout(() => {
       let p = 0;
-      interval = setInterval(() => {
+      const interval = setInterval(() => {
         p += Math.random() * 18 + 8;
         if (p >= 100) {
           p = 100;
@@ -40,21 +33,18 @@ export default function BootScreen({ onComplete }: BootScreenProps) {
             setPhase('done');
             setTimeout(() => {
               setHidden(true);
-              onCompleteRef.current();
+              onComplete();
             }, 600);
           }, 350);
         } else {
           setProgress(p);
         }
       }, 90);
+      return () => clearInterval(interval);
     }, 900);
 
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      if (interval) clearInterval(interval);
-    };
-  }, []);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [onComplete]);
 
   if (hidden) return null;
 
