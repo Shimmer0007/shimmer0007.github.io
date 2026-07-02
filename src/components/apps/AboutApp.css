@@ -1,0 +1,479 @@
+/* src/components/apps/AboutApp.css */
+
+.about-app-container {
+  display: flex;
+  height: 100%;
+  min-height: 520px;
+  gap: var(--space-5);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+/* ===== 侧边导航栏 ===== */
+.about-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding-right: var(--space-4);
+  border-right: 1px solid var(--color-border-subtle);
+}
+
+.about-profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-2);
+}
+
+.about-profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--gradient-accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 800;
+  box-shadow: var(--shadow-sm), 0 0 20px var(--color-accent-glow);
+  position: relative;
+}
+
+.about-profile-avatar::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-gold);
+  animation: breathe-gold var(--dur-breath) var(--ease-smooth) infinite;
+}
+
+.about-profile-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-top: var(--space-2);
+}
+
+.about-profile-class {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-text-gold);
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.15);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.05em;
+}
+
+/* 导航 */
+.about-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.about-nav-item {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-smooth),
+    color            var(--dur-fast) var(--ease-smooth),
+    border-color     var(--dur-fast) var(--ease-smooth);
+}
+
+.about-nav-item:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-text-primary);
+}
+
+.about-nav-item--active {
+  background: var(--color-accent-soft);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+  box-shadow: 0 0 12px var(--color-accent-glow);
+}
+
+/* ===== 主展示区 ===== */
+.about-main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-left: var(--space-2);
+}
+
+.about-tab-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.about-section-heading {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-1);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+/* --- Tab 1: Overview Styles --- */
+.about-description {
+  font-size: 0.93rem;
+  line-height: 1.8;
+  color: var(--color-text-secondary);
+}
+
+.about-description strong {
+  color: var(--color-text-primary);
+}
+
+.about-grid-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  transition: border-color var(--dur-fast), transform var(--dur-fast);
+}
+
+.stat-card:hover {
+  border-color: var(--color-border);
+  transform: translateY(-2px);
+}
+
+.stat-card__icon {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-1);
+}
+
+.stat-card__number {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--color-text-gold);
+}
+
+.stat-card__label {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.profile-tag-item {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  transition: transform var(--dur-fast), border-color var(--dur-fast);
+}
+
+.profile-tag-item:hover {
+  border-color: var(--color-border-gold);
+  color: var(--color-gold-bright);
+  transform: scale(1.05);
+}
+
+.social-links-grid {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.social-link-btn {
+  padding: var(--space-3) var(--space-4);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  transition: all var(--dur-fast);
+}
+
+.social-link-btn:hover {
+  background: var(--color-accent-soft);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+/* --- Tab 2: Experience Timeline --- */
+.experience-timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: var(--space-5);
+}
+
+.experience-timeline::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--color-border-subtle);
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: var(--space-8);
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -20px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: 2px solid var(--color-bg-base);
+  box-shadow: 0 0 8px var(--color-accent-glow);
+  transition: background var(--dur-fast);
+}
+
+.timeline-item:hover .timeline-marker {
+  background: var(--color-gold);
+  box-shadow: 0 0 8px var(--color-gold-glow);
+}
+
+.timeline-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.timeline-date {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-text-gold);
+  font-weight: 600;
+}
+
+.timeline-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.timeline-sub {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+}
+
+.timeline-desc {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+  line-height: 1.6;
+}
+
+/* --- Tab 3: Skills Stat Bars --- */
+.skills-stat-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.profile-stat-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.profile-stat-bar__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+}
+
+.profile-stat-bar__label {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.profile-stat-bar__value {
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.profile-stat-bar__track {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.profile-stat-bar__fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.8s var(--ease-spring);
+}
+
+/* --- Tab 4: Projects (Quest Cards) --- */
+.projects-quest-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.quest-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  transition: border-color var(--dur-normal), transform var(--dur-normal);
+}
+
+.quest-card:hover {
+  border-color: var(--color-border);
+  transform: translateX(4px);
+}
+
+.quest-card__badge {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-5);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--color-border-subtle);
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.quest-card__badge.gold {
+  color: var(--color-text-inverse);
+  background: var(--gradient-gold);
+  border-color: transparent;
+  box-shadow: 0 0 10px var(--color-gold-glow);
+}
+
+.quest-card__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  max-width: 80%; /* 避免重叠徽章 */
+}
+
+.quest-card__subtitle {
+  font-size: 0.8rem;
+  color: var(--color-text-gold);
+  font-weight: 500;
+  margin-bottom: var(--space-2);
+}
+
+.quest-card__bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-left: var(--space-4);
+}
+
+.quest-card__bullets li {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  position: relative;
+}
+
+.quest-card__bullets li::before {
+  content: '✦';
+  position: absolute;
+  left: -16px;
+  color: var(--color-accent-bright);
+  font-size: 0.7rem;
+  top: 1px;
+}
+
+/* ===== 移动端适配 ===== */
+@media (max-width: 768px) {
+  .about-app-container {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .about-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding-right: 0;
+    padding-bottom: var(--space-4);
+    gap: var(--space-4);
+  }
+
+  .about-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+  }
+
+  .about-nav-item {
+    width: auto;
+    padding: 6px 12px;
+    font-size: 0.78rem;
+  }
+
+  .about-profile-header {
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--space-4);
+  }
+
+  .about-profile-name {
+    margin-top: 0;
+  }
+
+  .about-main-content {
+    padding-left: 0;
+  }
+}

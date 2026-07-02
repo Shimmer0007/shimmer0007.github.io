@@ -1,0 +1,87 @@
+/* =============================================================
+   ShimmerOS 2026 — Base Reset & Global Styles
+   ============================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  height: 100%;
+  overflow: hidden; /* OS 桌面不滚动 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-void);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  height: 100%;
+  overflow: hidden;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  transition:
+    background-color var(--dur-normal) var(--ease-smooth),
+    color var(--dur-normal) var(--ease-smooth);
+}
+
+/* 允许窗口内文字选中 */
+.window-body,
+.window-body * {
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: auto;
+}
+
+/* ===== 滚动条统一样式 ===== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.25);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(168, 85, 247, 0.45); }
+
+/* ===== 焦点环 ===== */
+:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ===== 链接 ===== */
+a {
+  color: var(--color-purple-bright);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-smooth);
+}
+a:hover { color: var(--color-gold); }
+
+/* ===== 图片 ===== */
+img, svg { display: block; max-width: 100%; }
+
+/* ===== 按钮重置 ===== */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+/* ===== 输入框重置 ===== */
+input, textarea {
+  font-family: inherit;
+  background: none;
+  border: none;
+  outline: none;
+  color: inherit;
+}

@@ -1,0 +1,57 @@
+---
+import ShimmerOS from '../components/ShimmerOS.tsx';
+import { getCollection } from 'astro:content';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/animations.css';
+
+// 静态获取所有文章和课业笔记（构建期运行）
+const posts = await getCollection('posts');
+const clientPosts = posts.map(post => ({
+  id: post.id,
+  slug: post.slug,
+  body: post.body,
+  data: post.data,
+})).sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()); // 按时间倒序
+
+console.log('--- CONTENT LAYER SYNC CHECK ---');
+console.log(`Loaded posts count: ${clientPosts.length}`);
+console.log(clientPosts.map(p => p.data.title));
+console.log('--------------------------------');
+---
+
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <title>ShimmerOS 2026</title>
+    <!-- 引入初始字体以防止闪烁，这里选择预加载中英文主字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- OS 初始状态拦截 (防止 FOUC: 无预设主题时跟随系统，或读取 localStorage 中的配置) -->
+    <script is:inline>
+      try {
+        const osState = localStorage.getItem('shimmeros-settings');
+        if (osState) {
+          const { state } = JSON.parse(osState);
+          if (state.theme) document.documentElement.setAttribute('data-theme', state.theme);
+        } else {
+          // Fallback to system preference if no localStorage
+          if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+            document.documentElement.setAttribute('data-theme', 'light');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+          }
+        }
+      } catch (e) {
+        console.error('Failed to restore theme', e);
+      }
+    </script>
+  </head>
+  <body>
+    <!-- 桌面系统由 React 岛屿接管，client:load 保证立即加载并水合 -->
+    <ShimmerOS client:load posts={clientPosts} />
+  </body>
+</html>

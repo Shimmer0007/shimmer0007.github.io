@@ -1,0 +1,110 @@
+/* SettingsApp.css */
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.settings-section__title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+/* ===== Toggle 按钮组 ===== */
+.settings-toggle {
+  display: flex;
+  gap: var(--space-2);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-1);
+}
+
+.settings-toggle__btn {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-smooth),
+    color       var(--dur-fast) var(--ease-smooth);
+}
+
+.settings-toggle__btn:hover:not(.settings-toggle__btn--active) {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-primary);
+}
+
+.settings-toggle__btn--active {
+  background: var(--gradient-purple);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.30);
+}
+
+/* ===== 色板 ===== */
+.settings-swatches {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.settings-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: var(--swatch-color);
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) var(--ease-smooth),
+    transform    var(--dur-fast) var(--ease-bounce),
+    box-shadow   var(--dur-fast) var(--ease-smooth);
+}
+
+.settings-swatch:hover {
+  transform: scale(1.12);
+  box-shadow: 0 0 12px var(--swatch-glow);
+}
+
+.settings-swatch--active {
+  border-color: var(--color-text-primary);
+  transform: scale(1.08);
+  box-shadow: 0 0 16px var(--swatch-glow);
+}
+
+/* ===== 关于 ===== */
+.settings-about {
+  margin-top: auto;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.settings-about__name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.settings-about__version {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}

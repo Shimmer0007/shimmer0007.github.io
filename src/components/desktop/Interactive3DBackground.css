@@ -1,0 +1,191 @@
+/* src/components/desktop/Interactive3DBackground.css */
+
+.interactive-3d-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* 衬于极光之上，图标与窗口之下 */
+  pointer-events: none; /* 防穿透，不可拦截主事件 */
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: fadeIn3DBg 1.8s ease-out forwards;
+  animation-delay: 0.8s;
+}
+
+/* 亮色模式微调 */
+[data-theme='light'] .interactive-3d-bg {
+  mix-blend-mode: multiply;
+  opacity: 0;
+  animation: fadeIn3DBg 1.8s ease-out forwards;
+  animation-delay: 0.8s;
+}
+
+@keyframes fadeIn3DBg {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+}
+
+
+/* ===== 🪐 3D 星宿全息投影简报卡片 ===== */
+.hologram-card {
+  position: absolute;
+  width: 280px;
+  background: rgba(19, 13, 33, 0.45);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--color-gold);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(245, 158, 11, 0.22);
+  z-index: 5; /* 低于 App 窗口(100)，高于桌面图标(2)，营造“印在桌面”的全息层次感 */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast), transform var(--dur-fast);
+}
+
+.hologram-card:hover {
+  border-color: var(--color-gold-bright);
+  box-shadow: 0 12px 45px rgba(0, 0, 0, 0.75), 0 0 30px rgba(245, 158, 11, 0.35);
+  transform: translateY(-2px);
+}
+
+/* 模拟 CRT 扫描线背景，营造全息激光感 */
+.hologram-card::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(245, 158, 11, 0.04) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* 全息卡头 */
+.hologram-header {
+  background: rgba(245, 158, 11, 0.15);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 6px var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  z-index: 2;
+}
+
+.hologram-icon {
+  font-size: 0.85rem;
+}
+
+.hologram-title {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-text-gold);
+  letter-spacing: 0.08em;
+}
+
+/* 全息卡身 */
+.hologram-body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  z-index: 2;
+}
+
+.hologram-text {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  text-shadow: 0 0 4px rgba(237, 233, 254, 0.35);
+}
+
+/* 穿越传送门按钮 */
+.hologram-portal-btn {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid var(--color-gold);
+  color: var(--color-text-gold);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.1);
+  transition: all var(--dur-fast) var(--ease-spring);
+  text-align: left;
+  line-height: 1.4;
+}
+
+.hologram-portal-btn:hover {
+  background: var(--color-gold);
+  color: var(--color-text-inverse);
+  box-shadow: 0 0 20px var(--color-gold-glow);
+  transform: translateY(-2px);
+}
+
+.hologram-portal-btn:active {
+  transform: translateY(0);
+}
+
+/* 关闭按钮 */
+.hologram-close-btn {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: rgba(245, 158, 11, 0.6);
+  font-size: 1.1rem;
+  cursor: pointer;
+  z-index: 3;
+  transition: color var(--dur-fast);
+}
+
+.hologram-close-btn:hover {
+  color: var(--color-gold-bright);
+}
+
+/* 亮色模式下的全息卡片改版 */
+[data-theme='light'] .hologram-card {
+  background: rgba(243, 240, 251, 0.75);
+  border-color: rgba(217, 119, 6, 0.5);
+  box-shadow: 0 10px 40px rgba(124, 58, 237, 0.12);
+}
+
+[data-theme='light'] .hologram-card::before {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(217, 119, 6, 0.04) 50%
+  );
+  background-size: 100% 4px;
+}
+
+[data-theme='light'] .hologram-header {
+  background: rgba(217, 119, 6, 0.08);
+  border-bottom-color: rgba(217, 119, 6, 0.2);
+}
+
+[data-theme='light'] .hologram-title {
+  color: #d97706;
+}
+
+[data-theme='light'] .hologram-close-btn {
+  color: rgba(217, 119, 6, 0.5);
+}
+
+[data-theme='light'] .hologram-close-btn:hover {
+  color: #d97706;
+}

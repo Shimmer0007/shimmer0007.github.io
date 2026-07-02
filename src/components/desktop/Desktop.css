@@ -1,0 +1,78 @@
+/* Desktop.css */
+.desktop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-desktop);
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity var(--dur-slow) var(--ease-smooth);
+}
+
+.desktop--loaded { opacity: 1; }
+
+/* ===== 极光背景 ===== */
+.desktop-aurora {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+}
+
+.aurora-blob--1 {
+  width: 65vw;
+  height: 65vh;
+  left: -15%;
+  top: -5%;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.55) 0%, rgba(124, 58, 237, 0.05) 55%, transparent 80%);
+  animation: aurora-drift-1 var(--dur-aurora) var(--ease-smooth) infinite;
+}
+
+.aurora-blob--2 {
+  width: 65vw;
+  height: 65vh;
+  right: -10%;
+  top: 5%;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.70) 0%, rgba(245, 158, 11, 0.08) 55%, transparent 80%);
+  animation: aurora-drift-2 calc(var(--dur-aurora) * 1.3) var(--ease-smooth) infinite;
+}
+
+.aurora-blob--3 {
+  width: 55vw;
+  height: 55vh;
+  left: 20%;
+  bottom: -10%;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.35) 0%, rgba(168, 85, 247, 0.04) 50%, transparent 75%);
+  animation: aurora-drift-3 calc(var(--dur-aurora) * 0.85) var(--ease-smooth) infinite;
+}
+
+/* 亮色主题极光减弱 */
+[data-theme="light"] .aurora-blob { opacity: 0.35; }
+
+/* ===== 图标区域 ===== */
+.desktop-icons {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: var(--space-5);
+  padding: var(--space-10) var(--space-10) 120px; /* 底部留 Dock */
+  align-content: start;
+  height: 100%;
+  max-width: 900px; /* 图标区域不铺满整个宽度，留出右侧空白感 */
+}
+
+@media (max-width: 768px) {
+  .desktop-icons {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    padding: var(--space-6) var(--space-4) 100px;
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,341 @@
+/* src/components/apps/SkillsApp.css */
+
+.skills-container {
+  display: flex;
+  height: 100%;
+  min-height: 520px;
+  position: relative;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+/* ===== A. 左侧拓扑网络图 ===== */
+.skills-graph-area {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 顶部分类筛选 */
+.skills-filters {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  display: flex;
+  gap: var(--space-1);
+  z-index: 10;
+}
+
+.skills-filter-btn {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  background: rgba(23, 19, 38, 0.65);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border-subtle);
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--dur-fast);
+}
+
+.skills-filter-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+.skills-filter-btn--active {
+  background: var(--color-accent-soft);
+  color: var(--color-text-primary);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 10px var(--color-accent-glow);
+}
+
+/* SVG 画布与背景网格 */
+.skills-svg-canvas {
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at center, rgba(168, 85, 247, 0.03) 0%, transparent 70%),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 30px 30px, 30px 30px;
+  background-position: center;
+  cursor: grab;
+}
+
+.skills-svg-canvas:active {
+  cursor: grabbing;
+}
+
+/* 拓扑图元素 */
+.link {
+  stroke-opacity: 0.6;
+  transition: stroke-opacity var(--dur-fast), stroke var(--dur-fast);
+}
+
+.link--cross {
+  stroke-dasharray: 4, 3;
+}
+
+.node-group {
+  cursor: pointer;
+}
+
+.node-group circle {
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 1.5;
+  transition: r var(--dur-fast), stroke-width var(--dur-fast), stroke var(--dur-fast);
+}
+
+.node-group:hover circle {
+  stroke: #ffffff;
+  stroke-width: 2.0;
+}
+
+.node--core circle {
+  stroke: var(--color-accent);
+  stroke-width: 2.5;
+}
+
+.node-group text {
+  font-family: var(--font-sans);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8), 0 0 2px rgba(0, 0, 0, 0.9);
+  transition: font-size var(--dur-fast);
+}
+
+/* 覆盖控制面板 */
+.skills-controls {
+  position: absolute;
+  bottom: var(--space-4);
+  left: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  z-index: 10;
+}
+
+.skills-controls button {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: rgba(23, 19, 38, 0.65);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-secondary);
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--dur-fast);
+}
+
+.skills-controls button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-primary);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 8px var(--color-accent-glow);
+}
+
+/* ===== B. 右侧属性雷达详情栏 ===== */
+.skills-detail-sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--color-border-subtle);
+  background: rgba(23, 19, 38, 0.35);
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform var(--dur-slow) var(--ease-spring), opacity var(--dur-slow) var(--ease-spring);
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 20;
+}
+
+.skills-detail-sidebar.visible {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.skills-detail-content {
+  padding: var(--space-6);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  position: relative;
+}
+
+.skills-detail-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color var(--dur-fast);
+}
+
+.skills-detail-close:hover {
+  color: var(--color-text-primary);
+}
+
+.skills-detail-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-3);
+  align-self: start;
+}
+
+/* 动态给不同的分枝标签配色 */
+.skills-detail-badge[data-cat='ds'] { background: rgba(0, 184, 212, 0.12); color: #00b8d4; border: 1px solid rgba(0, 184, 212, 0.3); }
+.skills-detail-badge[data-cat='ef'] { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+.skills-detail-badge[data-cat='bm'] { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+.skills-detail-badge[data-cat='gs'] { background: rgba(124, 58, 237, 0.12); color: #8b5cf6; border: 1px solid rgba(124, 58, 237, 0.3); }
+
+.skills-detail-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: var(--space-5);
+  line-height: 1.3;
+}
+
+.skills-detail-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.skills-detail-sec h3 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.skills-detail-sec p {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+}
+
+.skills-detail-project {
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 3px solid var(--color-accent);
+  padding: var(--space-2) var(--space-3);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.skills-detail-sec ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.skills-detail-sec li {
+  font-size: 0.85rem;
+  color: var(--color-text-primary);
+  padding-left: var(--space-3);
+  position: relative;
+}
+
+.skills-detail-sec li::before {
+  content: '»';
+  position: absolute;
+  left: 0;
+  color: var(--color-accent-bright);
+}
+
+/* 跨应用联动按钮 */
+.skills-portal-launch-btn {
+  width: 100%;
+  margin-top: var(--space-6);
+  background: var(--gradient-purple);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: 0 4px 15px var(--color-accent-glow);
+  transition: all var(--dur-fast);
+}
+
+.skills-portal-launch-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.40);
+  border-color: var(--color-accent-bright);
+}
+
+.skills-portal-launch-btn:active {
+  transform: translateY(0);
+}
+
+/* 右栏未选中空状态 */
+.skills-sidebar-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: var(--space-6);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.skills-empty-icon {
+  font-size: 2.2rem;
+  margin-bottom: var(--space-3);
+  display: block;
+}
+
+.skills-sidebar-empty p {
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+/* ===== 移动端自适应 ===== */
+@media (max-width: 768px) {
+  .skills-container {
+    flex-direction: column;
+  }
+  
+  .skills-detail-sidebar {
+    width: 100%;
+    height: 180px;
+    top: auto;
+    bottom: 0;
+    transform: translateY(100%);
+    border-left: none;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+  
+  .skills-detail-sidebar.visible {
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,183 @@
+/* Window.css — 窗口毛玻璃系统 */
+
+.window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-overlay);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-window);
+  overflow: hidden;
+  min-width: 320px;
+  min-height: 200px;
+  resize: both;
+
+  animation: window-open var(--dur-normal) var(--ease-spring);
+  transform-origin: center top;
+
+  transition:
+    box-shadow  var(--dur-fast) var(--ease-smooth),
+    border-color var(--dur-fast) var(--ease-smooth);
+}
+
+.window--active {
+  background: linear-gradient(var(--color-bg-overlay), var(--color-bg-overlay)) padding-box,
+              linear-gradient(135deg, var(--color-accent), var(--color-gold)) border-box;
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-window-active);
+}
+
+.window--maximized {
+  border-radius: 0;
+  resize: none;
+}
+
+/* Mobile: full-screen */
+@media (max-width: 768px) {
+  .window {
+    left: 0 !important;
+    top: 0 !important;
+    width: 100vw !important;
+    height: calc(100vh - 84px) !important;
+    border-radius: 0;
+    resize: none;
+  }
+}
+
+/* ===== Title Bar ===== */
+.win-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 var(--space-4);
+  background: rgba(15, 13, 26, 0.55);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border-subtle);
+  cursor: move;
+  flex-shrink: 0;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.win-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.03em;
+  pointer-events: none;
+}
+
+/* ===== Traffic Light Controls ===== */
+.win-controls {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.win-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+.win-nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.win-nav-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  background: transparent;
+  transition: all var(--dur-fast) var(--ease-smooth);
+}
+
+.win-nav-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-accent-bright);
+}
+
+.win-nav-btn:active:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  transform: scale(0.92);
+}
+
+.win-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.win-nav-icon {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+}
+
+.win-header-right-phantom {
+  width: 126px; /* 控制区 58px + 间距 16px + 导航 52px = 126px */
+  flex-shrink: 0;
+}
+
+.win-control {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-bounce),
+              opacity   var(--dur-fast) var(--ease-smooth);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.win-control--close    { background: #ff5f57; }
+.win-control--minimize { background: #febc2e; }
+.win-control--maximize { background: #28c840; }
+
+.win-control__icon {
+  font-size: 10px;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity var(--dur-fast);
+}
+
+/* 整组 hover 时才显示图标 */
+.win-controls:hover .win-control__icon { opacity: 1; }
+
+.win-control:hover {
+  transform: scale(1.12);
+}
+.win-control:active {
+  transform: scale(0.92);
+  opacity: 0.8;
+}
+
+/* ===== Window Body ===== */
+.window-body {
+  flex: 1;
+  overflow: auto;
+  padding: var(--space-5);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--color-text-primary);
+}
+
+/* 子页面内容铺满（无内边距变体） */
+.window-body--flush {
+  padding: 0;
+  overflow: hidden;
+}

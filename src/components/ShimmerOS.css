@@ -1,0 +1,8 @@
+/* ShimmerOS.css */
+.shimmeros {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg-base);
+  transition: background var(--dur-normal) var(--ease-smooth);
+  overflow: hidden;
+}

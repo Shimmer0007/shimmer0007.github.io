@@ -1,0 +1,113 @@
+/* Dock.css */
+.dock {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-dock);
+
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+
+  background: var(--color-bg-overlay);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(168, 85, 247, 0.10);
+
+  animation: dock-slide-up var(--dur-slow) var(--ease-spring) 0.5s both;
+
+  transition:
+    background var(--dur-normal) var(--ease-smooth),
+    border-color var(--dur-normal) var(--ease-smooth);
+}
+
+.dock__divider {
+  width: 1px;
+  height: 36px;
+  background: var(--color-border);
+  margin: 0 var(--space-1);
+  align-self: center;
+}
+
+/* ===== Dock 项目容器 ===== */
+.dock-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  position: relative;
+}
+
+/* ===== Dock 按钮 ===== */
+.dock-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--color-border-subtle);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-smooth),
+    box-shadow  var(--dur-fast) var(--ease-smooth);
+  /* transform 由 JS 控制，不加 transition 避免卡顿 */
+  transform-origin: bottom center;
+  will-change: transform;
+}
+
+.dock-btn:hover {
+  background: rgba(124, 58, 237, 0.15);
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.20);
+}
+
+.dock-btn:active {
+  background: rgba(124, 58, 237, 0.25);
+}
+
+.dock-btn--spotlight {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: var(--color-border-gold);
+  color: var(--color-gold);
+}
+
+.dock-btn--spotlight:hover {
+  background: rgba(245, 158, 11, 0.18);
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.20);
+}
+
+/* ===== 图标 ===== */
+.dock-btn__icon {
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+}
+
+/* ===== 运行指示点 ===== */
+.dock-item__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-purple-bright);
+  box-shadow: 0 0 5px var(--color-purple-glow);
+}
+
+/* ===== 移动端 ===== */
+@media (max-width: 768px) {
+  .dock {
+    bottom: 10px;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+  }
+  .dock-btn {
+    width: 42px;
+    height: 42px;
+    transform: none !important; /* 禁用放大 */
+  }
+  .dock-btn__icon { width: 24px; height: 24px; }
+}
