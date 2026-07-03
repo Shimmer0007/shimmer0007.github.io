@@ -1,0 +1,164 @@
+/* src/components/desktop/UptimeClock.css */
+
+.uptime-clock-card {
+  position: absolute;
+  top: var(--space-6);
+  right: var(--space-8);
+  z-index: 5;
+  width: 240px;
+  padding: var(--space-4) var(--space-5);
+  background: rgba(15, 11, 28, 0.4);
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  transition: transform 0.3s var(--ease-spring), box-shadow 0.3s ease;
+  
+  /* 绑定系统全局的呼吸状态 */
+  animation: clock-breath 4s ease-in-out infinite alternate;
+}
+
+.uptime-clock-card:hover {
+  transform: translateY(-2px) scale(1.02);
+  background: rgba(15, 11, 28, 0.55);
+  box-shadow: 0 8px 24px var(--color-accent-glow);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* CRT 全息扫描纹理 */
+.uptime-crt-scanline {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background-size: 100% 3px, 3px 100%;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* 头部指示器 */
+.uptime-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.uptime-led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  box-shadow: 0 0 8px var(--color-accent);
+  animation: led-pulse 1.8s infinite ease-in-out;
+}
+
+.uptime-header-text {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+}
+
+/* 计时主秒表 (等宽对齐防跳) */
+.uptime-counter {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 2px 0;
+}
+
+.counter-item {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+}
+
+.counter-val {
+  font-family: var(--font-sans); /* 换用 tabular-nums 等宽属性 */
+  font-variant-numeric: tabular-nums;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  text-shadow: 0 0 10px var(--color-accent-glow);
+}
+
+.counter-unit {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  opacity: 0.85;
+}
+
+/* 底部系统参数 */
+.uptime-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: var(--space-2);
+  margin-top: 2px;
+}
+
+.uptime-time-now {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.uptime-ver {
+  font-size: 0.58rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+}
+
+/* ===== 核心呼吸动画 ===== */
+@keyframes clock-breath {
+  0% {
+    border-color: rgba(255, 255, 255, 0.04);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    border-color: var(--color-accent-soft);
+    box-shadow: 0 4px 18px var(--color-accent-glow);
+  }
+}
+
+@keyframes led-pulse {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(0.92);
+    box-shadow: 0 0 4px var(--color-accent);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+    box-shadow: 0 0 10px var(--color-accent);
+  }
+}
+
+/* ===== 移动端自适应收纳 ===== */
+@media (max-width: 768px) {
+  .uptime-clock-card {
+    top: var(--space-4);
+    right: var(--space-4);
+    width: 190px;
+    padding: var(--space-3) var(--space-3);
+  }
+
+  .counter-val {
+    font-size: 0.95rem;
+  }
+
+  .counter-unit {
+    font-size: 0.52rem;
+  }
+
+  .uptime-footer {
+    display: none; /* 移动端屏幕高度有限，隐藏底部信息 */
+  }
+}

@@ -4,6 +4,7 @@ import { useWindowsStore } from '../../store/windows';
 import { useT } from '../../i18n';
 import DesktopIcon from './DesktopIcon';
 import Interactive3DBackground from './Interactive3DBackground';
+import UptimeClock from './UptimeClock';
 import './Desktop.css';
 
 const APPS = [
@@ -41,6 +42,9 @@ export default function Desktop({ loaded }: DesktopProps) {
         <div className="aurora-blob aurora-blob--2" />
         <div className="aurora-blob aurora-blob--3" />
       </div>
+
+      {/* 具有呼吸感的全息 Uptime 计时时钟 */}
+      <UptimeClock />
 
       {/* 图标区域 */}
       <div className="desktop-icons">
