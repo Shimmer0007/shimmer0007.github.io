@@ -1,0 +1,105 @@
+/* src/components/apps/GuestbookApp.css */
+
+.guestbook-app-container {
+  padding: var(--space-6) var(--space-8);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  overflow-y: auto;
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+}
+
+/* ===== A. 头部全息面板 ===== */
+.guestbook-header {
+  margin-bottom: var(--space-2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding-bottom: var(--space-4);
+}
+
+[data-theme="light"] .guestbook-header {
+  border-bottom-color: rgba(124, 58, 237, 0.06);
+}
+
+.guestbook-title-glowing {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: var(--space-2);
+  text-shadow: 0 0 20px var(--color-accent-glow);
+}
+
+.guestbook-subtitle {
+  font-size: 0.76rem;
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+
+/* ===== B. 骨架屏 Loading 指示器 ===== */
+.guestbook-loading-skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-8) 0;
+  color: var(--color-accent-bright);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+}
+
+[data-theme="light"] .guestbook-loading-skeleton {
+  color: var(--color-accent);
+}
+
+.guestbook-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(from var(--color-accent) r g b / 0.1);
+  border-top-color: var(--color-accent-bright);
+  border-radius: 50%;
+  animation: guestbook-spin 1s linear infinite;
+  box-shadow: 0 0 10px var(--color-accent-glow);
+}
+
+@keyframes guestbook-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== C. 留言板包裹器 ===== */
+.guestbook-widget-wrapper {
+  flex: 1;
+  transition: opacity 0.5s ease;
+  margin-bottom: var(--space-4);
+}
+
+.guestbook-widget-wrapper.hidden {
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.guestbook-widget-wrapper.visible {
+  opacity: 1;
+}
+
+/* 重塑 Utterances 内部某些 iframe 溢出限制 */
+.utterances {
+  max-width: 100% !important;
+  margin: 0 !important;
+}
+
+/* 适配移动端 */
+@media (max-width: 600px) {
+  .guestbook-app-container {
+    padding: var(--space-4) var(--space-5);
+  }
+}

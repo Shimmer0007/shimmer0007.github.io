@@ -13,6 +13,7 @@ const en: Record<string, string | ((...args: string[]) => string)> = {
   'app.plan.label':     'February Plan',
   'app.toolbox.label':  'Toolbox',
   'app.links.label':    'Links',
+  'app.guestbook.label': 'Guestbook',
   'app.settings.label': 'Settings',
   'app.terminal.label': 'Terminal',
 
@@ -24,6 +25,7 @@ const en: Record<string, string | ((...args: string[]) => string)> = {
   'app.plan.title':     'February Plan',
   'app.toolbox.title':  'Toolbox',
   'app.links.title':    'Friend Links',
+  'app.guestbook.title': 'Guestbook',
   'app.settings.title': 'System Settings',
   'app.terminal.title': 'ShimmerCMD',
 

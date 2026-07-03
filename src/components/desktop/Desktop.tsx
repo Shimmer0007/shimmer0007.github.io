@@ -18,6 +18,7 @@ const APPS = [
   { id: 'travel',   tier: 3, svgPath: 'travel'   },
   { id: 'plan',     tier: 3, svgPath: 'plan'      },
   { id: 'links',    tier: 3, svgPath: 'links'     },
+  { id: 'guestbook', tier: 3, svgPath: 'guestbook' },
 ] as const;
 
 interface DesktopProps {

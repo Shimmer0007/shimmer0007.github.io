@@ -129,6 +129,19 @@ const ICONS: Record<string, (id: string) => JSX.Element> = {
     </svg>
   ),
 
+  guestbook: (id) => (
+    <svg {...BASE} xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id={`g-${id}`} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#f43f5e" />
+          <stop offset="100%" stopColor="#f59e0b" />
+        </linearGradient>
+      </defs>
+      <path d="M21 15a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14l4-4h14z" stroke={`url(#g-${id})`} />
+      <path d="M7 7h10M7 11h7" stroke={`url(#g-${id})`} strokeWidth="1.2" />
+    </svg>
+  ),
+
   settings: (id) => (
     <svg {...BASE} xmlns="http://www.w3.org/2000/svg">
       <defs>

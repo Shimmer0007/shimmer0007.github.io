@@ -15,6 +15,7 @@ const zh = {
   'app.plan.label':     '二月计划',
   'app.toolbox.label':  '工具箱',
   'app.links.label':    '友链',
+  'app.guestbook.label': '留言板',
   'app.settings.label': '设置',
   'app.terminal.label': '终端',
 
@@ -27,6 +28,7 @@ const zh = {
   'app.plan.title':     '二月计划',
   'app.toolbox.title':  '工具箱',
   'app.links.title':    '友情链接',
+  'app.guestbook.title': '留言板',
   'app.settings.title': '系统设置',
   'app.terminal.title': 'ShimmerCMD',
 

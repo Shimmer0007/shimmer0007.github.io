@@ -14,6 +14,7 @@ const TravelApp   = lazy(() => import('../apps/TravelApp'));
 const PlanApp     = lazy(() => import('../apps/PlanApp'));
 const ToolboxApp  = lazy(() => import('../apps/ToolboxApp'));
 const LinksApp    = lazy(() => import('../apps/LinksApp'));
+const GuestbookApp = lazy(() => import('../apps/GuestbookApp'));
 const SettingsApp = lazy(() => import('../apps/SettingsApp'));
 const Terminal    = lazy(() => import('../terminal/Terminal'));
 
@@ -26,6 +27,7 @@ const APP_COMPONENTS: Record<string, React.ComponentType> = {
   plan:     PlanApp,
   toolbox:  ToolboxApp,
   links:    LinksApp,
+  guestbook: GuestbookApp,
   settings: SettingsApp,
   terminal: Terminal,
 };
