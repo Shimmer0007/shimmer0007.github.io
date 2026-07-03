@@ -96,7 +96,7 @@ export default function TravelApp() {
         g.attr('transform', event.transform);
         const k = event.transform.k;
         
-        // 动态逆向缩放点标记，保持绝对物理大小不随滚轮放大而膨胀
+        // 动态逆向缩放点标记，保持绝对物理大小不随滚轮放大而膨胀 (Billboard Effect)
         g.selectAll('.city-marker-group')
           .attr('transform', (d: any) => `translate(${d.x}, ${d.y}) scale(${1 / k})`);
         
