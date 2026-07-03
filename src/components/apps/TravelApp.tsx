@@ -94,6 +94,14 @@ export default function TravelApp() {
       .scaleExtent([0.5, 8.0])
       .on('zoom', (event) => {
         g.attr('transform', event.transform);
+        const k = event.transform.k;
+        
+        // 动态逆向缩放点标记，保持绝对物理大小不随滚轮放大而膨胀
+        g.selectAll('.city-marker-group')
+          .attr('transform', (d: any) => `translate(${d.x}, ${d.y}) scale(${1 / k})`);
+        
+        g.selectAll('.travel-hub-node')
+          .attr('transform', (d: any) => `translate(${d.x}, ${d.y}) scale(${1 / k})`);
       });
     svg.call(zoom);
     d3Refs.current.zoomBehavior = zoom;
@@ -116,16 +124,19 @@ export default function TravelApp() {
     const renderHub = (coords: [number, number], label: string) => {
       const pos = projection(coords);
       if (!pos) return;
-      const hubG = g.append('g').attr('class', 'travel-hub-node');
+      const hubG = g.append('g')
+        .datum({ x: pos[0], y: pos[1] }) // 绑定地理投影坐标作为逆缩放锚点
+        .attr('class', 'travel-hub-node')
+        .attr('transform', `translate(${pos[0]}, ${pos[1]})`);
       hubG.append('circle')
-        .attr('cx', pos[0])
-        .attr('cy', pos[1])
-        .attr('r', 5)
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', 4.5)
         .attr('fill', '#f59e0b');
       hubG.append('circle')
-        .attr('cx', pos[0])
-        .attr('cy', pos[1])
-        .attr('r', 12)
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', 11)
         .attr('class', 'travel-hub-pulse')
         .attr('fill', 'none')
         .attr('stroke', '#f59e0b')
@@ -143,7 +154,9 @@ export default function TravelApp() {
       if (!pos) return;
 
       const marker = citiesGroup.append('g')
+        .datum({ x: pos[0], y: pos[1] }) // 绑定地理投影坐标作为逆缩放锚点
         .attr('class', 'city-marker-group')
+        .attr('transform', `translate(${pos[0]}, ${pos[1]})`)
         .style('cursor', 'pointer')
         .on('click', (event) => {
           event.stopPropagation();
@@ -156,17 +169,17 @@ export default function TravelApp() {
           setHoveredCity(null);
         });
 
-      // 脉冲环
+      // 脉冲环 (居中局部原点)
       marker.append('circle')
-        .attr('cx', pos[0])
-        .attr('cy', pos[1])
+        .attr('cx', 0)
+        .attr('cy', 0)
         .attr('r', 8)
         .attr('class', 'city-pulse-ring');
 
-      // 核心打点
+      // 核心打点 (居中局部原点)
       marker.append('circle')
-        .attr('cx', pos[0])
-        .attr('cy', pos[1])
+        .attr('cx', 0)
+        .attr('cy', 0)
         .attr('r', 3.5)
         .attr('class', 'city-core-dot');
     });
