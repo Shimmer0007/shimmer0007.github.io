@@ -15,14 +15,15 @@
   flex: 1;
   height: 100%;
   position: relative;
-  background-color: #06050a; /* 极暗雷达背板 */
+  background-color: rgba(6, 5, 14, 0.65); /* 半透明雷达背板，透出桌面窗口底层星空壁纸 */
+  backdrop-filter: var(--glass-blur-md);
   border-right: 1px solid rgba(255, 255, 255, 0.04);
   overflow: hidden;
   transition: background-color var(--dur-normal) ease;
 }
 
 [data-theme="light"] .travel-map-pane {
-  background-color: #f1f5f9;
+  background-color: rgba(241, 245, 249, 0.7);
   border-right-color: rgba(124, 58, 237, 0.06);
 }
 
@@ -35,35 +36,43 @@
 /* 地图经纬雷达网 */
 .travel-graticule {
   fill: none;
-  stroke: rgba(168, 85, 247, 0.03);
+  stroke: var(--color-accent);
+  stroke-opacity: 0.08; /* 提升至 8% 强调色，暗调可见 */
   stroke-width: 0.5px;
   vector-effect: non-scaling-stroke;
 }
 
 [data-theme="light"] .travel-graticule {
-  stroke: rgba(124, 58, 237, 0.04);
+  stroke: var(--color-accent);
+  stroke-opacity: 0.06;
 }
 
 /* 半透明全息陆地 */
 .travel-land {
-  fill: rgba(255, 255, 255, 0.015);
-  stroke: rgba(168, 85, 247, 0.1);
+  fill: var(--color-accent);
+  fill-opacity: 0.025; /* 强调色微光玻璃态陆地 */
+  stroke: var(--color-accent);
+  stroke-opacity: 0.28; /* 提升至 28% 强调色描边，清晰可见大陆海岸线轮廓 */
   stroke-width: 0.8px;
-  transition: fill 0.3s, stroke 0.3s;
+  transition: all 0.3s ease;
   vector-effect: non-scaling-stroke;
 }
 
 [data-theme="light"] .travel-land {
-  fill: rgba(124, 58, 237, 0.035);
-  stroke: rgba(124, 58, 237, 0.16);
+  fill: var(--color-accent);
+  fill-opacity: 0.035;
+  stroke: var(--color-accent);
+  stroke-opacity: 0.22;
 }
 
 .travel-land:hover {
-  fill: rgba(168, 85, 247, 0.04);
+  fill-opacity: 0.07;
+  stroke-opacity: 0.45;
 }
 
 [data-theme="light"] .travel-land:hover {
-  fill: rgba(124, 58, 237, 0.06);
+  fill-opacity: 0.07;
+  stroke-opacity: 0.38;
 }
 
 /* ===== B. 脉冲点动效 ===== */
@@ -101,14 +110,16 @@
 /* ===== C. 跃迁飞线动效 ===== */
 .travel-flight-track {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.05);
+  stroke: var(--color-accent);
+  stroke-opacity: 0.15; /* 航轨底线提升至 15% 强调色，暗调可见 */
   stroke-width: 0.8px;
   stroke-dasharray: 2, 4;
   vector-effect: non-scaling-stroke;
 }
 
 [data-theme="light"] .travel-flight-track {
-  stroke: rgba(124, 58, 237, 0.12);
+  stroke: var(--color-accent);
+  stroke-opacity: 0.12;
 }
 
 /* 飞线能量微型流星动画 */
