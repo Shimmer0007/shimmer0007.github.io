@@ -123,6 +123,7 @@ export default function Terminal() {
   - travel           [足迹足迹 - Travel footprints]
   - plan             [日程计划 - Plan schedule]
   - links            [友情链接 - Friend Links]
+  - guestbook        [留言板 - Guestbook]
   - settings         [系统设置 - System Settings]
   - terminal         [命令行 - ShimmerCMD]`
           : `Registered Application list:
@@ -133,6 +134,7 @@ export default function Terminal() {
   - travel           [Travel footprints]
   - plan             [Plan schedule]
   - links            [Friend Links]
+  - guestbook        [Guestbook]
   - settings         [System Settings]
   - terminal         [ShimmerCMD]`;
         break;
@@ -152,6 +154,7 @@ export default function Terminal() {
           travel: lang === 'zh' ? '出行足迹' : 'Travel footprints',
           plan: lang === 'zh' ? '二月计划' : 'Plan schedule',
           links: lang === 'zh' ? '友情链接' : 'Friend Links',
+          guestbook: lang === 'zh' ? '留言板' : 'Guestbook',
           settings: lang === 'zh' ? '系统设置' : 'System Settings',
           terminal: 'ShimmerCMD'
         };
@@ -294,7 +297,7 @@ export default function Terminal() {
         'help', 'ls', 'apps', 'open', 'theme', 'accent', 'sysinfo', 'neofetch', 'date', 'contact', 'clear', 'cls', 'reboot'
       ];
       
-      const appIds = ['about', 'writing', 'skills', 'projects', 'travel', 'plan', 'links', 'settings', 'terminal'];
+      const appIds = ['about', 'writing', 'skills', 'projects', 'travel', 'plan', 'links', 'guestbook', 'settings', 'terminal'];
 
       // 处理 "open xxx" 的自动补全
       if (currentInput.startsWith('open ')) {
