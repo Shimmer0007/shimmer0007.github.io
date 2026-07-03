@@ -17,6 +17,7 @@ const APPS = [
   // L3 生活切面
   { id: 'travel',   tier: 3, svgPath: 'travel'   },
   { id: 'plan',     tier: 3, svgPath: 'plan'      },
+  { id: 'toolbox',  tier: 3, svgPath: 'toolbox'   },
   { id: 'links',    tier: 3, svgPath: 'links'     },
   { id: 'guestbook', tier: 3, svgPath: 'guestbook' },
 ] as const;
