@@ -122,6 +122,7 @@ export default function Terminal() {
   - projects         [项目仓库 - Project Browser]
   - travel           [足迹足迹 - Travel footprints]
   - plan             [日程计划 - Plan schedule]
+  - toolbox          [工具箱 - Hokie Hub]
   - links            [友情链接 - Friend Links]
   - guestbook        [留言板 - Guestbook]
   - settings         [系统设置 - System Settings]
@@ -133,6 +134,7 @@ export default function Terminal() {
   - projects         [Project Browser]
   - travel           [Travel footprints]
   - plan             [Plan schedule]
+  - toolbox          [Toolbox - Hokie Hub]
   - links            [Friend Links]
   - guestbook        [Guestbook]
   - settings         [System Settings]
@@ -153,6 +155,7 @@ export default function Terminal() {
           projects: lang === 'zh' ? '项目浏览器' : 'Project Browser',
           travel: lang === 'zh' ? '出行足迹' : 'Travel footprints',
           plan: lang === 'zh' ? '二月计划' : 'Plan schedule',
+          toolbox: lang === 'zh' ? '工具箱' : 'Toolbox',
           links: lang === 'zh' ? '友情链接' : 'Friend Links',
           guestbook: lang === 'zh' ? '留言板' : 'Guestbook',
           settings: lang === 'zh' ? '系统设置' : 'System Settings',
@@ -297,7 +300,7 @@ export default function Terminal() {
         'help', 'ls', 'apps', 'open', 'theme', 'accent', 'sysinfo', 'neofetch', 'date', 'contact', 'clear', 'cls', 'reboot'
       ];
       
-      const appIds = ['about', 'writing', 'skills', 'projects', 'travel', 'plan', 'links', 'guestbook', 'settings', 'terminal'];
+      const appIds = ['about', 'writing', 'skills', 'projects', 'travel', 'plan', 'toolbox', 'links', 'guestbook', 'settings', 'terminal'];
 
       // 处理 "open xxx" 的自动补全
       if (currentInput.startsWith('open ')) {
