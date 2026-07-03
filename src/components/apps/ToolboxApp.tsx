@@ -7,6 +7,17 @@ import { useWindowsStore } from '../../store/windows';
 import handbookContent from '../../data/HokieEhall.md?raw';
 import './ToolboxApp.css';
 
+// ==========================================
+// 1. 数据结构定义
+// ==========================================
+interface SubApp {
+  id: string;
+  name: string;
+  icon: string;
+  desc: string;
+  themeClass: string;
+}
+
 interface Resource {
   name: string;
   url: string;
@@ -34,8 +45,8 @@ const RESOURCE_DATA: Category[] = [
       { name: "Genio (AI学习工具)", url: "https://tlos.vt.edu/tools/genio.html", keywords: "人工智能 笔记 AI", tip: "VT官方AI助教工具，可对课程材料、课件进行智能问答和摘要" },
       { name: "TLOS 学术工具集", url: "https://tlos.vt.edu/tools.html", keywords: "Kaltura Gradescope Turnitin Canvas", tip: "包含Kaltura录屏、Gradescope评分、Turnitin查重等核心教学挂件" },
       { name: "大学图书馆", url: "https://lib.vt.edu/", keywords: "Library 借书 自习室", tip: "查找学术文献、预约Newman自习室、借阅图书、教材和3D扫描设备" },
-      { name: "学生成功中心 (辅导)", url: "https://studentsuccess.vt.edu/", keywords: "tutoring 挂科 辅导 Knack", tip: "提供免费课程辅导、学业规划咨询服务以及一对一朋辈支持" },
-      { name: "写作中心", url: "https://studentsuccess.vt.edu/writing_center", keywords: "writing center 论文 修改", tip: "预约一对一英文写作辅导，帮助修改论文、学术报告和申请信" },
+      { name: "学生成功中心 (辅导)", url: "https://studentsuccess.vt.edu/", keywords: "tutoring 挂科 辅导 Knack", tip: "提供免费课程辅导、学学业规划咨询服务以及一对一朋辈支持" },
+      { name: "写作中心", url: "https://studentsuccess.vt.edu/writing_center", keywords: "writing center 论文 修改", tip: "预约一对一英文写作辅导，帮助修改论文、学术报告 and 申请信" },
       { name: "荣誉代码办公室", url: "https://honorsystem.vt.edu/", keywords: "Honor Code 抄袭 违规", tip: "了解VT学术诚信规定，重点防范考试抄袭、代码违规合作等红线行为" }
     ]
   },
@@ -73,7 +84,7 @@ const RESOURCE_DATA: Category[] = [
     resources: [
       { name: "Student Medicover医疗保险", url: "https://smcovered.com/cn/", keywords: "insurance 医疗保险 SM 报销", tip: "VT留学生最常用的医疗保险，提供全中文客服理赔指南及网络诊所查询" },
       { name: "Schiffert 健康中心", url: "https://healthcenter.vt.edu/", keywords: "校医院 medical 疫苗 预约", tip: "校内医院预约看诊、开药、流感接种和免疫证明（Hold）解除" },
-      { name: "Cook 咨询中心", url: "https://ucc.vt.edu/", keywords: "心理健康 counseling 压力 焦虑", tip: "提供免费一对一心理咨询与心理危机干预，支持申请中文翻译陪同" },
+      { name: "Cook 咨询中心", url: "https://ucc.vt.edu/", keywords: "心理健康 counseling 压力 焦虑", tip: "提供免费心理咨询与心理危机干预，支持申请中文翻译陪同" },
       { name: "VT Alerts 紧急警报", url: "https://www.alerts.vt.edu/", keywords: "Emergency Alert 暴雪 枪击 警报", tip: "绑定手机和邮箱，接收学校紧急停课、极端天气或安全预警通知" },
       { name: "校园警察 (VTPD)", url: "https://police.vt.edu/", keywords: "police 报警 安全", tip: "校园警察局官方入口。遇到危险紧急情况请拨打911，非紧急拨打540-231-6411" },
       { name: "Safe Ride 夜间护送", url: "https://police.vt.edu/vtpd-services/safe-ride.html", keywords: "夜间安全送回 护送 独行", tip: "晚间至凌晨的校园内免费安全车送护送服务，适合在图书馆自习至深夜的留子" }
@@ -101,13 +112,12 @@ const RESOURCE_DATA: Category[] = [
       { name: "4Help (IT服务台)", url: "https://4help.vt.edu/", keywords: "IT help desk 密码 网络", tip: "VT技术支持总入口，解决无线网中断、账号锁死、Duo失效等故障" },
       { name: "软件下载中心", url: "https://software.vt.edu/", keywords: "software download 正版 免费 Office MATLAB", tip: "学生可凭VT账户免费下载正版Windows, Office365, MATLAB, Adobe等软件" },
       { name: "eduroam设置指南", url: "https://4help.vt.edu/sp?id=kb_article&sys_id=e7000d070f360a40d3244b9ce1050e93", keywords: "Wifi 密码 无线网", tip: "指导如何在本校配置安全的 eduroam 全局无线学术网络" },
-      { name: "Duo双因素认证", url: "https://it.vt.edu/services/2fa.html", keywords: "two factor Duo 二步验证 安全", tip: "设置和管理两步验证终端，用于日常安全登录Hokie Spa和Canvas" }
+      { name: "Duo双因素认证", url: "https://it.vt.edu/services/2fa.html", keywords: "two factor Duo 二步验证 安全", tip: "设置和管理两步验证终端，用于日常安全登录Hokie Spa and Canvas" }
     ]
   }
 ];
 
 // 12 步留美生命周期指南
-// 12 步留美生命周期指南 (附加 postSlug 路由以支持未来文章发布)
 const TIMELINE_STEPS = [
   { title: "来美前夕行李清单", postSlug: "20260703luggage", summary: "详细的行李打包清单，包括必备文件、衣物、药品及海关违禁品注意事项。", tips: ["护照、I-20、录取通知书、体检免签本随身携带，千万不要托运！", "准备少量备用现金（少于10000美元，超过需要申报）。", "严禁携带任何肉类（包括香肠、牛肉干）、新鲜水果、种子类产品。"] },
   { title: "起飞、中转与落地入境", postSlug: "20260703flight", summary: "从国内出发到落地清关的全流程指南，涵盖海关申报卡填写及海关面试常见问题。", tips: ["准备好I-20和护照，海关问起学校名称时，大声回答 Virginia Tech！", "中转联程机票请预留至少3小时的清关与重新托运行李时间。", "落地后可先在机场连上公共WiFi，给家里报平安。"] },
@@ -116,59 +126,105 @@ const TIMELINE_STEPS = [
   { title: "电话卡套餐与硬件配置", postSlug: "20260703phone", summary: "美国三大主流运营商对比，学生折扣套餐选择建议及国内手机频段兼容核算。", tips: ["校园内 eduroam 无线信号覆盖广，室外一般使用 AT&T 或 T-Mobile。", "黑堡地势起伏，部分山区和公寓信号较弱，建议选择带有 Wi-Fi Calling 功能的手机。", "可以考虑加入多人的 Family Plan 家庭共享套餐，能大幅缩减月租。"] },
   { title: "打工、SSN和社会信用体系", postSlug: "20260703ssn", summary: "校内勤工俭学申请流程，SSN（社会安全号）办理技巧及美国个人信用累积方法。", tips: ["只有获得校内正式工作录用信（Job Offer）才能前往 SSA 申请 SSN 账号。", "拿到 SSN 后可以申请第一张入门信用卡（如 Discover），开始累积信用分数。", "切忌将 SSN 透露给陌生电话或钓鱼邮件，谨防个人身份信息被窃取受损。"] },
   { title: "Gobblerfest与融入社团", postSlug: "20260703gobblerfest", summary: "如何利用每年开学初的社团招新节找到志同道合的朋友并融入大学社区。", tips: ["Gobblerfest 每年在秋季学期初的周五下午举行，全校社团都会在草坪设摊。", "利用 GobblerConnect 查找和登记你的社团成员身份。", "不要害怕口语不够好，VT 拥有非常友好包容的多元文化氛围，勇敢迈出第一步。"] },
-  { title: "实测：各教学楼自习大盘点", postSlug: "20260703studyspace", summary: "盘点校园主要教学楼的自习室、插座分布、静音自习区及空调温度实测指南。", tips: ["Newman 图书馆 2 楼 and 4 楼设有专门的 Quiet Zone，适合深度静音学习。", "Squires 学生中心有丰富的讨论沙发和电源插头，是组会交流首选。", "在期末考试周（Final Week）期间，许多教学楼如 Torgersen Bridge 将 24 小时开放。"] },
+  { title: "实测：各教学楼自习大盘点", postSlug: "20260703studyspace", summary: "盘点校园主要教学楼 of 自习室、插座分布、静音自习区及空调温度实测指南。", tips: ["Newman 图书馆 2 楼 and 4 楼设有专门的 Quiet Zone，适合深度静音学习。", "Squires 学生中心有丰富的讨论沙发和电源插头，是组会交流首选。", "在期末考试周（Final Week）期间，许多教学楼如 Torgersen Bridge 将 24 小时开放。"] },
   { title: "吃在VT：各食堂避雷指南", postSlug: "20260703dining", summary: "全美顶尖大学食堂实地盘点：招牌菜品推荐，点单App使用技巧与剩饭避雷。", tips: ["West End Market 的牛排（London Broil）和 Owens 的中式盖浇饭（Frank's）是明星产品。", "下载并绑定 Grubhub 校园版，可以提前在线点单免去排长队之苦。", "Dining Dollars 在消费时可享受 5% 的免税优惠，合理规划 Meal Plan 额度。"] },
   { title: "McComas 体育馆游玩指南", postSlug: "20260703gym", summary: "McComas 和 War Memorial 健身房设施介绍，室内泳池预约及团体操课申请。", tips: ["进入 McComas 必须刷 Hokie Passport 或扫校内 App 动态二维码验证。", "健身房备有干净的毛巾和消毒喷雾，使用完器材后请自觉擦拭干净归位。", "室内温水游泳池和室内篮球场部分时段受校队训练限制，请提前在 Rec Sports 官网确认。"] },
   { title: "防范诈骗与校园报警安全", postSlug: "20260703safety", summary: "解析专门针对中国留学生的电信诈骗套路，如何识别钓鱼邮件并使用校园求助求警。", tips: ["凡是声称“中国使领馆、国内公安局、DHL快递包裹异常”的电话，100% 为诈骗！", "VT 邮箱经常会收到冒充教授招募助理（Research Assistant）并发放假支票的邮件，切勿相信。", "夜间独自在图书馆待到太晚，请拨打 VTPD Safe Ride 电话让校警驾车护送你回公寓。"] },
   { title: "黑堡吃喝玩乐与日常购物", postSlug: "20260703shopping", summary: "周边大型超市与商圈采购攻略，以及亚马逊学生会员、亚米网省钱优惠技巧。", tips: ["黑堡本地有 Kroger 和 Target 满足日常需求，买中国佐料需乘 BT 公交去 Christiansburg 的亚洲超市。", "可以使用 VT 邮箱注册 Amazon Student，能免费享受半年的 Prime 快速配送会员服务。", "Christiansburg 的 New River Valley Mall 拥有更大的商场、AMC 影院以及丰富的餐厅选择。"] }
 ];
 
+// ==========================================
+// 2. 主工具箱集装箱
+// ==========================================
 export default function ToolboxApp() {
+  const [activeSubAppId, setActiveSubAppId] = useState<string>('ehall');
+
+  const subApps: SubApp[] = [
+    { id: 'ehall', name: 'HokiesEhall', icon: '🎓', desc: 'VT 一站式资源与留美百科大厅', themeClass: 'vt-theme' },
+    { id: 'github', name: 'GitHub Query', icon: '🐙', desc: '实时仓库检索与星标追踪', themeClass: 'git-theme' },
+    { id: 'stats', name: 'Stats Lab', icon: '📊', desc: '统计分析实验室与计算沙盒', themeClass: 'stats-theme' }
+  ];
+
+  const activeAppMeta = useMemo(() => {
+    return subApps.find(a => a.id === activeSubAppId) || subApps[0];
+  }, [activeSubAppId]);
+
+  return (
+    <div className={`toolbox-main-layout ${activeAppMeta.themeClass}`}>
+      {/* ===== 左侧 Launcher 导航抽屉 ===== */}
+      <aside className="toolbox-launcher-sidebar">
+        <div className="launcher-brand">
+          <span className="brand-pulse"></span>
+          SHIMMER_BOX
+        </div>
+        
+        <nav className="launcher-nav-list">
+          {subApps.map(app => (
+            <button
+              key={app.id}
+              className={`launcher-item-btn ${activeSubAppId === app.id ? 'active' : ''}`}
+              onClick={() => setActiveSubAppId(app.id)}
+            >
+              <span className="launcher-icon">{app.icon}</span>
+              <div className="launcher-meta">
+                <span className="launcher-name">{app.name}</span>
+                <span className="launcher-desc">{app.desc}</span>
+              </div>
+            </button>
+          ))}
+        </nav>
+
+        <div className="launcher-footer">
+          v3.0.0 • STABLE
+        </div>
+      </aside>
+
+      {/* ===== 右侧主渲染舞台 ===== */}
+      <main className="toolbox-stage-arena">
+        {activeSubAppId === 'ehall' && <HokiesEhallSubApp />}
+        {activeSubAppId === 'github' && <GitHubQuerySubApp />}
+        {activeSubAppId === 'stats' && <StatsLabSubApp />}
+      </main>
+    </div>
+  );
+}
+
+// ==========================================
+// 3. 子工具组件 1: HokiesEhall
+// ==========================================
+function HokiesEhallSubApp() {
   const lang = useOSStore(s => s.lang);
-  const theme = useOSStore(s => s.theme);
-  
+  const { posts, setActivePostId } = useContentStore();
+  const openWindow = useWindowsStore(s => s.openWindow);
+
   const [activeTab, setActiveTab] = useState<'portal' | 'timeline' | 'handbook'>('portal');
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // 资源贴士控制台状态
   const [hudTip, setHudTip] = useState<string>('📡 WAITING FOR RESOURCE SIGNAL... HOVER ANY LINK TO DECODE TIPS.');
   const [activeStep, setActiveStep] = useState<number | null>(null);
-
-  // 维基百科渲染
   const [activeSection, setActiveSection] = useState<string>('sec-1');
+  
   const handbookContainerRef = useRef<HTMLDivElement>(null);
 
-  // 解析并缓存 Markdown 文档内容
   const parsedHandbookHtml = useMemo(() => {
     return marked.parse(handbookContent);
   }, []);
 
-  // 1. 过滤资源数据
   const filteredCategories = useMemo(() => {
     if (!searchQuery) return RESOURCE_DATA;
     return RESOURCE_DATA.map(cat => {
-      // 检查分类标题或关键词是否匹配
       const catMatch = cat.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                        cat.keywords.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      // 过滤匹配的子资源
       const matchedResources = cat.resources.filter(res => 
         res.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         res.keywords.toLowerCase().includes(searchQuery.toLowerCase()) ||
         res.tip.toLowerCase().includes(searchQuery.toLowerCase())
       );
-
-      if (catMatch) {
-        return cat; // 全量返回
-      }
-      if (matchedResources.length > 0) {
-        return { ...cat, resources: matchedResources }; // 返回过滤后的资源列表
-      }
+      if (catMatch) return cat;
+      if (matchedResources.length > 0) return { ...cat, resources: matchedResources };
       return null;
     }).filter((cat): cat is Category => cat !== null);
   }, [searchQuery]);
 
-  // 维基目录项定义（对应 Hokie Ehall.md 的 ## 标题）
   const handbookToc = [
     { id: 'sec-1', label: '1. 数字基石 (核心门户)', textId: '第 1 节' },
     { id: 'sec-2', label: '2. 学术与知识探索', textId: '第 2 节' },
@@ -180,13 +236,10 @@ export default function ToolboxApp() {
     { id: 'sec-8', label: '8. 网站实施与战略建议', textId: '第 8 节' }
   ];
 
-  // 点击 Wiki 目录平滑滚动
   const handleScrollToSection = (tocItem: typeof handbookToc[0]) => {
     setActiveSection(tocItem.id);
     const container = handbookContainerRef.current;
     if (!container) return;
-
-    // 查找包含指定第 x 节文字的 HTML 标题元素
     const headers = container.querySelectorAll('h2');
     let targetEl: HTMLElement | null = null;
     for (let i = 0; i < headers.length; i++) {
@@ -195,63 +248,39 @@ export default function ToolboxApp() {
         break;
       }
     }
-
     if (targetEl) {
       targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
   return (
-    <div className="toolbox-app-container vt-theme">
-      {/* ===== 头部面板 (VT 科幻风格) ===== */}
+    <div className="sub-app-wrapper ehall-stage animate-slide-in">
       <header className="toolbox-app-header">
         <div className="header-badge">VT</div>
         <div className="header-titles">
           <h2>Hokie Hub</h2>
-          <p>弗吉尼亚理工一站式极客资源门户 • Virginia Tech Resources Portal</p>
+          <p>弗吉尼亚理工一站式资源门户 • Virginia Tech Resources Portal</p>
         </div>
 
-        {/* Tab 导航切换 */}
         <div className="toolbox-tabs">
-          <button 
-            className={`toolbox-tab-btn ${activeTab === 'portal' ? 'active' : ''}`}
-            onClick={() => setActiveTab('portal')}
-          >
-            📡 资源导航
-          </button>
-          <button 
-            className={`toolbox-tab-btn ${activeTab === 'timeline' ? 'active' : ''}`}
-            onClick={() => setActiveTab('timeline')}
-          >
-            📘 生存指南
-          </button>
-          <button 
-            className={`toolbox-tab-btn ${activeTab === 'handbook' ? 'active' : ''}`}
-            onClick={() => setActiveTab('handbook')}
-          >
-            🎓 Hokie 百科
-          </button>
+          <button className={`toolbox-tab-btn ${activeTab === 'portal' ? 'active' : ''}`} onClick={() => setActiveTab('portal')}>📡 资源导航</button>
+          <button className={`toolbox-tab-btn ${activeTab === 'timeline' ? 'active' : ''}`} onClick={() => setActiveTab('timeline')}>📘 生存指南</button>
+          <button className={`toolbox-tab-btn ${activeTab === 'handbook' ? 'active' : ''}`} onClick={() => setActiveTab('handbook')}>🎓 Hokie 百科</button>
         </div>
       </header>
 
-      {/* ===== TAB 1: 资源导航 ===== */}
       {activeTab === 'portal' && (
         <div className="tab-content portal-tab">
-          {/* A. 核心驾驶舱大卡片 */}
           <div className="portal-quick-cockpit">
             {[
               { name: "Canvas", url: "https://canvas.vt.edu/", logo: "🎨", color: "#861F41", desc: "平时作业与日常网课学术驾驶舱", tip: "【学术中心】VT 官方学习管理系统，包含课程大纲、日常作业提交、在线测试及实时评分" },
-              { name: "Hokie Spa", url: "https://apps.es.vt.edu/ssb/vt/index.html", logo: "🔑", color: "#E87722", desc: "学业行政、账单缴费及选课系统", tip: "【教务中心】官方学生行政档案库。用于 Add/Drop 阶段实时选退课、电子账单查看、GPA查询与毕业审计" },
-              { name: "OneCampus", url: "https://onecampus.vt.edu/", logo: "🧭", color: "#451a03", desc: "校级系统官方应用聚合商店", tip: "【校园入口】VT 官方入口服务聚合平台。提供磁贴式一站快捷搜索，堪称校园服务的 App Store" },
-              { name: "StarRez", url: "https://starrez.housing.vt.edu/starrezportal/", logo: "🏠", color: "#065f46", desc: "宿舍申请签署及餐饮计划管理", tip: "【宿办服务】校内宿舍签约与选房大厅。支持室友联名匹配选房、申请宿舍 LLC 社区及餐饮 Meal Plan 变更" },
-              { name: "Handshake", url: "https://vt.joinhandshake.com/", logo: "🤝", color: "#1e3a8a", desc: "校园勤工俭学职位及求职大厅", tip: "【职业发展】学校指定学生求职网。寻找校内兼职/勤工俭学（Work-Study）、申请 SSN 的官方直聘渠道" }
+              { name: "Hokie Spa", url: "https://apps.es.vt.edu/ssb/vt/index.html", logo: "🔑", color: "#E87722", desc: "学业行政、账单缴费及选课系统", tip: "【教务中心】官方学生行政档案库。用于 Add/Drop 选课、电子账单查看、GPA查询" },
+              { name: "OneCampus", url: "https://onecampus.vt.edu/", logo: "🧭", color: "#451a03", desc: "校级系统官方应用聚合商店", tip: "【校园入口】VT 官方入口服务聚合平台。提供快捷搜索，堪称校园 App Store" },
+              { name: "StarRez", url: "https://starrez.housing.vt.edu/starrezportal/", logo: "🏠", color: "#065f46", desc: "宿舍申请签署及餐饮计划管理", tip: "【宿办服务】选房与宿舍签约。支持选房、申请宿舍 LLC 社区及 Meal Plan 变更" },
+              { name: "Handshake", url: "https://vt.joinhandshake.com/", logo: "🤝", color: "#1e3a8a", desc: "校园勤工俭学职位及求职大厅", tip: "【职业发展】寻找校内兼职/勤工俭学（Work-Study）、申请 SSN 的官方渠道" }
             ].map(item => (
               <a 
-                href={item.url} 
-                target="_blank" 
-                rel="noreferrer" 
-                key={item.name}
-                className="cockpit-card"
+                href={item.url} target="_blank" rel="noreferrer" key={item.name} className="cockpit-card"
                 style={{ '--glow-color': item.color } as React.CSSProperties}
                 onMouseEnter={() => setHudTip(item.tip)}
                 onMouseLeave={() => setHudTip('📡 WAITING FOR RESOURCE SIGNAL... HOVER ANY LINK TO DECODE TIPS.')}
@@ -266,21 +295,15 @@ export default function ToolboxApp() {
             ))}
           </div>
 
-          {/* B. 资源实时全局搜索 */}
           <div className="portal-search-bar">
             <span className="search-icon">🔍</span>
             <input 
-              type="text" 
-              placeholder="输入关键词搜索 VT 校园系统链接（例如：选课、缴费、WiFi、校医院、安全护送）..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              type="text" placeholder="输入关键词搜索 VT 校园链接（例如：选课、缴费、WiFi、校医院、安全护送）..."
+              value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
             />
-            {searchQuery && (
-              <button className="search-clear-btn" onClick={() => setSearchQuery('')}>×</button>
-            )}
+            {searchQuery && <button className="search-clear-btn" onClick={() => setSearchQuery('')}>×</button>}
           </div>
 
-          {/* C. 资源分类列表网格 */}
           <div className="portal-resource-grid">
             {filteredCategories.map(category => (
               <div key={category.title} className="resource-category-card">
@@ -291,15 +314,10 @@ export default function ToolboxApp() {
                   </div>
                   <img src={category.img} alt={category.title} className="category-bg-image" />
                 </div>
-                
                 <div className="category-links-list">
                   {category.resources.map(res => (
                     <a 
-                      key={res.name}
-                      href={res.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="resource-item-link"
+                      key={res.name} href={res.url} target="_blank" rel="noreferrer" className="resource-item-link"
                       onMouseEnter={() => setHudTip(`🔍 ${res.name.toUpperCase()} TIP: ${res.tip}`)}
                       onMouseLeave={() => setHudTip('📡 WAITING FOR RESOURCE SIGNAL... HOVER ANY LINK TO DECODE TIPS.')}
                     >
@@ -310,12 +328,8 @@ export default function ToolboxApp() {
                 </div>
               </div>
             ))}
-            {filteredCategories.length === 0 && (
-              <div className="portal-empty-results">未检索到匹配的 VT 资源接口。请更换关键词检索。</div>
-            )}
           </div>
 
-          {/* D. 全息 HUD 提示终端 */}
           <div className="portal-hud-console">
             <div className="hud-console-header">
               <span className="hud-console-pulse"></span>
@@ -328,11 +342,9 @@ export default function ToolboxApp() {
         </div>
       )}
 
-      {/* ===== TAB 2: 生存指南时间轴 ===== */}
       {activeTab === 'timeline' && (
         <div className="tab-content timeline-tab">
           <div className="timeline-layout">
-            {/* 左侧：步骤轴滚动条 */}
             <div className="timeline-scroll-axis">
               <div className="timeline-decor-line" />
               {TIMELINE_STEPS.map((step, index) => {
@@ -340,8 +352,7 @@ export default function ToolboxApp() {
                 const isSelected = activeStep === index;
                 return (
                   <div 
-                    key={step.title} 
-                    className={`timeline-step-node ${isSelected ? 'active' : ''}`}
+                    key={step.title} className={`timeline-step-node ${isSelected ? 'active' : ''}`}
                     onClick={() => setActiveStep(isSelected ? null : index)}
                   >
                     <div className="node-marker">{stepNum}</div>
@@ -354,7 +365,6 @@ export default function ToolboxApp() {
               })}
             </div>
 
-            {/* 右侧：高亮步骤全息详情卡片 */}
             <div className="timeline-detail-display">
               {activeStep !== null ? (
                 <div className="timeline-card-content animate-slide-in">
@@ -376,7 +386,7 @@ export default function ToolboxApp() {
                     </ul>
                   </div>
 
-                  {/* 跨应用动态攻略博文联动链接 */}
+                  {/* 跨应用动态攻略博文联动 */}
                   {(() => {
                     const slug = TIMELINE_STEPS[activeStep].postSlug;
                     const hasArticle = posts.some(p => p.id === slug);
@@ -410,7 +420,7 @@ export default function ToolboxApp() {
                 <div className="timeline-placeholder-panel">
                   <span className="placeholder-arrow">⬅</span>
                   <h3>点击左侧“留美生命周期指南”航点</h3>
-                  <p>解密行前行李自查表、入学报到疫苗解 Hold、校内求职 SSN 以及食堂避雷的保姆级 Checklist 指南。</p>
+                  <p>解密行李自查表、入学疫苗解 Hold、校内求职 SSN 以及食堂避雷的保姆级 Checklist 指南。</p>
                 </div>
               )}
             </div>
@@ -418,36 +428,236 @@ export default function ToolboxApp() {
         </div>
       )}
 
-      {/* ===== TAB 3: Hokie 百科 (Wiki) ===== */}
       {activeTab === 'handbook' && (
         <div className="tab-content handbook-tab">
-          {/* 左侧：第 1 到 8 节大纲目录 */}
           <aside className="handbook-toc-sidebar">
             <div className="toc-title">VT_ENCYCLOPEDIA_TOC</div>
             <nav className="toc-list">
               {handbookToc.map(item => (
                 <button
-                  key={item.id}
-                  className={`toc-item-btn ${activeSection === item.id ? 'active' : ''}`}
+                  key={item.id} className={`toc-item-btn ${activeSection === item.id ? 'active' : ''}`}
                   onClick={() => handleScrollToSection(item)}
                 >
                   {item.label}
                 </button>
               ))}
             </nav>
-            <div className="toc-footer-decor">
-              STATUS: LOCAL_ Wiki_CACHED
-            </div>
+            <div className="toc-footer-decor">STATUS: LOCAL_ Wiki_CACHED</div>
           </aside>
 
-          {/* 右侧：Markdown 手册滚动视图 */}
-          <div 
-            className="handbook-content-scroll" 
-            ref={handbookContainerRef}
-            dangerouslySetInnerHTML={{ __html: parsedHandbookHtml }}
-          />
+          <div className="handbook-content-scroll" ref={handbookContainerRef} dangerouslySetInnerHTML={{ __html: parsedHandbookHtml }} />
         </div>
       )}
+    </div>
+  );
+}
+
+// ==========================================
+// 4. 子工具组件 2: GitHub Query (真实接口查询工具)
+// ==========================================
+interface GithubRepo {
+  name: string;
+  html_url: string;
+  description: string;
+  stargazers_count: number;
+  forks_count: number;
+  language: string;
+}
+
+function GitHubQuerySubApp() {
+  const [username, setUsername] = useState('Shimmer0007');
+  const [loading, setLoading] = useState(false);
+  const [repos, setRepos] = useState<GithubRepo[]>([]);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleSearch = async () => {
+    if (!username.trim()) return;
+    setLoading(true);
+    setErrorMsg('');
+    try {
+      const res = await fetch(`https://api.github.com/users/${username.trim()}/repos?sort=updated&per_page=30`);
+      if (!res.ok) {
+        throw new Error(res.status === 404 ? '用户不存在 (404)' : '网络接口请求频率超限，请稍后再试');
+      }
+      const data = await res.json();
+      setRepos(data);
+    } catch (err: any) {
+      setRepos([]);
+      setErrorMsg(err.message || '数据检索失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleSearch();
+  }, []);
+
+  return (
+    <div className="sub-app-wrapper git-stage animate-slide-in">
+      <header className="toolbox-app-header">
+        <div className="header-badge git-badge">GIT</div>
+        <div className="header-titles">
+          <h2>GitHub Explorer</h2>
+          <p>实时公有 API 仓库检索与状态追踪面板 • Public Repos Monitor</p>
+        </div>
+      </header>
+
+      <div className="tab-content git-content">
+        <div className="git-search-console">
+          <input 
+            type="text" placeholder="输入任意 GitHub 用户名（如 Shimmer0007, torvalds）..."
+            value={username} onChange={(e) => setUsername(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          />
+          <button onClick={handleSearch} disabled={loading}>
+            {loading ? '正在检索...' : '发射查询 ⚡'}
+          </button>
+        </div>
+
+        {errorMsg && <div className="git-error-panel">❌ 错误：{errorMsg}</div>}
+
+        <div className="git-repos-grid">
+          {repos.map(repo => (
+            <a key={repo.name} href={repo.html_url} target="_blank" rel="noreferrer" className="git-repo-card">
+              <div className="repo-card-header">
+                <h4>{repo.name}</h4>
+                {repo.language && <span className="repo-lang-tag">{repo.language}</span>}
+              </div>
+              <p className="repo-desc">{repo.description || 'No description provided.'}</p>
+              <div className="repo-stats">
+                <span>⭐ {repo.stargazers_count}</span>
+                <span>🍴 {repo.forks_count}</span>
+              </div>
+            </a>
+          ))}
+          {!loading && repos.length === 0 && !errorMsg && (
+            <div className="git-empty">该用户没有公开发布的仓库。</div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==========================================
+// 5. 子工具组件 3: Stats Lab (统计计算小沙盒)
+// ==========================================
+function StatsLabSubApp() {
+  const [inputVal, setInputVal] = useState('86, 77, 95, 88, 92, 60, 84, 91, 78, 89');
+  const [stats, setStats] = useState<{
+    count: number;
+    mean: number;
+    median: number;
+    stdDev: number;
+    min: number;
+    max: number;
+    sortedNums: number[];
+  } | null>(null);
+
+  const calculateStats = () => {
+    const nums = inputVal
+      .split(',')
+      .map(v => parseFloat(v.trim()))
+      .filter(v => !isNaN(v));
+
+    if (nums.length === 0) {
+      setStats(null);
+      return;
+    }
+
+    const sorted = [...nums].sort((a, b) => a - b);
+    const count = nums.length;
+    
+    const sum = nums.reduce((acc, curr) => acc + curr, 0);
+    const mean = sum / count;
+
+    const mid = Math.floor(count / 2);
+    const median = count % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+
+    const sqDiffSum = nums.reduce((acc, curr) => acc + Math.pow(curr - mean, 2), 0);
+    const stdDev = Math.sqrt(sqDiffSum / count);
+
+    setStats({
+      count,
+      mean: Math.round(mean * 100) / 100,
+      median: Math.round(median * 100) / 100,
+      stdDev: Math.round(stdDev * 100) / 100,
+      min: sorted[0],
+      max: sorted[count - 1],
+      sortedNums: sorted
+    });
+  };
+
+  useEffect(() => {
+    calculateStats();
+  }, []);
+
+  return (
+    <div className="sub-app-wrapper stats-stage animate-slide-in">
+      <header className="toolbox-app-header">
+        <div className="header-badge stats-badge">STATS</div>
+        <div className="header-titles">
+          <h2>Stats Laboratory</h2>
+          <p>统计分析实验室 — 快速数据特征结算与可视化沙箱 • Stats Desk</p>
+        </div>
+      </header>
+
+      <div className="tab-content stats-content">
+        <div className="stats-input-section">
+          <label>请输入一组以英文逗号间隔的数值样本（数据分析与成绩测算）：</label>
+          <div className="stats-input-bar">
+            <input 
+              type="text" value={inputVal} onChange={(e) => setInputVal(e.target.value)}
+              placeholder="e.g. 10.5, 20.3, 15.2, 8.4"
+            />
+            <button onClick={calculateStats}>计算特征 📊</button>
+          </div>
+        </div>
+
+        {stats && (
+          <div className="stats-report-layout">
+            <div className="stats-grid-dashboard">
+              <div className="stats-dash-card">
+                <span className="card-label">样本总量 (Count)</span>
+                <span className="card-value">{stats.count}</span>
+              </div>
+              <div className="stats-dash-card">
+                <span className="card-label">样本均值 (Mean)</span>
+                <span className="card-value">{stats.mean}</span>
+              </div>
+              <div className="stats-dash-card">
+                <span className="card-label">中位数 (Median)</span>
+                <span className="card-value">{stats.median}</span>
+              </div>
+              <div className="stats-dash-card">
+                <span className="card-label">标准差 (Std Dev)</span>
+                <span className="card-value">{stats.stdDev}</span>
+              </div>
+              <div className="stats-dash-card">
+                <span className="card-label">极小值 / 极大值</span>
+                <span className="card-value">{stats.min} / {stats.max}</span>
+              </div>
+            </div>
+
+            <div className="stats-distribution-chart">
+              <h4>📊 样本序列数值分布柱状图</h4>
+              <div className="chart-bars-container">
+                {stats.sortedNums.map((val, idx) => {
+                  const percent = stats.max > 0 ? (val / stats.max) * 100 : 0;
+                  return (
+                    <div key={idx} className="chart-bar-col" style={{ '--bar-height': `${percent}%` } as React.CSSProperties}>
+                      <span className="bar-hover-val">{val}</span>
+                      <div className="bar-color-fill"></div>
+                      <span className="bar-index-label">{idx + 1}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
