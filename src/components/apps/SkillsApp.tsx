@@ -277,7 +277,6 @@ export default function SkillsApp() {
 
     return () => {
       simulation.stop();
-      window.removeEventListener('resize', handleResize);
     };
   }, [graphData]);
 
