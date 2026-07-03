@@ -74,6 +74,16 @@ const FRIEND_LINKS: FriendLink[] = [
     descZh: '国际化工程人才与职业生涯网络',
     descEn: 'Global engineering talent & professional career network',
     color: '#3b82f6' // 蓝
+  },
+  {
+    id: 'kiakizhang',
+    nameZh: '宸总的说明书',
+    nameEn: "Chen's Manual",
+    url: 'https://kiakizhang.github.io/personal-portfolio/',
+    icon: '📘',
+    descZh: '宸总的个人说明书与作品空间',
+    descEn: "Chen's personal manual & portfolio showcase",
+    color: '#0ea5e9' // 珂朵莉蓝
   }
 ];
 
