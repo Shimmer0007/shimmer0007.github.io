@@ -8,17 +8,18 @@ export type Lang = 'zh' | 'en';
 
 export interface AccentColor {
   id: string;
-  label: string;
+  labelZh: string;
+  labelEn: string;
   value: string;
   glow: string;
 }
 
 export const ACCENT_COLORS: AccentColor[] = [
-  { id: 'purple', label: '电光紫',   value: '#7c3aed', glow: 'rgba(124,58,237,0.28)' },
-  { id: 'gold',   label: '琥珀金',   value: '#f59e0b', glow: 'rgba(245,158,11,0.28)' },
-  { id: 'blue',   label: '极光蓝',   value: '#3b82f6', glow: 'rgba(59,130,246,0.28)' },
-  { id: 'rose',   label: '玫瑰红',   value: '#f43f5e', glow: 'rgba(244,63,94,0.28)'  },
-  { id: 'cyan',   label: '赛博青',   value: '#06b6d4', glow: 'rgba(6,182,212,0.28)'  },
+  { id: 'purple', labelZh: '极光紫',   labelEn: 'Aurora Purple', value: '#7c3aed', glow: 'rgba(124,58,237,0.28)' },
+  { id: 'gold',   labelZh: '治疗金',   labelEn: 'Healing Gold',   value: '#f59e0b', glow: 'rgba(245,158,11,0.28)' },
+  { id: 'blue',   labelZh: '珂朵莉蓝', labelEn: 'Chtholly Blue', value: '#3b82f6', glow: 'rgba(59,130,246,0.28)' },
+  { id: 'rose',   labelZh: '艾陆可红', labelEn: 'Elq Red',       value: '#f43f5e', glow: 'rgba(244,63,94,0.28)'  },
+  { id: 'cyan',   labelZh: '只此青绿', labelEn: 'Qinglu Green',  value: '#06b6d4', glow: 'rgba(6,182,212,0.28)'  },
 ];
 
 interface OSState {

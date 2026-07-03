@@ -54,10 +54,13 @@
 }
 
 .boot-logo__os {
-  color: var(--color-gold);
-  font-size: 2rem;
-  font-weight: 700;
-  margin-left: var(--space-1);
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-left: 2px;
   opacity: 0;
   animation: letter-appear 0.5s var(--ease-spring) 560ms forwards;
 }

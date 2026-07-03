@@ -31,17 +31,20 @@ export default function SettingsApp() {
       <section className="settings-section">
         <h3 className="settings-section__title">{t('settings.accent')}</h3>
         <div className="settings-swatches" role="group" aria-label={t('settings.accent')}>
-          {ACCENT_COLORS.map(color => (
-            <button
-              key={color.id}
-              className={`settings-swatch ${accentId === color.id ? 'settings-swatch--active' : ''}`}
-              style={{ '--swatch-color': color.value, '--swatch-glow': color.glow } as React.CSSProperties}
-              onClick={() => setAccent(color.id)}
-              title={color.label}
-              aria-label={color.label}
-              aria-pressed={accentId === color.id}
-            />
-          ))}
+          {ACCENT_COLORS.map(color => {
+            const label = lang === 'zh' ? color.labelZh : color.labelEn;
+            return (
+              <button
+                key={color.id}
+                className={`settings-swatch ${accentId === color.id ? 'settings-swatch--active' : ''}`}
+                style={{ '--swatch-color': color.value, '--swatch-glow': color.glow } as React.CSSProperties}
+                onClick={() => setAccent(color.id)}
+                title={label}
+                aria-label={label}
+                aria-pressed={accentId === color.id}
+              />
+            );
+          })}
         </div>
       </section>
 
