@@ -176,38 +176,52 @@ export default function TravelApp() {
   // 4. 选择城市后的视角缩放和飞线绘制
   const activeCity = hoveredCity || selectedCity;
 
-  // 计算和生成飞线路径 (Hub -> City)
-  const flightPathD = useMemo(() => {
-    if (!activeCity) return '';
+  // 使用 D3.js 副作用渲染飞线，避免 React 渲染周期 DOM 查询引发白屏崩溃
+  useEffect(() => {
+    const g = d3Refs.current.svgGroup;
     const proj = d3Refs.current.projection;
-    if (!proj) return '';
+    if (!g || !proj) return;
 
-    // 判断目标城市位置，决定从哪个 Hub 出发
-    // 西经（美国加拿大）从 VT 出发，东经（中国迪拜）从北京出发
+    // 清理之前的历史飞线
+    g.selectAll('.travel-flight-lines').remove();
+
+    if (!activeCity) return;
+
     const startCoords = activeCity.value[0] < -20 ? HUB_VT : HUB_BJ;
     const pStart = proj(startCoords);
     const pEnd = proj(activeCity.value);
     
-    if (!pStart || !pEnd) return '';
+    if (!pStart || !pEnd) return;
 
-    // 绘制贝塞尔抛物线
     const [x1, y1] = pStart;
     const [x2, y2] = pEnd;
-    
     const dx = x2 - x1;
     const dy = y2 - y1;
     const len = Math.sqrt(dx * dx + dy * dy);
-    if (len < 5) return ''; // 距离太近不画线
+    if (len < 5) return; // 距离太近不画线
 
     const offset = len * 0.2; // 抛物弧度高度
     const mx = (x1 + x2) / 2;
     const my = (y1 + y2) / 2;
-    
-    // 垂直偏移向量
     const cx = mx - dy * (offset / len);
     const cy = my + dx * (offset / len);
 
-    return `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`;
+    const pathD = `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`;
+
+    // 将飞线挂载在 D3 组的底部，使其自动平移和放大，且隐藏在城市打点之下
+    const linesG = g.insert('g', ':first-child')
+      .attr('class', 'travel-flight-lines')
+      .style('pointer-events', 'none');
+
+    // 飞线底轨
+    linesG.append('path')
+      .attr('d', pathD)
+      .attr('class', 'travel-flight-track');
+
+    // 飞线发光导轨
+    linesG.append('path')
+      .attr('d', pathD)
+      .attr('class', 'travel-flight-glow');
   }, [activeCity]);
 
   // 触发选中城市动作（带平滑视角追踪）
@@ -256,25 +270,7 @@ export default function TravelApp() {
     <div className="travel-app-container">
       {/* ===== 左栏: D3 雷达地图 ===== */}
       <div className="travel-map-pane" ref={containerRef}>
-        <svg ref={svgRef} className="travel-svg-canvas">
-          {/* 在 SVG 内层动态追加飞线元素，置于 markers 底部 */}
-          {flightPathD && d3Refs.current.svgGroup && (
-            <g className="travel-flight-lines" style={{ pointerEvents: 'none' }}>
-              {/* 飞线底轨 */}
-              <path 
-                d={flightPathD} 
-                className="travel-flight-track"
-                transform={d3.select(svgRef.current).select('.map-group').attr('transform')}
-              />
-              {/* 飞线发光导轨 */}
-              <path 
-                d={flightPathD} 
-                className="travel-flight-glow"
-                transform={d3.select(svgRef.current).select('.map-group').attr('transform')}
-              />
-            </g>
-          )}
-        </svg>
+        <svg ref={svgRef} className="travel-svg-canvas" />
 
         {/* 覆盖控制面板 */}
         <div className="travel-map-controls">
