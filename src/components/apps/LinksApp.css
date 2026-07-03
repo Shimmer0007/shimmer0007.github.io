@@ -1,0 +1,216 @@
+/* src/components/apps/LinksApp.css */
+
+.links-app-container {
+  padding: var(--space-6) var(--space-8);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  overflow-y: auto;
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+}
+
+/* ===== A. 头部样式 ===== */
+.links-app-header {
+  text-align: center;
+  margin-bottom: var(--space-2);
+}
+
+.links-title-glowing {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: var(--space-2);
+  text-shadow: 0 0 20px var(--color-accent-glow);
+}
+
+.links-intro-text {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+/* ===== B. 传送门卡片网格 ===== */
+.links-portal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-5);
+  flex: 1;
+}
+
+.links-portal-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: rgba(23, 19, 38, 0.35);
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  overflow: hidden;
+  transition: 
+    transform 0.4s var(--ease-spring), 
+    background-color 0.3s ease, 
+    border-color 0.3s ease, 
+    box-shadow 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+/* 亮色主题自适应 */
+[data-theme="light"] .links-portal-card {
+  background: rgba(240, 238, 247, 0.55);
+  border-color: rgba(124, 58, 237, 0.08);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.04);
+}
+
+/* Hover 特效：亮起老友专属的微光发光环 */
+.links-portal-card:hover {
+  transform: translateY(-3px) scale(1.015);
+  background: rgba(23, 19, 38, 0.55);
+  border-color: var(--link-theme-color);
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.4), 
+    0 0 15px var(--link-theme-color);
+}
+
+[data-theme="light"] .links-portal-card:hover {
+  background: rgba(240, 238, 247, 0.85);
+  border-color: var(--link-theme-color);
+  box-shadow: 
+    0 10px 25px rgba(124, 58, 237, 0.08), 
+    0 0 12px var(--link-theme-color);
+}
+
+/* 卡片 CRT 全息扫线 */
+.links-card-scanline {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.08) 50%);
+  background-size: 100% 3px;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+[data-theme="light"] .links-card-scanline {
+  opacity: 0.15;
+}
+
+/* 左侧圆形 Emoji 徽章 */
+.links-card-badge {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--dur-normal) var(--ease-spring);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="light"] .links-card-badge {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(124, 58, 237, 0.12);
+}
+
+.links-badge-icon {
+  font-size: 1.3rem;
+  transition: transform var(--dur-normal) var(--ease-bounce);
+}
+
+.links-portal-card:hover .links-badge-icon {
+  transform: scale(1.18) rotate(6deg);
+}
+
+.links-portal-card:hover .links-card-badge {
+  border-color: var(--link-theme-color);
+  box-shadow: 0 0 12px var(--link-theme-color);
+}
+
+/* 右侧文本信息 */
+.links-card-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+}
+
+.links-card-name {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.links-card-desc {
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+  margin: var(--space-1) 0 var(--space-3) 0;
+}
+
+/* 底部穿梭提示 */
+.links-card-portal-hint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.58rem;
+  font-weight: 800;
+  color: var(--link-theme-color);
+  letter-spacing: 0.08em;
+  opacity: 0.45;
+  transition: opacity var(--dur-fast), transform var(--dur-fast);
+  margin-top: auto;
+}
+
+.links-arrow-right {
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+
+.links-portal-card:hover .links-card-portal-hint {
+  opacity: 1;
+}
+
+.links-portal-card:hover .links-arrow-right {
+  transform: translateX(4px);
+}
+
+/* ===== C. 底部寄语 ===== */
+.links-app-footer {
+  margin-top: var(--space-4);
+  text-align: center;
+  padding-top: var(--space-4);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+[data-theme="light"] .links-app-footer {
+  border-top-color: rgba(124, 58, 237, 0.06);
+}
+
+.links-footer-note {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+/* ===== 响应式处理 ===== */
+@media (max-width: 680px) {
+  .links-portal-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  .links-app-container {
+    padding: var(--space-4) var(--space-5);
+  }
+}

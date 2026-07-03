@@ -10,7 +10,6 @@ import './Dock.css';
 const DOCK_APPS = [
   { id: 'toolbox',  pinned: true  },
   { id: 'terminal', pinned: true  },
-  { id: 'links',    pinned: true  },
   { id: 'settings', pinned: true  },
 ] as const;
 
