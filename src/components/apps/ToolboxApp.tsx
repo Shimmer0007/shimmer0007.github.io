@@ -2,6 +2,8 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { marked } from 'marked';
 import { useOSStore } from '../../store/os';
+import { useContentStore } from '../../store/content';
+import { useWindowsStore } from '../../store/windows';
 import handbookContent from '../../data/HokieEhall.md?raw';
 import './ToolboxApp.css';
 
@@ -105,19 +107,20 @@ const RESOURCE_DATA: Category[] = [
 ];
 
 // 12 步留美生命周期指南
+// 12 步留美生命周期指南 (附加 postSlug 路由以支持未来文章发布)
 const TIMELINE_STEPS = [
-  { title: "来美前夕行李清单", summary: "详细的行李打包清单，包括必备文件、衣物、药品及海关违禁品注意事项。", tips: ["护照、I-20、录取通知书、体检免签本随身携带，千万不要托运！", "准备少量备用现金（少于10000美元，超过需要申报）。", "严禁携带任何肉类（包括香肠、牛肉干）、新鲜水果、种子类产品。"] },
-  { title: "起飞、中转与落地入境", summary: "从国内出发到落地清关的全流程指南，涵盖海关申报卡填写及海关面试常见问题。", tips: ["准备好I-20和护照，海关问起学校名称时，大声回答 Virginia Tech！", "中转联程机票请预留至少3小时的清关与重新托运行李时间。", "落地后可先在机场连上公共WiFi，给家里报平安。"] },
-  { title: "入境首日生存攻略", summary: "抵达黑堡后的第一天生存指南：倒时差、购买必需品、注册 BT 公交系统。", tips: ["黑堡公交 BT Transit 凭学生证免费，建议立刻下载 BT App 以便查看线路。", "前去 Squires Student Center 办理 Hokie Passport 校园实体卡。", "建议前去 Walmart 或 Target 采购最初两天的生活用品、防寒被褥。"] },
-  { title: "医保激活与免疫 Hold 解除", summary: "解读学校健康保险要求，如何提交疫苗注射记录并解除系统选课 Hold 限制。", tips: ["Schiffert Health Center 会强制检查免疫证明，若疫苗不全需在此补打。", "如不购买学校默认昂贵保险，须在截止日期前申请 Insurance Waiver 替换。", "确保系统中的 Immunization Hold 已被官方盖章注销，否则无法进行 Add/Drop 选课。"] },
-  { title: "电话卡套餐与硬件配置", summary: "美国三大主流运营商对比，学生折扣套餐选择建议及国内手机频段兼容核算。", tips: ["校园内 eduroam 无线信号覆盖广，室外一般使用 AT&T 或 T-Mobile。", "黑堡地势起伏，部分山区和公寓信号较弱，建议选择带有 Wi-Fi Calling 功能的手机。", "可以考虑加入多人的 Family Plan 家庭共享套餐，能大幅缩减月租。"] },
-  { title: "打工、SSN和社会信用体系", summary: "校内勤工俭学申请流程，SSN（社会安全号）办理技巧及美国个人信用累积方法。", tips: ["只有获得校内正式工作录用信（Job Offer）才能前往 SSA 申请 SSN 账号。", "拿到 SSN 后可以申请第一张入门信用卡（如 Discover），开始累积信用分数。", "切忌将 SSN 透露给陌生电话或钓鱼邮件，谨防个人身份信息被窃取受损。"] },
-  { title: "Gobblerfest与融入社团", summary: "如何利用每年开学初的社团招新节找到志同道合的朋友并融入大学社区。", tips: ["Gobblerfest 每年在秋季学期初的周五下午举行，全校社团都会在草坪设摊。", "利用 GobblerConnect 查找和登记你的社团成员身份。", "不要害怕口语不够好，VT 拥有非常友好包容的多元文化氛围，勇敢迈出第一步。"] },
-  { title: "实测：各教学楼自习大盘点", summary: "盘点校园主要教学楼的自习室、插座分布、静音自习区及空调温度实测指南。", tips: ["Newman 图书馆 2 楼和 4 楼设有专门的 Quiet Zone，适合深度静音学习。", "Squires 学生中心有丰富的讨论沙发和电源插头，是组会交流首选。", "在期末考试周（Final Week）期间，许多教学楼如 Torgersen Bridge 将 24 小时开放。"] },
-  { title: "吃在VT：各食堂避雷指南", summary: "全美顶尖大学食堂实地盘点：招牌菜品推荐，点单App使用技巧与剩饭避雷。", tips: ["West End Market 的牛排（London Broil）和 Owens 的中式盖浇饭（Frank's）是明星产品。", "下载并绑定 Grubhub 校园版，可以提前在线点单免去排长队之苦。", "Dining Dollars 在消费时可享受 5% 的免税优惠，合理规划 Meal Plan 额度。"] },
-  { title: "McComas 体育馆游玩指南", summary: "McComas 和 War Memorial 健身房设施介绍，室内泳池预约及团体操课申请。", tips: ["进入 McComas 必须刷 Hokie Passport 或扫校内 App 动态二维码验证。", "健身房备有干净的毛巾和消毒喷雾，使用完器材后请自觉擦拭干净归位。", "室内温水游泳池和室内篮球场部分时段受校队训练限制，请提前在 Rec Sports 官网确认。"] },
-  { title: "防范诈骗与校园报警安全", summary: "解析专门针对中国留学生的电信诈骗套路，如何识别钓鱼邮件并使用校园求助求警。", tips: ["凡是声称“中国使领馆、国内公安局、DHL快递包裹异常”的电话，100% 为诈骗！", "VT 邮箱经常会收到冒充教授招募助理（Research Assistant）并发放假支票的邮件，切勿相信。", "夜间独自在图书馆待到太晚，请拨打 VTPD Safe Ride 电话让校警驾车护送你回公寓。"] },
-  { title: "黑堡吃喝玩乐与日常购物", summary: "周边大型超市与商圈采购攻略，以及亚马逊学生会员、亚米网省钱优惠技巧。", tips: ["黑堡本地有 Kroger 和 Target 满足日常需求，买中国佐料需乘 BT 公交去 Christiansburg 的亚洲超市。", "可以使用 VT 邮箱注册 Amazon Student，能免费享受半年的 Prime 快速配送会员服务。", "Christiansburg 的 New River Valley Mall 拥有更大的商场、AMC 影院以及丰富的餐厅选择。"] }
+  { title: "来美前夕行李清单", postSlug: "20260703luggage", summary: "详细的行李打包清单，包括必备文件、衣物、药品及海关违禁品注意事项。", tips: ["护照、I-20、录取通知书、体检免签本随身携带，千万不要托运！", "准备少量备用现金（少于10000美元，超过需要申报）。", "严禁携带任何肉类（包括香肠、牛肉干）、新鲜水果、种子类产品。"] },
+  { title: "起飞、中转与落地入境", postSlug: "20260703flight", summary: "从国内出发到落地清关的全流程指南，涵盖海关申报卡填写及海关面试常见问题。", tips: ["准备好I-20和护照，海关问起学校名称时，大声回答 Virginia Tech！", "中转联程机票请预留至少3小时的清关与重新托运行李时间。", "落地后可先在机场连上公共WiFi，给家里报平安。"] },
+  { title: "入境首日生存攻略", postSlug: "20260703survival", summary: "抵达黑堡后的第一天生存指南：倒时差、购买必需品、注册 BT 公交系统。", tips: ["黑堡公交 BT Transit 凭学生证免费，建议立刻下载 BT App 以便查看线路。", "前去 Squires Student Center 办理 Hokie Passport 校园实体卡。", "建议前去 Walmart 或 Target 采购最初两天的生活用品、防寒被褥。"] },
+  { title: "医保激活与免疫 Hold 解除", postSlug: "20260703insurance", summary: "解读学校健康保险要求，如何提交疫苗注射记录并解除系统选课 Hold 限制。", tips: ["Schiffert Health Center 会强制检查免疫证明，若疫苗不全需在此补打。", "如不购买学校默认昂贵保险，须在截止日期前申请 Insurance Waiver 替换。", "确保系统中的 Immunization Hold 已被官方盖章注销，否则无法进行 Add/Drop 选课。"] },
+  { title: "电话卡套餐与硬件配置", postSlug: "20260703phone", summary: "美国三大主流运营商对比，学生折扣套餐选择建议及国内手机频段兼容核算。", tips: ["校园内 eduroam 无线信号覆盖广，室外一般使用 AT&T 或 T-Mobile。", "黑堡地势起伏，部分山区和公寓信号较弱，建议选择带有 Wi-Fi Calling 功能的手机。", "可以考虑加入多人的 Family Plan 家庭共享套餐，能大幅缩减月租。"] },
+  { title: "打工、SSN和社会信用体系", postSlug: "20260703ssn", summary: "校内勤工俭学申请流程，SSN（社会安全号）办理技巧及美国个人信用累积方法。", tips: ["只有获得校内正式工作录用信（Job Offer）才能前往 SSA 申请 SSN 账号。", "拿到 SSN 后可以申请第一张入门信用卡（如 Discover），开始累积信用分数。", "切忌将 SSN 透露给陌生电话或钓鱼邮件，谨防个人身份信息被窃取受损。"] },
+  { title: "Gobblerfest与融入社团", postSlug: "20260703gobblerfest", summary: "如何利用每年开学初的社团招新节找到志同道合的朋友并融入大学社区。", tips: ["Gobblerfest 每年在秋季学期初的周五下午举行，全校社团都会在草坪设摊。", "利用 GobblerConnect 查找和登记你的社团成员身份。", "不要害怕口语不够好，VT 拥有非常友好包容的多元文化氛围，勇敢迈出第一步。"] },
+  { title: "实测：各教学楼自习大盘点", postSlug: "20260703studyspace", summary: "盘点校园主要教学楼的自习室、插座分布、静音自习区及空调温度实测指南。", tips: ["Newman 图书馆 2 楼 and 4 楼设有专门的 Quiet Zone，适合深度静音学习。", "Squires 学生中心有丰富的讨论沙发和电源插头，是组会交流首选。", "在期末考试周（Final Week）期间，许多教学楼如 Torgersen Bridge 将 24 小时开放。"] },
+  { title: "吃在VT：各食堂避雷指南", postSlug: "20260703dining", summary: "全美顶尖大学食堂实地盘点：招牌菜品推荐，点单App使用技巧与剩饭避雷。", tips: ["West End Market 的牛排（London Broil）和 Owens 的中式盖浇饭（Frank's）是明星产品。", "下载并绑定 Grubhub 校园版，可以提前在线点单免去排长队之苦。", "Dining Dollars 在消费时可享受 5% 的免税优惠，合理规划 Meal Plan 额度。"] },
+  { title: "McComas 体育馆游玩指南", postSlug: "20260703gym", summary: "McComas 和 War Memorial 健身房设施介绍，室内泳池预约及团体操课申请。", tips: ["进入 McComas 必须刷 Hokie Passport 或扫校内 App 动态二维码验证。", "健身房备有干净的毛巾和消毒喷雾，使用完器材后请自觉擦拭干净归位。", "室内温水游泳池和室内篮球场部分时段受校队训练限制，请提前在 Rec Sports 官网确认。"] },
+  { title: "防范诈骗与校园报警安全", postSlug: "20260703safety", summary: "解析专门针对中国留学生的电信诈骗套路，如何识别钓鱼邮件并使用校园求助求警。", tips: ["凡是声称“中国使领馆、国内公安局、DHL快递包裹异常”的电话，100% 为诈骗！", "VT 邮箱经常会收到冒充教授招募助理（Research Assistant）并发放假支票的邮件，切勿相信。", "夜间独自在图书馆待到太晚，请拨打 VTPD Safe Ride 电话让校警驾车护送你回公寓。"] },
+  { title: "黑堡吃喝玩乐与日常购物", postSlug: "20260703shopping", summary: "周边大型超市与商圈采购攻略，以及亚马逊学生会员、亚米网省钱优惠技巧。", tips: ["黑堡本地有 Kroger 和 Target 满足日常需求，买中国佐料需乘 BT 公交去 Christiansburg 的亚洲超市。", "可以使用 VT 邮箱注册 Amazon Student，能免费享受半年的 Prime 快速配送会员服务。", "Christiansburg 的 New River Valley Mall 拥有更大的商场、AMC 影院以及丰富的餐厅选择。"] }
 ];
 
 export default function ToolboxApp() {
@@ -372,6 +375,32 @@ export default function ToolboxApp() {
                       ))}
                     </ul>
                   </div>
+
+                  {/* 跨应用动态攻略博文联动链接 */}
+                  {(() => {
+                    const slug = TIMELINE_STEPS[activeStep].postSlug;
+                    const hasArticle = posts.some(p => p.id === slug);
+                    if (hasArticle) {
+                      return (
+                        <div className="step-article-link-box">
+                          <button 
+                            className="step-article-link-btn"
+                            onClick={() => {
+                              openWindow('writing', lang === 'zh' ? '微光博客' : 'Blog');
+                              setActivePostId(slug);
+                            }}
+                          >
+                            📖 阅读详细攻略文章 →
+                          </button>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div className="step-article-pending">
+                        📝 详细指南博文撰写中，敬请期待...
+                      </div>
+                    );
+                  })()}
 
                   <div className="step-footer-alert">
                     ⚠️ 此项生存攻略为根据黑堡留学生实际案例整理的预警手册。建议严格对照自查。

@@ -815,7 +815,50 @@
   margin: var(--space-5) 0;
 }
 
-/* 响应式适配 */
+.handbook-content-scroll hr {
+  border: none;
+  border-top: 1px dashed rgba(255, 255, 255, 0.04);
+  margin: var(--space-5) 0;
+}
+
+/* 跨应用文章联动按钮 */
+.step-article-link-box {
+  margin-top: var(--space-2);
+}
+
+.step-article-link-btn {
+  background: linear-gradient(135deg, var(--vt-maroon), var(--vt-orange));
+  border: 1px solid var(--vt-orange);
+  color: #ffffff !important;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--vt-orange-glow);
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
+  outline: none;
+}
+
+.step-article-link-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 15px rgba(232, 119, 34, 0.35);
+  filter: brightness(1.1);
+}
+
+.step-article-pending {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+  padding: var(--space-2_5);
+  border: 1px dashed rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.005);
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .toolbox-app-header {
     flex-direction: column;
