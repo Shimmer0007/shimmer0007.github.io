@@ -1,5 +1,6 @@
 /* src/components/desktop/UptimeClock.css */
 
+/* ==================== A. 基础结构与自适应底色 ==================== */
 .uptime-clock-card {
   position: absolute;
   top: var(--space-6);
@@ -7,39 +8,68 @@
   z-index: 5;
   width: 240px;
   padding: var(--space-4) var(--space-5);
-  background: rgba(15, 11, 28, 0.4);
+  background: rgba(10, 8, 20, 0.60); /* 暗色真空磨砂 */
   backdrop-filter: var(--glass-blur-sm);
   -webkit-backdrop-filter: var(--glass-blur-sm);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-lg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  transition: transform 0.3s var(--ease-spring), box-shadow 0.3s ease;
+  transition: 
+    transform 0.3s var(--ease-spring), 
+    box-shadow 0.3s ease, 
+    background-color 0.3s ease, 
+    border-color 0.3s ease;
   
-  /* 绑定系统全局的呼吸状态 */
-  animation: clock-breath 4s ease-in-out infinite alternate;
+  /* 暗色默认呼吸 */
+  animation: clock-breath-dark 4s ease-in-out infinite alternate;
 }
 
+/* 亮色模式卡片翻转 */
+[data-theme="light"] .uptime-clock-card {
+  background: rgba(240, 238, 247, 0.70); /* 亮色曜白磨砂 */
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  animation: clock-breath-light 4s ease-in-out infinite alternate;
+}
+
+/* Hover 浮空立体与外光晕 */
 .uptime-clock-card:hover {
   transform: translateY(-2px) scale(1.02);
-  background: rgba(15, 11, 28, 0.55);
-  box-shadow: 0 8px 24px var(--color-accent-glow);
-  border-color: rgba(255, 255, 255, 0.15);
 }
 
-/* CRT 全息扫描纹理 */
+:root:not([data-theme="light"]) .uptime-clock-card:hover {
+  background: rgba(10, 8, 20, 0.75);
+  box-shadow: 0 8px 24px var(--color-accent-glow), 0 0 0 1px var(--color-accent-bright);
+}
+
+[data-theme="light"] .uptime-clock-card:hover {
+  background: rgba(240, 238, 247, 0.85);
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.16), 0 0 0 1px var(--color-accent);
+}
+
+/* ==================== B. CRT 扫线自适应 ==================== */
 .uptime-crt-scanline {
   position: absolute;
   inset: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background: 
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.12) 50%), 
+    linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
   background-size: 100% 3px, 3px 100%;
   pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+:root:not([data-theme="light"]) .uptime-crt-scanline {
   opacity: 0.85;
 }
 
-/* 头部指示器 */
+[data-theme="light"] .uptime-crt-scanline {
+  opacity: 0.35; /* 亮色下减弱扫线，防止脏屏 */
+}
+
+/* ==================== C. 头部与 LED 呼吸灯 ==================== */
 .uptime-header {
   display: flex;
   align-items: center;
@@ -51,7 +81,6 @@
   height: 6px;
   border-radius: 50%;
   background-color: var(--color-accent);
-  box-shadow: 0 0 8px var(--color-accent);
   animation: led-pulse 1.8s infinite ease-in-out;
 }
 
@@ -59,10 +88,11 @@
   font-size: 0.65rem;
   font-weight: 800;
   letter-spacing: 0.12em;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary); /* 使用 secondary 保证亮暗对比度极佳 */
+  transition: color 0.3s ease;
 }
 
-/* 计时主秒表 (等宽对齐防跳) */
+/* ==================== D. 核心计数器与单位 ==================== */
 .uptime-counter {
   display: flex;
   justify-content: space-between;
@@ -77,22 +107,40 @@
 }
 
 .counter-val {
-  font-family: var(--font-sans); /* 换用 tabular-nums 等宽属性 */
+  font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 800;
-  color: var(--color-text-primary);
+  color: var(--color-text-primary); /* 亮暗反转文字变量 */
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* 暗色数字自带发光 */
+:root:not([data-theme="light"]) .counter-val {
   text-shadow: 0 0 10px var(--color-accent-glow);
 }
 
-.counter-unit {
-  font-size: 0.58rem;
-  font-weight: 700;
-  color: var(--color-accent);
-  opacity: 0.85;
+/* 亮色数字微投影增加立体感 */
+[data-theme="light"] .counter-val {
+  text-shadow: 0 1px 2px rgba(30, 27, 75, 0.08);
 }
 
-/* 底部系统参数 */
+.counter-unit {
+  font-size: 0.62rem;
+  font-weight: 800;
+  transition: color 0.3s ease;
+}
+
+/* 强调色主题自适应分级 */
+:root:not([data-theme="light"]) .counter-unit {
+  color: var(--color-accent-bright); /* 暗色使用高亮阶 */
+}
+
+[data-theme="light"] .counter-unit {
+  color: var(--color-accent); /* 亮色使用深色阶 */
+}
+
+/* ==================== E. 底部面板 ==================== */
 .uptime-footer {
   display: flex;
   justify-content: space-between;
@@ -100,37 +148,55 @@
   border-top: 1px solid rgba(255, 255, 255, 0.04);
   padding-top: var(--space-2);
   margin-top: 2px;
+  transition: border-color 0.3s ease;
+}
+
+[data-theme="light"] .uptime-footer {
+  border-top-color: rgba(124, 58, 237, 0.08);
 }
 
 .uptime-time-now {
   font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
-  font-size: 0.65rem;
-  font-weight: 600;
+  font-size: 0.68rem;
+  font-weight: 700;
   color: var(--color-text-secondary);
+  transition: color 0.3s ease;
 }
 
 .uptime-ver {
   font-size: 0.58rem;
   color: var(--color-text-muted);
   letter-spacing: 0.05em;
+  transition: color 0.3s ease;
 }
 
-/* ===== 核心呼吸动画 ===== */
-@keyframes clock-breath {
+/* ==================== F. 呼吸动画 Keyframes ==================== */
+@keyframes clock-breath-dark {
   0% {
     border-color: rgba(255, 255, 255, 0.04);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
   }
   100% {
     border-color: var(--color-accent-soft);
-    box-shadow: 0 4px 18px var(--color-accent-glow);
+    box-shadow: 0 4px 20px var(--color-accent-glow);
+  }
+}
+
+@keyframes clock-breath-light {
+  0% {
+    border-color: rgba(124, 58, 237, 0.10);
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.04);
+  }
+  100% {
+    border-color: var(--color-accent-soft);
+    box-shadow: 0 4px 18px rgba(124, 58, 237, 0.12);
   }
 }
 
 @keyframes led-pulse {
   0%, 100% {
-    opacity: 0.45;
+    opacity: 0.5;
     transform: scale(0.92);
     box-shadow: 0 0 4px var(--color-accent);
   }
@@ -141,7 +207,7 @@
   }
 }
 
-/* ===== 移动端自适应收纳 ===== */
+/* ==================== G. 移动端收纳 ==================== */
 @media (max-width: 768px) {
   .uptime-clock-card {
     top: var(--space-4);
@@ -151,7 +217,7 @@
   }
 
   .counter-val {
-    font-size: 0.95rem;
+    font-size: 0.98rem;
   }
 
   .counter-unit {
@@ -159,6 +225,6 @@
   }
 
   .uptime-footer {
-    display: none; /* 移动端屏幕高度有限，隐藏底部信息 */
+    display: none;
   }
 }
