@@ -1,0 +1,179 @@
+/* src/components/terminal/Terminal.css */
+
+.terminal-shell {
+  width: 100%;
+  height: 100%;
+  background-color: #06050e; /* 纯黑真空底色 */
+  padding: var(--space-4) var(--space-5);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: #a7f3d0; /* 默认黑客帝国淡绿字 */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 亮色模式切换：变更为极客纸张浅灰蓝底色 */
+[data-theme="light"] .terminal-shell {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+/* CRT 全息扫描线效果 */
+.terminal-scanline {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+  background-size: 100% 3px;
+  pointer-events: none;
+  opacity: 0.35;
+  z-index: 10;
+}
+
+[data-theme="light"] .terminal-scanline {
+  opacity: 0.08;
+}
+
+/* 历史滚动输出区 */
+.terminal-output-container {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-right: var(--space-2);
+}
+
+/* 自定义滚动条 */
+.terminal-output-container::-webkit-scrollbar {
+  width: 4px;
+}
+.terminal-output-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.terminal-output-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+}
+
+.terminal-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.terminal-row--input {
+  color: var(--color-text-primary);
+}
+
+.terminal-row--output {
+  color: #10b981; /* 指令输出主色 */
+  white-space: pre-wrap;
+}
+
+[data-theme="light"] .terminal-row--output {
+  color: #047857;
+}
+
+.terminal-text-raw {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  white-space: pre-wrap;
+  color: inherit;
+}
+
+/* 提示符 */
+.terminal-prompt {
+  color: var(--color-accent-bright);
+  font-weight: 700;
+  margin-right: var(--space-2);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+[data-theme="light"] .terminal-prompt {
+  color: var(--color-accent);
+}
+
+/* 实时命令行输入行 */
+.terminal-input-row {
+  margin-top: var(--space-2);
+  align-items: center;
+}
+
+.terminal-input-element {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: #ffffff;
+  padding: 0;
+  caret-color: var(--color-accent-bright); /* 光标随强调色换肤 */
+}
+
+[data-theme="light"] .terminal-input-element {
+  color: #0f172a;
+  caret-color: var(--color-accent);
+}
+
+/* ==================== neofetch 规格仪表盘排版 ==================== */
+.term-sysinfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  padding: var(--space-3) 0;
+  align-items: center;
+  color: #ede9fe;
+}
+
+[data-theme="light"] .term-sysinfo {
+  color: #1e1b4b;
+}
+
+.term-ascii-logo {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  line-height: 1.15;
+  color: var(--color-accent-bright);
+  text-shadow: 0 0 10px var(--color-accent-glow);
+}
+
+[data-theme="light"] .term-ascii-logo {
+  color: var(--color-accent);
+  text-shadow: none;
+}
+
+.term-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.term-specs p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.spec-label {
+  color: var(--color-accent-bright);
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+[data-theme="light"] .spec-label {
+  color: var(--color-accent);
+}
+
+/* 响应式调整 */
+@media (max-width: 600px) {
+  .term-sysinfo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+}
