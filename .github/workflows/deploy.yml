@@ -29,13 +29,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: 'npm'
 
-      - name: Install dependencies, build, and upload site
-        uses: withastro/action@v3
-        # 这个 Astro 官方的 Action 会全自动：
-        # 1. 识别 package.json/package-lock.json 并执行 npm ci
-        # 2. 执行 npm run build 进行静态化构建
-        # 3. 将产物打包成 artifact 归档
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Astro Site
+        run: npm run build
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
 
   deploy:
     needs: build
