@@ -230,6 +230,50 @@
   color: var(--color-text-primary);
 }
 
+/* --- Visitor Footprint Map --- */
+.about-visitor-map {
+  margin-top: var(--space-5);
+}
+
+.visitor-map-mount-box {
+  width: 100%;
+  min-height: 160px;
+  background: rgba(13, 10, 24, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-lg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  padding: var(--space-4);
+  box-sizing: border-box;
+}
+
+[data-theme="light"] .visitor-map-mount-box {
+  background: rgba(255, 255, 255, 0.45);
+  border-color: rgba(124, 58, 237, 0.06);
+}
+
+/* Ensure mapmyvisitors widget is styled nicely */
+#mapmyvisitors-widget {
+  margin: 0 auto !important;
+  max-width: 100%;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mapmyvisitors-map-container {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  transition: transform 0.25s ease;
+}
+
+#mapmyvisitors-widget:hover .mapmyvisitors-map-container {
+  transform: scale(1.02);
+}
+
 /* --- Tab 2: Experience Timeline --- */
 .experience-timeline {
   display: flex;

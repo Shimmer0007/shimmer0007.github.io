@@ -44,6 +44,36 @@ export default function AboutApp() {
   const [historyIndex, setHistoryIndex] = useState(0);
   const isNavigatingRef = useRef(false);
 
+  // 动态加载并销毁 mapmyvisitors 访客地球打点脚本
+  useEffect(() => {
+    if (activeTab !== 'overview') return;
+
+    const cleanUpWidget = () => {
+      const existingScript = document.getElementById('mapmyvisitors');
+      if (existingScript) existingScript.remove();
+      const widget = document.getElementById('mapmyvisitors-widget');
+      if (widget) widget.remove();
+    };
+
+    cleanUpWidget();
+
+    // 寻找影子挂载点
+    const container = document.getElementById('visitor-map-mount');
+    if (!container) return;
+
+    // 动态创建并插入 Script 标签
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.id = 'mapmyvisitors';
+    script.src = '//mapmyvisitors.com/map.js?d=IYu8iNH6bZ7whJUi54OooLM7iOqBUPxR_nqajHvb2CI&cl=ffffff&w=a';
+    
+    container.appendChild(script);
+
+    return () => {
+      cleanUpWidget();
+    };
+  }, [activeTab]);
+
   // 用户主动切换 Tab
   const handleTabChange = (tab: Tab) => {
     if (tab === activeTab) return;
@@ -196,6 +226,11 @@ export default function AboutApp() {
                   🐙 GitHub (shimmer0007)
                 </a>
               </div>
+            </section>
+
+            <section className="about-visitor-map">
+              <h3 className="about-section-heading">访客雷达 (读者足迹)</h3>
+              <div id="visitor-map-mount" className="visitor-map-mount-box" />
             </section>
           </div>
         )}
