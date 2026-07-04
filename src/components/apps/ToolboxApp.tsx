@@ -142,7 +142,8 @@ export default function ToolboxApp() {
   const subApps: SubApp[] = [
     { id: 'ehall', name: 'HokiesEhall', icon: '🎓', desc: 'VT 一站式资源与留美百科大厅', themeClass: 'vt-theme' },
     { id: 'github', name: 'GitHub Query', icon: '🐙', desc: '实时仓库检索与星标追踪', themeClass: 'git-theme' },
-    { id: 'stats', name: 'Stats Lab', icon: '📊', desc: '统计分析实验室与计算沙盒', themeClass: 'stats-theme' }
+    { id: 'stats', name: 'Stats Lab', icon: '📊', desc: '统计分析实验室与计算沙盒', themeClass: 'stats-theme' },
+    { id: 'size', name: '窗口尺寸', icon: '📏', desc: '实时视口与媒体查询监测器', themeClass: 'size-theme' }
   ];
 
   const activeAppMeta = useMemo(() => {
@@ -184,6 +185,7 @@ export default function ToolboxApp() {
         {activeSubAppId === 'ehall' && <HokiesEhallSubApp />}
         {activeSubAppId === 'github' && <GitHubQuerySubApp />}
         {activeSubAppId === 'stats' && <StatsLabSubApp />}
+        {activeSubAppId === 'size' && <ViewportSubApp />}
       </main>
     </div>
   );
@@ -657,6 +659,130 @@ function StatsLabSubApp() {
             </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+// ==========================================
+// 6. 子工具组件 4: Viewport Inspector (窗口尺寸)
+// ==========================================
+function ViewportSubApp() {
+  const [viewport, setViewport] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1024,
+    height: typeof window !== 'undefined' ? window.innerHeight : 768,
+    screenW: typeof window !== 'undefined' ? window.screen.width : 1920,
+    screenH: typeof window !== 'undefined' ? window.screen.height : 1080,
+    dpr: typeof window !== 'undefined' ? window.devicePixelRatio : 1,
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleResize = () => {
+      setViewport({
+        width: window.innerWidth,
+        height: window.innerHeight,
+        screenW: window.screen.width,
+        screenH: window.screen.height,
+        dpr: window.devicePixelRatio,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const breakpoint = useMemo(() => {
+    const w = viewport.width;
+    if (w <= 768) {
+      return { id: 'mobile', name: 'Mobile (移动视口)', color: '#ef4444', desc: '≤ 768px • 自适应布局 & 折叠抽屉侧栏开启' };
+    } else if (w <= 1024) {
+      return { id: 'tablet', name: 'Tablet (平板视口)', color: '#f59e0b', desc: '769px - 1024px • 页面双栏栅格自适应模式开启' };
+    } else {
+      return { id: 'desktop', name: 'Desktop (桌面宽屏)', color: '#10b981', desc: '> 1024px • ShimmerOS 多窗口并列操作系统完全舒展' };
+    }
+  }, [viewport.width]);
+
+  return (
+    <div className="sub-app-wrapper size-stage animate-slide-in">
+      <header className="toolbox-app-header">
+        <div className="header-badge size-badge">SIZE</div>
+        <div className="header-titles">
+          <h2>Viewport Inspector</h2>
+          <p>实时窗口大小与断点监听器 — 调整窗口以实时更新 • Viewport Desk</p>
+        </div>
+      </header>
+
+      <div className="tab-content size-content">
+        <div className="size-dashboard-layout">
+          {/* 左侧：实时核心指标 */}
+          <div className="size-indicators-grid">
+            <div className="size-stat-card primary-card">
+              <span className="card-lbl">浏览器当前视口大小 (Viewport)</span>
+              <span className="card-val highlight-blue">
+                {viewport.width} <span className="val-cross">×</span> {viewport.height} <span className="val-unit">px</span>
+              </span>
+            </div>
+            
+            <div className="size-stat-card-row">
+              <div className="size-sub-card">
+                <span className="card-lbl">物理分辨率 (Screen)</span>
+                <span className="card-sub-val">{viewport.screenW} × {viewport.screenH} px</span>
+              </div>
+              <div className="size-sub-card">
+                <span className="card-lbl">设备像素比 (DPR)</span>
+                <span className="card-sub-val">@{viewport.dpr.toFixed(1)}x {viewport.dpr > 1 ? 'Retina' : 'Standard'}</span>
+              </div>
+            </div>
+
+            {/* 响应式媒体查询断点卡片 */}
+            <div className="size-breakpoint-card" style={{ '--bp-color': breakpoint.color } as React.CSSProperties}>
+              <div className="bp-header">
+                <span className="bp-indicator-led"></span>
+                <span className="bp-title">{breakpoint.name}</span>
+              </div>
+              <p className="bp-desc">{breakpoint.desc}</p>
+            </div>
+          </div>
+
+          {/* 右侧：实时蓝图线框缩放模型 */}
+          <div className="size-blueprint-visualizer">
+            <div className="blueprint-title">📐 虚线蓝图自适应布局模型 (Interactive Blueprint)</div>
+            <div className="blueprint-stage-box">
+              <div className="blueprint-canvas-frame">
+                {/* 蓝图测量辅助线 */}
+                <div className="bp-line bp-line-w">
+                  <span className="bp-line-text">{viewport.width}px</span>
+                </div>
+                <div className="bp-line bp-line-h">
+                  <span className="bp-line-text">{viewport.height}px</span>
+                </div>
+
+                <div className="blueprint-mockup-inner">
+                  <div className="mock-os-header">
+                    <span className="dot dot-r"></span>
+                    <span className="dot dot-y"></span>
+                    <span className="dot dot-g"></span>
+                    <span className="mock-title">ShimmerOS Simulator</span>
+                  </div>
+                  <div className="mock-os-desktop">
+                    <div className="mock-uptime-clock">
+                      <div className="mock-clock-header">SYSTEM ACTIVE</div>
+                      <div className="mock-clock-body">00 : 00 : 00</div>
+                    </div>
+                    <div className="mock-icons-column">
+                      <div className="mock-icon"></div>
+                      <div className="mock-icon"></div>
+                      <div className="mock-icon"></div>
+                    </div>
+                    <div className="mock-dock-bar"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1401,6 +1401,407 @@
 }
 
 /* ==========================================
+   4.5 子应用 4: Viewport Inspector (Size Theme)
+   ========================================== */
+.size-theme {
+  --app-accent: #6366f1;
+  --app-accent-glow: rgba(99, 102, 241, 0.15);
+  --size-primary: #6366f1;
+  --size-primary-glow: rgba(99, 102, 241, 0.12);
+}
+
+.size-badge {
+  background: #1e1b4b;
+  border-color: var(--size-primary) !important;
+  color: var(--size-primary) !important;
+  box-shadow: 0 0 8px var(--size-primary-glow);
+}
+
+.size-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.size-dashboard-layout {
+  display: flex;
+  gap: var(--space-4);
+  flex: 1;
+  overflow-y: auto;
+}
+
+.size-indicators-grid {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3_5);
+  flex-shrink: 0;
+}
+
+.size-stat-card {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1_5);
+  transition: all 0.2s;
+}
+
+[data-theme="light"] .size-stat-card {
+  background: rgba(255, 255, 255, 0.45);
+  border-color: rgba(124, 58, 237, 0.06);
+}
+
+.size-stat-card:hover {
+  border-color: var(--size-primary);
+  box-shadow: 0 4px 12px var(--size-primary-glow);
+}
+
+.size-stat-card.primary-card {
+  padding: var(--space-4_5) var(--space-4);
+  background: rgba(99, 102, 241, 0.02);
+  border-color: rgba(99, 102, 241, 0.1);
+}
+
+[data-theme="light"] .size-stat-card.primary-card {
+  background: rgba(99, 102, 241, 0.03);
+}
+
+.card-lbl {
+  font-size: 0.58rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.card-val {
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  font-family: var(--font-mono);
+}
+
+.highlight-blue {
+  color: var(--size-primary);
+  text-shadow: 0 0 8px var(--size-primary-glow);
+}
+
+.val-cross {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin: 0 2px;
+}
+
+.val-unit {
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+.size-stat-card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2_5);
+}
+
+.size-sub-card {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  transition: all 0.2s;
+}
+
+[data-theme="light"] .size-sub-card {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(124, 58, 237, 0.04);
+}
+
+.size-sub-card:hover {
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+.card-sub-val {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+}
+
+.size-breakpoint-card {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-left: 3px solid var(--bp-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1_5);
+}
+
+[data-theme="light"] .size-breakpoint-card {
+  background: rgba(255, 255, 255, 0.45);
+  border-color: rgba(124, 58, 237, 0.06);
+  border-left-color: var(--bp-color);
+}
+
+.bp-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bp-indicator-led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--bp-color);
+  box-shadow: 0 0 6px var(--bp-color);
+  animation: bp-led-flash 1.5s infinite ease-in-out;
+}
+
+@keyframes bp-led-flash {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0.5; }
+}
+
+.bp-title {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.bp-desc {
+  font-size: 0.58rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.size-blueprint-visualizer {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px dashed rgba(99, 102, 241, 0.15);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4_5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3_5);
+  min-height: 240px;
+}
+
+[data-theme="light"] .size-blueprint-visualizer {
+  background: rgba(99, 102, 241, 0.01);
+  border-color: rgba(99, 102, 241, 0.15);
+}
+
+.blueprint-title {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--size-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.blueprint-stage-box {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.02) 0%, transparent 70%);
+  position: relative;
+  overflow: hidden;
+}
+
+.blueprint-canvas-frame {
+  width: 80%;
+  height: 80%;
+  border: 1.5px dashed var(--size-primary);
+  border-radius: var(--radius-md);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.03);
+  transition: all 0.2s;
+}
+
+.bp-line {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  color: var(--size-primary);
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.bp-line-w {
+  bottom: -18px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  border-left: 4px solid var(--size-primary);
+  border-right: 4px solid var(--size-primary);
+  background: var(--size-primary);
+}
+
+.bp-line-h {
+  right: -24px;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  border-top: 4px solid var(--size-primary);
+  border-bottom: 4px solid var(--size-primary);
+  background: var(--size-primary);
+}
+
+.bp-line-text {
+  background: var(--color-bg-window);
+  padding: 1px 4px;
+  border-radius: 2px;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+[data-theme="light"] .bp-line-text {
+  background: #ffffff;
+}
+
+.blueprint-mockup-inner {
+  width: 85%;
+  height: 80%;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: var(--radius-sm);
+  background: rgba(13, 10, 24, 0.7);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] .blueprint-mockup-inner {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08);
+}
+
+.mock-os-header {
+  height: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  gap: 4px;
+}
+
+[data-theme="light"] .mock-os-header {
+  background: rgba(0, 0, 0, 0.03);
+  border-bottom-color: rgba(0, 0, 0, 0.05);
+}
+
+.mock-os-header .dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+}
+
+.mock-title {
+  font-size: 0.42rem;
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+  margin-left: 2px;
+}
+
+.mock-os-desktop {
+  flex: 1;
+  position: relative;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mock-uptime-clock {
+  align-self: flex-end;
+  width: 45px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 2px;
+  padding: 2px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="light"] .mock-uptime-clock {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.04);
+}
+
+.mock-clock-header {
+  font-size: 0.22rem;
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+}
+
+.mock-clock-body {
+  font-size: 0.32rem;
+  font-family: var(--font-mono);
+  color: var(--size-primary);
+  font-weight: 700;
+}
+
+.mock-icons-column {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mock-icon {
+  width: 8px;
+  height: 8px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] .mock-icon {
+  background: rgba(99, 102, 241, 0.06);
+  border-color: rgba(99, 102, 241, 0.15);
+}
+
+.mock-dock-bar {
+  width: 60px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  position: absolute;
+  bottom: 4px;
+  left: calc(50% - 30px);
+}
+
+[data-theme="light"] .mock-dock-bar {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================
    5. 响应式适配
    ========================================== */
 @media (max-width: 768px) {
@@ -1451,5 +1852,15 @@
   .handbook-toc-sidebar {
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  }
+  /* Viewport Inspector Mobile Override */
+  .size-dashboard-layout {
+    flex-direction: column;
+  }
+  .size-indicators-grid {
+    width: 100%;
+  }
+  .size-blueprint-visualizer {
+    min-height: 200px;
   }
 }
