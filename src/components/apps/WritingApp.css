@@ -344,15 +344,16 @@
   overflow-x: auto;
   margin-top: var(--space-4);
   margin-bottom: var(--space-6);
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid rgba(168, 85, 247, 0.25); /* 深色模式下更加坚实的主边框 */
   border-radius: var(--radius-lg);
-  background: rgba(13, 10, 24, 0.25);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  background: rgba(13, 10, 24, 0.35);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
 }
 
 [data-theme="light"] .excel-table-container {
-  background: rgba(255, 255, 255, 0.35);
-  border-color: rgba(124, 58, 237, 0.06);
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(124, 58, 237, 0.2); /* 浅色模式更坚实的边框 */
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.05);
 }
 
 .excel-table {
@@ -361,15 +362,23 @@
   font-size: 0.72rem;
   line-height: 1.55;
   color: var(--color-text-secondary);
-  min-width: 720px; /* 保证表格具有最小宽度，允许窄屏下出现舒适的滚动条 */
+  min-width: 900px; /* 增加表格的最小总宽度，确保每一列都有宽裕的拉伸空间 */
+  table-layout: fixed; /* 使用固定表格布局，严格遵照我们分配的 excel-col 宽度 */
 }
 
 .excel-table th,
 .excel-table td {
-  border: 1px solid var(--color-border-subtle) !important;
-  padding: var(--space-2_5) var(--space-3) !important;
-  vertical-align: top;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important; /* 深色模式：提高网格线对比度，从 0.08 提高到清晰的 0.16 */
+  padding: var(--space-3) var(--space-3_5) !important; /* 增大内边距，减少窒息感 */
+  vertical-align: middle; /* 大部分单元格垂直居中，美观对齐 */
   text-align: left;
+  word-wrap: break-word;
+  word-break: break-all; /* 防止长字母或单词爆出 */
+}
+
+[data-theme="light"] .excel-table th,
+[data-theme="light"] .excel-table td {
+  border: 1px solid rgba(124, 58, 237, 0.18) !important; /* 浅色模式：更醒目的淡紫色网格线 */
 }
 
 /* 战略决策框架等首行大标题 */
@@ -379,40 +388,86 @@
   font-size: 0.78rem;
   font-weight: 800;
   padding: var(--space-4) !important;
-  border-bottom: 2px solid var(--color-accent-dim) !important;
+  border-bottom: 2px solid var(--color-accent) !important; /* 加粗分割线 */
   line-height: 1.6;
 }
 
 [data-theme="light"] .excel-title-cell {
-  background: rgba(99, 102, 241, 0.06) !important;
+  background: rgba(99, 102, 241, 0.08) !important;
   color: var(--color-accent) !important;
 }
 
 /* 分类/列头样式 */
 .excel-header-cell {
-  background: rgba(255, 255, 255, 0.03) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
   color: var(--color-text-gold) !important;
-  font-weight: 700;
-  font-size: 0.72rem;
+  font-weight: 800;
+  font-size: 0.74rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.16) !important;
 }
 
 [data-theme="light"] .excel-header-cell {
-  background: rgba(0, 0, 0, 0.02) !important;
+  background: rgba(124, 58, 237, 0.04) !important;
+  border-bottom-color: rgba(124, 58, 237, 0.18) !important;
+}
+
+/* 针对每列的逻辑宽度与对齐约束 */
+.excel-col-1 {
+  width: 6% !important; /* 共用/个人 */
+  min-width: 55px;
+  text-align: center !important;
+}
+.excel-col-2 {
+  width: 10% !important; /* 物品类别 */
+  min-width: 85px;
+}
+.excel-col-3 {
+  width: 18% !important; /* 具体物品 */
+  min-width: 135px;
+  font-weight: 600;
+  color: var(--color-text-primary) !important;
+}
+.excel-col-4 {
+  width: 8% !important; /* 必需程度 */
+  min-width: 70px;
+  text-align: center !important;
+}
+.excel-col-5 {
+  width: 11% !important; /* 所需数量 */
+  min-width: 90px;
+  text-align: center !important;
+}
+.excel-col-6 {
+  width: 11% !important; /* 处理方式 */
+  min-width: 95px;
+  text-align: center !important;
+}
+.excel-col-7 {
+  width: 36% !important; /* 状态/备注 */
+  min-width: 300px;
+  vertical-align: top !important; /* 备注长文靠顶部对齐方便阅读 */
+}
+
+/* 当大标题行跨列时，重置宽度占满 */
+.excel-title-cell.excel-col-1 {
+  width: 100% !important;
+  text-align: left !important;
 }
 
 /* 分组“共用/个人”合并单元格 */
 .excel-table td[rowspan] {
   font-weight: 800;
   color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.015);
+  background: rgba(255, 255, 255, 0.02);
   font-size: 0.74rem;
   text-align: center;
   vertical-align: middle;
-  border-right: 2px solid var(--color-accent-soft) !important;
+  border-right: 2px solid var(--color-accent) !important; /* 加粗紫色侧边界 */
 }
 
 [data-theme="light"] .excel-table td[rowspan] {
-  background: rgba(0, 0, 0, 0.01);
+  background: rgba(124, 58, 237, 0.02);
+  border-right-color: var(--color-accent) !important;
 }
 
 /* 外部链接卡片 */
