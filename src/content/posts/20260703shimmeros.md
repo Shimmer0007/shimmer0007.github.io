@@ -2,7 +2,7 @@
 title: "ShimmerOS 架构焕新：从 WebGL 性能瓶颈到 D3.js 全息雷达的蜕变"
 date: "2026-07-03"
 category: "tech"
-summary: "就在今天，ShimmerOS 迎来了一次重大的架构升级与视觉革新。我们将出行足迹板块全面重构为基于 D3.js 的全息雷达投影地图，解决了旧版 ECharts WebGL 的加载死锁；将留言板与友情链接迁移并挂载至桌面 L3 层级；并彻底重构了 GitHub Pages 的 CI/CD 自动构建流水线。本文记录了这次蜕变背后的技术细节与重构逻辑。"
+summary: "在今天，ShimmerOS迎来了一次架构升级。目前可访问的主要页面已由原先的原生JS转变为React19框架支持。"
 tags: ["ShimmerOS","D3.js","架构重构","前端开发","Astro"]
 ---
 
