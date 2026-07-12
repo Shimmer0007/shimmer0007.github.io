@@ -9,15 +9,10 @@ import '../styles/animations.css';
 const posts = await getCollection('posts');
 const clientPosts = posts.map(post => ({
   id: post.id,
-  slug: post.slug,
+  slug: post.id,
   body: post.body,
   data: post.data,
 })).sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()); // 按时间倒序
-
-console.log('--- CONTENT LAYER SYNC CHECK ---');
-console.log(`Loaded posts count: ${clientPosts.length}`);
-console.log(clientPosts.map(p => p.data.title));
-console.log('--------------------------------');
 ---
 
 <html lang="zh">

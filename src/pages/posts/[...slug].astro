@@ -1,0 +1,29 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  newerPost?: CollectionEntry<'posts'>;
+  olderPost?: CollectionEntry<'posts'>;
+}
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('posts')).sort(
+    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+  );
+
+  return posts.map((post, index) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      newerPost: posts[index - 1],
+      olderPost: posts[index + 1],
+    },
+  }));
+}
+
+const { post, newerPost, olderPost } = Astro.props;
+---
+
+<PostLayout post={post} newerPost={newerPost} olderPost={olderPost} />

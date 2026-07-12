@@ -1,8 +1,10 @@
 // src/components/ShimmerOS.tsx
 // 主 OS 容器 — 协调 boot 动画、主题同步、全局按键
-import { useState, useEffect } from 'react';
-import { useOSStore, ACCENT_COLORS } from '../store/os';
+import { useState, useEffect, useRef } from 'react';
+import { useOSStore } from '../store/os';
 import { useContentStore, type PostItem } from '../store/content';
+import { useWindowsStore } from '../store/windows';
+import { getT } from '../i18n';
 
 interface ShimmerOSProps {
   posts: PostItem[];
@@ -72,12 +74,29 @@ const ACCENT_MAP: Record<string, {
 
 export default function ShimmerOS({ posts }: ShimmerOSProps) {
   const [booted, setBooted] = useState(false);
-  const { theme, accentId } = useOSStore();
-  const { spotlightOpen, openSpotlight, closeSpotlight, setPosts } = useContentStore();
+  const deepLinkHandled = useRef(false);
+  const { theme, accentId, lang } = useOSStore();
+  const {
+    spotlightOpen,
+    openSpotlight,
+    closeSpotlight,
+    setPosts,
+    setActivePostId,
+  } = useContentStore();
+  const openWindow = useWindowsStore(s => s.openWindow);
 
   useEffect(() => {
     setPosts(posts);
-  }, [posts, setPosts]);
+
+    if (deepLinkHandled.current) return;
+    deepLinkHandled.current = true;
+
+    const requestedPostId = new URLSearchParams(window.location.search).get('post');
+    if (requestedPostId && posts.some(post => post.id === requestedPostId)) {
+      setActivePostId(requestedPostId);
+      openWindow('writing', getT(lang)('app.writing.title'));
+    }
+  }, [posts, setPosts, setActivePostId, openWindow, lang]);
 
   /* ===== 将 theme/accent 同步到 DOM ===== */
   useEffect(() => {
@@ -142,4 +161,3 @@ export default function ShimmerOS({ posts }: ShimmerOSProps) {
     </div>
   );
 }
-

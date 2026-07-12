@@ -4,6 +4,7 @@ import { useT } from '../../i18n';
 import { useWindow } from '../window/Window';
 import { useWindowsStore } from '../../store/windows';
 import { useContentStore, type PostItem } from '../../store/content';
+import { getPostUrl } from '../../lib/post-url';
 import { marked } from 'marked';
 import './WritingApp.css';
 
@@ -172,11 +173,22 @@ export default function WritingApp() {
               >
                 <div className="writing-item-header">
                   <span className="writing-item-date">{post.data.date}</span>
-                  {post.data.status && (
-                    <span className={`writing-note-status writing-note-status--${post.data.status.toLowerCase()}`}>
-                      {post.data.status}
-                    </span>
-                  )}
+                  <div className="writing-item-actions">
+                    {post.data.status && (
+                      <span className={`writing-note-status writing-note-status--${post.data.status.toLowerCase()}`}>
+                        {post.data.status}
+                      </span>
+                    )}
+                    <a
+                      className="writing-item-permalink"
+                      href={getPostUrl(post.slug)}
+                      onClick={event => event.stopPropagation()}
+                      aria-label={`在独立页面阅读《${post.data.title}》`}
+                      title="独立阅读"
+                    >
+                      ↗
+                    </a>
+                  </div>
                 </div>
                 <h4 className="writing-item-title">{post.data.title}</h4>
                 <p className="writing-item-summary">{post.data.summary}</p>
@@ -201,10 +213,19 @@ export default function WritingApp() {
             {/* 文章头部信息 */}
             <header className="writing-article-header">
               <div className="writing-article-meta">
-                <span className="writing-article-category">
-                  {currentPost.data.category.toUpperCase()}
-                </span>
-                <span className="writing-article-date">{currentPost.data.date}</span>
+                <div className="writing-article-meta__primary">
+                  <span className="writing-article-category">
+                    {currentPost.data.category.toUpperCase()}
+                  </span>
+                  <span className="writing-article-date">{currentPost.data.date}</span>
+                </div>
+                <a
+                  className="writing-article-permalink"
+                  href={getPostUrl(currentPost.slug)}
+                  aria-label={`在独立页面阅读《${currentPost.data.title}》`}
+                >
+                  独立阅读 <span aria-hidden="true">↗</span>
+                </a>
               </div>
               <h1 className="writing-article-title">{currentPost.data.title}</h1>
               
