@@ -121,7 +121,7 @@ const RESOURCE_DATA: Category[] = [
 const TIMELINE_STEPS = [
   { title: "来美前夕行李清单", postSlug: "20260703luggage", summary: "详细的行李打包清单，包括必备文件、衣物、药品及海关违禁品注意事项。", tips: ["护照、I-20、录取通知书、体检免签本随身携带，千万不要托运！", "准备少量备用现金（少于10000美元，超过需要申报）。", "严禁携带任何肉类（包括香肠、牛肉干）、新鲜水果、种子类产品。"] },
   { title: "起飞、中转与落地入境", postSlug: "20260703flight", summary: "从国内出发到落地清关的全流程指南，涵盖海关申报卡填写及海关面试常见问题。", tips: ["准备好I-20和护照，海关问起学校名称时，大声回答 Virginia Tech！", "中转联程机票请预留至少3小时的清关与重新托运行李时间。", "落地后可先在机场连上公共WiFi，给家里报平安。"] },
-  { title: "入境首日生存攻略", postSlug: "20260703survival", summary: "抵达黑堡后的第一天生存指南：倒时差、购买必需品、注册 BT 公交系统。", tips: ["黑堡公交 BT Transit 凭学生证免费，建议立刻下载 BT App 以便查看线路。", "前去 Squires Student Center 办理 Hokie Passport 校园实体卡。", "建议前去 Walmart 或 Target 采购最初两天的生活用品、防寒被褥。"] },
+  { title: "入境首日生存攻略", postSlug: "20260714survival", summary: "抵达黑堡后的第一天生存指南：倒时差、购买必需品、注册 BT 公交系统。", tips: ["黑堡公交 BT Transit 凭学生证免费，建议立刻下载 BT App 以便查看线路。", "前去 Squires Student Center 办理 Hokie Passport 校园实体卡。", "建议前去 Walmart 或 Target 采购最初两天的生活用品、防寒被褥。"] },
   { title: "医保激活与免疫 Hold 解除", postSlug: "20260703insurance", summary: "解读学校健康保险要求，如何提交疫苗注射记录并解除系统选课 Hold 限制。", tips: ["Schiffert Health Center 会强制检查免疫证明，若疫苗不全需在此补打。", "如不购买学校默认昂贵保险，须在截止日期前申请 Insurance Waiver 替换。", "确保系统中的 Immunization Hold 已被官方盖章注销，否则无法进行 Add/Drop 选课。"] },
   { title: "电话卡套餐与硬件配置", postSlug: "20260703phone", summary: "美国三大主流运营商对比，学生折扣套餐选择建议及国内手机频段兼容核算。", tips: ["校园内 eduroam 无线信号覆盖广，室外一般使用 AT&T 或 T-Mobile。", "黑堡地势起伏，部分山区和公寓信号较弱，建议选择带有 Wi-Fi Calling 功能的手机。", "可以考虑加入多人的 Family Plan 家庭共享套餐，能大幅缩减月租。"] },
   { title: "打工、SSN和社会信用体系", postSlug: "20260703ssn", summary: "校内勤工俭学申请流程，SSN（社会安全号）办理技巧及美国个人信用累积方法。", tips: ["只有获得校内正式工作录用信（Job Offer）才能前往 SSA 申请 SSN 账号。", "拿到 SSN 后可以申请第一张入门信用卡（如 Discover），开始累积信用分数。", "切忌将 SSN 透露给陌生电话或钓鱼邮件，谨防个人身份信息被窃取受损。"] },
