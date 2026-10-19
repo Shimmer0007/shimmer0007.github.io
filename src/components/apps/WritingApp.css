@@ -391,6 +391,14 @@
   color: var(--color-accent-bright);
 }
 
+.writing-article-body .katex-display {
+  max-width: 100%;
+  margin: var(--space-5) 0;
+  padding: var(--space-1) 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .writing-article-body table {
   width: 100%;
   border-collapse: collapse;

@@ -6,7 +6,14 @@ import { useWindowsStore } from '../../store/windows';
 import { useContentStore, type PostItem } from '../../store/content';
 import { getPostUrl } from '../../lib/post-url';
 import { marked } from 'marked';
+import markedKatex from 'marked-katex-extension';
+import 'katex/dist/katex.min.css';
 import './WritingApp.css';
+
+marked.use(markedKatex({
+  throwOnError: false,
+  nonStandard: true,
+}));
 
 type FilterCategory = 'all' | 'tech' | 'life' | 'project' | 'note';
 
