@@ -15,6 +15,38 @@ marked.use(markedKatex({
   nonStandard: true,
 }));
 
+function normalizeDisplayMathBlocks(markdown: string): string {
+  const lines = markdown.split(/\r?\n/);
+  const normalized: string[] = [];
+  let inCodeFence = false;
+  let inDisplayMath = false;
+
+  lines.forEach((line, index) => {
+    if (/^\s*(```|~~~)/.test(line)) {
+      inCodeFence = !inCodeFence;
+    }
+
+    if (!inCodeFence && line.trim() === '$$') {
+      const previousLine = normalized[normalized.length - 1];
+      if (!inDisplayMath && previousLine?.trim()) {
+        normalized.push('');
+      }
+
+      normalized.push(line);
+      inDisplayMath = !inDisplayMath;
+
+      if (!inDisplayMath && lines[index + 1]?.trim()) {
+        normalized.push('');
+      }
+      return;
+    }
+
+    normalized.push(line);
+  });
+
+  return normalized.join('\n');
+}
+
 type FilterCategory = 'all' | 'tech' | 'life' | 'project' | 'note';
 
 export default function WritingApp() {
@@ -126,7 +158,7 @@ export default function WritingApp() {
   const renderedHTML = useMemo(() => {
     if (!currentPost || currentPost.data.link) return '';
     try {
-      return marked.parse(currentPost.body);
+      return marked.parse(normalizeDisplayMathBlocks(currentPost.body));
     } catch (e) {
       return '<p>文章解析失败...</p>';
     }
