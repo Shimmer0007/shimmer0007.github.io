@@ -79,7 +79,7 @@ const FRIEND_LINKS: FriendLink[] = [
     id: 'kiakizhang',
     nameZh: '宸总的说明书',
     nameEn: "Chen's Manual",
-    url: 'https://kiakizhang.github.io/personal-portfolio/',
+    url: 'https://kiakizhang.github.io/newprofile/',
     icon: '📘',
     descZh: '宸总的个人说明书与作品空间',
     descEn: "Chen's personal manual & portfolio showcase",
