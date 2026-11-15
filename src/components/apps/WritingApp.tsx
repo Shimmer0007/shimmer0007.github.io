@@ -1,10 +1,9 @@
 // src/components/apps/WritingApp.tsx
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { useT } from '../../i18n';
 import { useWindow } from '../window/Window';
 import { useWindowsStore } from '../../store/windows';
-import { useContentStore, type PostItem } from '../../store/content';
-import { getPostUrl } from '../../lib/post-url';
+import { useContentStore } from '../../store/content';
+import { getPostContentUrl, getPostUrl } from '../../lib/post-url';
 import { marked } from 'marked';
 import markedKatex from 'marked-katex-extension';
 import 'katex/dist/katex.min.css';
@@ -14,6 +13,13 @@ marked.use(markedKatex({
   throwOnError: false,
   nonStandard: true,
 }));
+
+const postBodyCache = new Map<string, string>();
+
+type BodyLoadState = {
+  postId: string | null;
+  status: 'idle' | 'loading' | 'error';
+};
 
 function normalizeDisplayMathBlocks(markdown: string): string {
   const lines = markdown.split(/\r?\n/);
@@ -50,7 +56,6 @@ function normalizeDisplayMathBlocks(markdown: string): string {
 type FilterCategory = 'all' | 'tech' | 'life' | 'project' | 'note';
 
 export default function WritingApp() {
-  const t = useT();
   const { winId } = useWindow();
   const setWindowNavigation = useWindowsStore(s => s.setWindowNavigation);
   
@@ -59,6 +64,14 @@ export default function WritingApp() {
 
   const [activeCategory, setActiveCategory] = useState<FilterCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [bodyLoadState, setBodyLoadState] = useState<BodyLoadState>({ postId: null, status: 'idle' });
+  const [bodyRetryKey, setBodyRetryKey] = useState(0);
+  const [, refreshBodyCache] = useState(0);
+  const readerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (readerRef.current) readerRef.current.scrollTop = 0;
+  }, [activePostId]);
 
   // 5. 监听技能树等其他应用发出的 activeTag 检索信号
   useEffect(() => {
@@ -90,6 +103,41 @@ export default function WritingApp() {
   const currentPost = useMemo(() => {
     return posts.find(p => p.id === activePostId) || null;
   }, [posts, activePostId]);
+
+  // 正文不随首页元数据发送，仅在文章首次打开时请求并缓存。
+  useEffect(() => {
+    if (!currentPost || currentPost.data.link || postBodyCache.has(currentPost.id)) {
+      setBodyLoadState({ postId: currentPost?.id ?? null, status: 'idle' });
+      return;
+    }
+
+    const controller = new AbortController();
+    const postId = currentPost.id;
+    setBodyLoadState({ postId, status: 'loading' });
+
+    void fetch(getPostContentUrl(currentPost.slug), {
+      headers: { Accept: 'application/json' },
+      signal: controller.signal,
+    })
+      .then(async response => {
+        if (!response.ok) throw new Error(`Failed to load post body (${response.status})`);
+        const payload: unknown = await response.json();
+        if (!payload || typeof payload !== 'object' || !('body' in payload) || typeof payload.body !== 'string') {
+          throw new Error('Invalid post body response');
+        }
+
+        postBodyCache.set(postId, payload.body);
+        refreshBodyCache(version => version + 1);
+        setBodyLoadState({ postId, status: 'idle' });
+      })
+      .catch(error => {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        console.error(`Failed to load post body: ${postId}`, error);
+        setBodyLoadState({ postId, status: 'error' });
+      });
+
+    return () => controller.abort();
+  }, [currentPost, bodyRetryKey]);
 
   // 2. 选择文章（推动导航栈）
   const handleSelectPost = (postId: string | null) => {
@@ -154,18 +202,28 @@ export default function WritingApp() {
     }
   }, [activePostId]);
 
-  // 将 Markdown 转为 HTML
+  const currentPostBody = currentPost && !currentPost.data.link
+    ? postBodyCache.get(currentPost.id)
+    : undefined;
+
+  // 将按需加载的 Markdown 转为 HTML
   const renderedHTML = useMemo(() => {
-    if (!currentPost || currentPost.data.link) return '';
+    if (!currentPost || currentPost.data.link || currentPostBody === undefined) return '';
     try {
-      return marked.parse(normalizeDisplayMathBlocks(currentPost.body));
+      return marked.parse(normalizeDisplayMathBlocks(currentPostBody));
     } catch (e) {
       return '<p>文章解析失败...</p>';
     }
-  }, [currentPost]);
+  }, [currentPost, currentPostBody]);
+
+  const currentPostLoadFailed = Boolean(
+    currentPost
+    && bodyLoadState.postId === currentPost.id
+    && bodyLoadState.status === 'error'
+  );
 
   return (
-    <div className="writing-app-container">
+    <div className="writing-app-container" data-reading={Boolean(currentPost)}>
       {/* ===== 左栏: 文章列表 ===== */}
       <aside className="writing-sidebar">
         {/* 顶部搜索框 */}
@@ -173,6 +231,7 @@ export default function WritingApp() {
           <input 
             type="text" 
             placeholder="搜索文章与 mission..."
+            aria-label="搜索文章"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -246,9 +305,12 @@ export default function WritingApp() {
       </aside>
 
       {/* ===== 右栏: 正文阅读器 ===== */}
-      <main className="writing-reader">
+      <main className="writing-reader" ref={readerRef}>
         {currentPost ? (
           <div className="writing-article animate-fade-in-up">
+            <div className="writing-reader-toolbar">
+              <button type="button" onClick={() => handleSelectPost(null)}>← 返回文章列表</button>
+            </div>
             {/* 文章头部信息 */}
             <header className="writing-article-header">
               <div className="writing-article-meta">
@@ -292,6 +354,26 @@ export default function WritingApp() {
                     🚀 LAUNCH MISSION (进入文档)
                   </a>
                 </div>
+              </div>
+            ) : currentPostLoadFailed ? (
+              <div className="writing-article-state writing-article-state--error" role="alert">
+                <span className="writing-article-state__icon" aria-hidden="true">!</span>
+                <h3>正文加载失败</h3>
+                <p>网络暂时不可用，或正文文件尚未生成。</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBodyLoadState({ postId: currentPost.id, status: 'loading' });
+                    setBodyRetryKey(key => key + 1);
+                  }}
+                >
+                  重新加载
+                </button>
+              </div>
+            ) : currentPostBody === undefined ? (
+              <div className="writing-article-state" role="status" aria-live="polite">
+                <span className="writing-article-state__spinner" aria-hidden="true" />
+                <p>正在加载正文…</p>
               </div>
             ) : (
               /* 普通本地 MD / HTML 渲染 */

@@ -205,7 +205,7 @@
 }
 
 /* ===== 响应式处理 ===== */
-@media (max-width: 680px) {
+@container app-window (max-width: 680px) {
   .links-portal-grid {
     grid-template-columns: 1fr;
     gap: var(--space-3);

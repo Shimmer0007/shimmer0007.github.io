@@ -1,5 +1,6 @@
-import { defineCollection, z } from 'astro:content';
-import { glob } from 'astro/loaders'; // 引入全新的 Glob 加载器
+import { defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { z } from 'astro/zod';
 
 const posts = defineCollection({
   // 使用 glob 加载器，指向我们存放 md 博文的文件夹
@@ -10,7 +11,7 @@ const posts = defineCollection({
     category: z.enum(['tech', 'life', 'project', 'note']),
     summary: z.string().optional(),
     tags: z.array(z.string()).default([]),
-    link: z.string().url().optional(), // 外部飞书等笔记链接
+    link: z.url().optional(), // 外部飞书等笔记链接
     status: z.enum(['IN-PROGRESS', 'COMPLETED', 'STANDBY']).optional(), // 课业笔记状态
   }),
 });

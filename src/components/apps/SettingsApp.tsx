@@ -68,7 +68,7 @@ export default function SettingsApp() {
       {/* ===== 关于 ===== */}
       <section className="settings-section settings-about">
         <p className="settings-about__name">ShimmerOS</p>
-        <p className="settings-about__version">v3.0.0 · 2026 · Built with Astro + React</p>
+        <p className="settings-about__version">v3.0.0 · Built with Astro + React</p>
       </section>
     </div>
   );

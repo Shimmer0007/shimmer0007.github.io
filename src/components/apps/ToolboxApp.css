@@ -5,6 +5,8 @@
    ========================================== */
 .toolbox-main-layout {
   display: flex;
+  min-width: 0;
+  min-height: 0;
   width: 100%;
   height: 100%;
   background: var(--color-bg-window);
@@ -141,6 +143,8 @@
 /* 右侧主 Arena 舞台 */
 .toolbox-stage-arena {
   flex: 1;
+  min-width: 0;
+  min-height: 0;
   height: 100%;
   overflow: hidden;
   position: relative;
@@ -149,6 +153,8 @@
 }
 
 .sub-app-wrapper {
+  min-width: 0;
+  min-height: 0;
   width: 100%;
   height: 100%;
   display: flex;
@@ -173,6 +179,7 @@
 
 .toolbox-app-header {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   padding: var(--space-4);
   background: rgba(30, 24, 48, 0.25);
@@ -222,11 +229,14 @@
 /* Tab 选项卡组 */
 .toolbox-tabs {
   display: flex;
+  max-width: 100%;
+  overflow-x: auto;
   gap: var(--space-2);
   margin-left: auto;
 }
 
 .toolbox-tab-btn {
+  flex-shrink: 0;
   background: rgba(255, 255, 255, 0.015);
   border: 1px solid rgba(255, 255, 255, 0.04);
   color: var(--color-text-secondary);
@@ -646,6 +656,8 @@
 /* 右侧详情卡片 */
 .timeline-detail-display {
   flex: 1;
+  min-width: 0;
+  min-height: 0;
   height: 100%;
   display: flex;
   overflow: hidden;
@@ -1036,6 +1048,7 @@
 
 .git-search-console input {
   flex: 1;
+  min-width: 0;
   background: rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-md);
@@ -1804,7 +1817,7 @@
 /* ==========================================
    5. 响应式适配
    ========================================== */
-@media (max-width: 768px) {
+@container app-window (max-width: 760px) {
   .toolbox-main-layout {
     flex-direction: column;
   }
@@ -1816,12 +1829,10 @@
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     padding: var(--space-2);
+    flex-shrink: 0;
   }
   .launcher-brand {
-    border-bottom: none;
-    border-right: 1px dashed rgba(255, 255, 255, 0.05);
-    padding-bottom: 0;
-    padding-right: var(--space-3);
+    display: none;
   }
   .launcher-nav-list {
     flex-direction: row;
@@ -1830,6 +1841,9 @@
   }
   .launcher-item-btn {
     padding: var(--space-1_5) var(--space-2_5);
+    min-height: 44px;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
   .launcher-desc, .launcher-footer {
     display: none;
@@ -1842,12 +1856,14 @@
     margin-left: 0;
     margin-top: var(--space-2);
   }
-  .timeline-tab, .handbook-tab {
+  .timeline-tab, .timeline-layout, .handbook-tab {
     flex-direction: column;
+    min-height: 0;
   }
   .timeline-scroll-axis, .handbook-toc-sidebar {
     width: 100%;
-    height: 120px;
+    height: 100px;
+    flex-shrink: 0;
   }
   .handbook-toc-sidebar {
     border-right: none;
@@ -1863,4 +1879,8 @@
   .size-blueprint-visualizer {
     min-height: 200px;
   }
+  .toolbox-app-header { padding: var(--space-3); gap: var(--space-2); }
+  .toolbox-tab-btn { min-height: 40px; }
+  .handbook-content-scroll { min-height: 0; min-width: 0; }
+  .git-repos-grid { grid-template-columns: minmax(0, 1fr); }
 }

@@ -1,6 +1,6 @@
 // src/components/ShimmerOS.tsx
 // 主 OS 容器 — 协调 boot 动画、主题同步、全局按键
-import { useState, useEffect, useRef } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { useOSStore } from '../store/os';
 import { useContentStore, type PostItem } from '../store/content';
 import { useWindowsStore } from '../store/windows';
@@ -84,6 +84,7 @@ export default function ShimmerOS({ posts }: ShimmerOSProps) {
     setActivePostId,
   } = useContentStore();
   const openWindow = useWindowsStore(s => s.openWindow);
+  const handleBootComplete = useCallback(() => setBooted(true), []);
 
   useEffect(() => {
     setPosts(posts);
@@ -145,7 +146,7 @@ export default function ShimmerOS({ posts }: ShimmerOSProps) {
   return (
     <div className="shimmeros" data-theme={theme}>
       {/* 开机动画 */}
-      {!booted && <BootScreen onComplete={() => setBooted(true)} />}
+      {!booted && <BootScreen onComplete={handleBootComplete} />}
 
       {/* 桌面 */}
       <Desktop loaded={booted} />

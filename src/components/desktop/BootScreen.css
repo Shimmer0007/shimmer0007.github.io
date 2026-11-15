@@ -19,6 +19,45 @@
   pointer-events: none;
 }
 
+.boot-skip {
+  position: fixed;
+  top: max(var(--space-5), env(safe-area-inset-top, 0px));
+  right: max(var(--space-5), env(safe-area-inset-right, 0px));
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 7px 10px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--color-text-secondary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  animation: fade-in 0.35s var(--ease-smooth) 500ms forwards;
+  transition:
+    color var(--dur-fast) var(--ease-smooth),
+    border-color var(--dur-fast) var(--ease-smooth),
+    background var(--dur-fast) var(--ease-smooth);
+}
+
+.boot-skip:hover {
+  border-color: var(--color-border-active);
+  background: var(--color-accent-soft);
+  color: var(--color-text-primary);
+}
+
+.boot-skip kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-text-muted);
+  font: 500 0.65rem/1.5 var(--font-mono);
+}
+
 /* === 极光背景 === */
 .boot-aurora {
   position: absolute;
@@ -90,4 +129,11 @@
   border-radius: var(--radius-full);
   transition: width 0.12s var(--ease-smooth);
   box-shadow: 0 0 8px var(--color-purple-glow), 0 0 16px var(--color-gold-glow);
+}
+
+@media (max-width: 480px) {
+  .boot-skip {
+    top: max(var(--space-4), env(safe-area-inset-top, 0px));
+    right: max(var(--space-4), env(safe-area-inset-right, 0px));
+  }
 }

@@ -1,7 +1,7 @@
 /* Dock.css */
 .dock {
-  position: fixed;
-  bottom: 16px;
+  position: absolute;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   left: 50%;
   transform: translateX(-50%);
   z-index: var(--z-dock);
@@ -98,15 +98,18 @@
 }
 
 /* ===== 移动端 ===== */
-@media (max-width: 768px) {
+.dock-home { display: none; }
+
+@media (max-width: 768px), (max-height: 500px) and (pointer: coarse) {
+  .dock-home { display: flex; }
   .dock {
-    bottom: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
     gap: var(--space-1);
     padding: var(--space-1) var(--space-2);
   }
   .dock-btn {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     transform: none !important; /* 禁用放大 */
   }
   .dock-btn__icon { width: 24px; height: 24px; }

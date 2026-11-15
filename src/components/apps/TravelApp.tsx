@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import * as d3 from 'd3';
 import { useOSStore } from '../../store/os';
-import { useT } from '../../i18n';
+import { useElementSize } from '../../lib/use-element-size';
 import travelDataRaw from '../../data/travel.json';
 import worldDataRaw from '../../data/world.json';
 import './TravelApp.css';
@@ -20,12 +20,11 @@ const HUB_VT: [number, number] = [-80.4139, 37.2296]; // 布莱克斯堡 (美国
 const HUB_BJ: [number, number] = [116.4074, 39.9042]; // 北京 (中国大本营)
 
 export default function TravelApp() {
-  const t = useT();
-  const theme = useOSStore(s => s.theme);
   const lang = useOSStore(s => s.lang);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const { width, height } = useElementSize(containerRef);
   
   const [selectedCity, setSelectedCity] = useState<TravelCity | null>(null);
   const [hoveredCity, setHoveredCity] = useState<TravelCity | null>(null);
@@ -64,13 +63,10 @@ export default function TravelApp() {
   useEffect(() => {
     const container = containerRef.current;
     const svgEl = svgRef.current;
-    if (!container || !svgEl) return;
+    if (!container || !svgEl || !width || !height) return;
 
     // 清空历史 SVG 元素
     d3.select(svgEl).selectAll('*').remove();
-
-    const width = container.clientWidth || 600;
-    const height = container.clientHeight || 450;
 
     // 建立墨卡托投影，将比例尺拉大并定位中美两国中心
     const projection = d3.geoMercator()
@@ -105,6 +101,7 @@ export default function TravelApp() {
       });
     svg.call(zoom);
     d3Refs.current.zoomBehavior = zoom;
+    svg.call(zoom.transform, d3.zoomIdentity);
 
     // A. 绘制经纬度雷达格网
     const graticule = d3.geoGraticule();
@@ -121,7 +118,7 @@ export default function TravelApp() {
       .attr('d', pathGenerator as any);
 
     // C. 绘制大本营枢纽节点 (VT 和 北京)
-    const renderHub = (coords: [number, number], label: string) => {
+    const renderHub = (coords: [number, number]) => {
       const pos = projection(coords);
       if (!pos) return;
       const hubG = g.append('g')
@@ -143,8 +140,8 @@ export default function TravelApp() {
         .attr('stroke-width', 1.5);
     };
 
-    renderHub(HUB_BJ, 'BEIJING');
-    renderHub(HUB_VT, 'VIRGINIA TECH');
+    renderHub(HUB_BJ);
+    renderHub(HUB_VT);
 
     // D. 绘制普通足迹打点
     const citiesGroup = g.append('g').attr('class', 'cities-markers');
@@ -184,7 +181,8 @@ export default function TravelApp() {
         .attr('class', 'city-core-dot');
     });
 
-  }, []);
+    return () => { svg.interrupt(); };
+  }, [width, height]);
 
   // 4. 选择城市后的视角缩放和飞线绘制
   const activeCity = hoveredCity || selectedCity;
@@ -235,7 +233,7 @@ export default function TravelApp() {
     linesG.append('path')
       .attr('d', pathD)
       .attr('class', 'travel-flight-glow');
-  }, [activeCity]);
+  }, [activeCity, width, height]);
 
   // 触发选中城市动作（带平滑视角追踪）
   const handleSelectCity = (city: TravelCity) => {

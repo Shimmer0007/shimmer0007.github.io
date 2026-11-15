@@ -1,8 +1,14 @@
 /* ShimmerOS.css */
 .shimmeros {
+  --dock-clearance: calc(84px + env(safe-area-inset-bottom, 0px));
   position: fixed;
-  inset: 0;
+  inset: 0 0 auto;
+  height: 100dvh;
   background: var(--color-bg-base);
   transition: background var(--dur-normal) var(--ease-smooth);
   overflow: hidden;
+}
+
+@media (max-width: 768px), (max-height: 500px) and (pointer: coarse) {
+  .shimmeros { --dock-clearance: calc(72px + env(safe-area-inset-bottom, 0px)); }
 }

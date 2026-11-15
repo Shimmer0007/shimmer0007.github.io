@@ -1,11 +1,9 @@
 // src/components/apps/GuestbookApp.tsx
 import { useEffect, useRef, useState } from 'react';
 import { useOSStore } from '../../store/os';
-import { useT } from '../../i18n';
 import './GuestbookApp.css';
 
 export default function GuestbookApp() {
-  const t = useT();
   const theme = useOSStore(s => s.theme);
   const lang = useOSStore(s => s.lang);
   const containerRef = useRef<HTMLDivElement>(null);

@@ -23,6 +23,7 @@ export default function Dock() {
 
   const openWindow    = useWindowsStore(s => s.openWindow);
   const isOpen        = useWindowsStore(s => s.isOpen);
+  const minimizeAll   = useWindowsStore(s => s.minimizeAll);
   const openSpotlight = useContentStore(s => s.openSpotlight);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
@@ -61,6 +62,13 @@ export default function Dock() {
       />
 
       <div className="dock__divider" aria-hidden />
+
+      <button className="dock-btn dock-home" title="显示桌面" aria-label="显示桌面" onClick={minimizeAll}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="dock-btn__icon" aria-hidden="true">
+          <path d="m3 10 9-7 9 7v10H3Z" />
+          <path d="M9 20v-7h6v7" />
+        </svg>
+      </button>
 
       {/* App 快捷方式 */}
       {DOCK_APPS.map(app => (

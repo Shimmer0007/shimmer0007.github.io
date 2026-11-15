@@ -98,7 +98,7 @@
 }
 
 /* 适配移动端 */
-@media (max-width: 600px) {
+@container app-window (max-width: 600px) {
   .guestbook-app-container {
     padding: var(--space-4) var(--space-5);
   }

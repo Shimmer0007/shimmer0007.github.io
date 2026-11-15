@@ -1,6 +1,5 @@
 // src/components/apps/AboutApp.tsx
 import { useState, useEffect, useRef } from 'react';
-import { useT } from '../../i18n';
 import { useWindow } from '../window/Window';
 import { useWindowsStore } from '../../store/windows';
 import './AboutApp.css';
@@ -35,7 +34,6 @@ function StatBar({ label, value, colorVar }: StatBarProps) {
 }
 
 export default function AboutApp() {
-  const t = useT();
   const { winId } = useWindow();
   const setWindowNavigation = useWindowsStore(s => s.setWindowNavigation);
 
@@ -142,7 +140,7 @@ export default function AboutApp() {
         <div className="about-profile-header">
           <div className="about-profile-avatar">S</div>
           <h2 className="about-profile-name">Shimmer</h2>
-          <p className="about-profile-class">Lv.22 Data Analyst</p>
+          <p className="about-profile-class">Finance × AI Explorer</p>
         </div>
         
         <nav className="about-nav" role="tablist">
@@ -189,8 +187,9 @@ export default function AboutApp() {
             <section className="about-bio-section">
               <h3 className="about-section-heading">个人志</h3>
               <p className="about-description">
-                现就读于 <strong>Virginia Tech (统计与计算方向)</strong> & <strong>西安电子科技大学 (大管理与应用)</strong>。
-                擅长使用数据工具作为杠杆，探索信息背后的逻辑与规律，并倾向于将晦涩的数字可视化为直观的业务洞察。
+                现为 <strong>西安电子科技大学经济与管理学院金融硕士研究生</strong>，本科同样就读于西电，
+                并曾在 <strong>Virginia Tech Pamplin College of Business</strong> 学习。
+                关注数据科学与人工智能在金融研究中的应用，尤其是 RAG、金融文本与可交互知识工具。
               </p>
             </section>
 
@@ -210,7 +209,7 @@ export default function AboutApp() {
             <section className="about-skills-cloud">
               <h3 className="about-section-heading">特质标签</h3>
               <div className="profile-tags">
-                {['数据挖掘', '商业分析', 'ETL建模', '机器学习', '英语辩论', '科技创新', '薅羊毛'].map(tag => (
+                {['金融研究', 'RAG', '金融文本', '数据科学', '机器学习', '英语辩论', '交互设计'].map(tag => (
                   <span key={tag} className="profile-tag-item">{tag}</span>
                 ))}
               </div>
@@ -243,19 +242,29 @@ export default function AboutApp() {
               <div className="timeline-item">
                 <div className="timeline-marker" />
                 <div className="timeline-content">
-                  <span className="timeline-date">2025.08 - 2026.05 (Expected)</span>
-                  <h4 className="timeline-title">Virginia Tech (弗吉尼亚理工)</h4>
-                  <p className="timeline-sub">B.S. in Entrepreneurship, Innovation & Technology Management</p>
-                  <p className="timeline-desc">专注于计算创新商业化，结合数理统计模型在创新市场策略中的落地实践。</p>
+                  <span className="timeline-date">2026.09 - 至今</span>
+                  <h4 className="timeline-title">西安电子科技大学经济与管理学院</h4>
+                  <p className="timeline-sub">Master of Finance (金融)</p>
+                  <p className="timeline-desc">探索数据科学、人工智能与金融研究的结合，重点关注 RAG 与金融文本。</p>
                 </div>
               </div>
 
               <div className="timeline-item">
                 <div className="timeline-marker" />
                 <div className="timeline-content">
-                  <span className="timeline-date">2022.09 - 2026.06 (Expected)</span>
+                  <span className="timeline-date">2025.08 - 2026.05</span>
+                  <h4 className="timeline-title">Virginia Tech · Pamplin College of Business</h4>
+                  <p className="timeline-sub">Entrepreneurship, Innovation & Technology Management</p>
+                  <p className="timeline-desc">围绕商业分析、计算创新与技术管理开展学习，并担任 BIT 2406 课程助教。</p>
+                </div>
+              </div>
+
+              <div className="timeline-item">
+                <div className="timeline-marker" />
+                <div className="timeline-content">
+                  <span className="timeline-date">2022.09 - 2026.06</span>
                   <h4 className="timeline-title">西安电子科技大学</h4>
-                  <p className="timeline-sub">B.S. in Big Data Management and Application (大管理与应用)</p>
+                  <p className="timeline-sub">B.S. in Big Data Management and Application (大管理管理与应用)</p>
                   <p className="timeline-desc">
                     GPA: 3.8/4.0 (Top 10%)。
                     荣获校级科技优秀毕业生、一二等优秀学生奖学金、校友创新科技奖学金。

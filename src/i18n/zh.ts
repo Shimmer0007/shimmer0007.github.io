@@ -25,7 +25,7 @@ const zh = {
   'app.skills.title':   'Skill Tree',
   'app.projects.title': '项目浏览器',
   'app.travel.title':   '出行足迹',
-  'app.plan.title':     '二月计划',
+  'app.plan.title':     '二月计划 · Janus Blueprint',
   'app.toolbox.title':  '工具箱',
   'app.links.title':    '友情链接',
   'app.guestbook.title': '留言板',
@@ -33,8 +33,8 @@ const zh = {
   'app.terminal.title': 'ShimmerCMD',
 
   // ===== 关于我 =====
-  'about.subtitle': '数据分析 & 前端探索者',
-  'about.bio':      '你好！我是 Shimmer，现就读于 Virginia Tech，研究方向为统计与计算。喜欢用数据讲故事，也喜欢把想法变成可交互的界面。',
+  'about.subtitle': '金融 × 数据科学 × 人工智能',
+  'about.bio':      '你好！我是 Shimmer，现为西安电子科技大学金融硕士研究生，关注数据科学与人工智能在金融研究中的应用。',
   'about.currently': '当前状态',
   'about.contact':   '联系方式',
   'about.status.studying': '📚 正在学习',
@@ -76,7 +76,7 @@ const zh = {
   'settings.about.os':  '关于 ShimmerOS',
 
   // ===== 终端 =====
-  'term.welcome':  'ShimmerOS [v3.0.0]\n(c) 2026 Shimmer. 保留所有权利。\n\n输入 "help" 查看可用命令。\n',
+  'term.welcome':  'ShimmerOS [v3.0.0]\n(c) Shimmer. 保留所有权利。\n\n输入 "help" 查看可用命令。\n',
   'term.not_found': (cmd: string) => `命令未找到: ${cmd}。输入 "help" 获取帮助。`,
   'term.opening':   (app: string) => `正在打开 ${app}…`,
   'term.err_open':  (app: string) => `错误：应用 "${app}" 不存在。`,

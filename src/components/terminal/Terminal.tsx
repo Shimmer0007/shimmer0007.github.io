@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useOSStore, ACCENT_COLORS } from '../../store/os';
 import { useWindowsStore } from '../../store/windows';
 import { useContentStore } from '../../store/content';
-import { useT } from '../../i18n';
 import './Terminal.css';
 
 interface HistoryItem {
@@ -25,7 +24,6 @@ const ASCII_LOGO = `
 const START_TIME = new Date('2024-10-24T00:00:00+08:00').getTime();
 
 export default function Terminal() {
-  const t = useT();
   const openWindow = useWindowsStore(s => s.openWindow);
   const { theme, setTheme, accentId, setAccent, lang } = useOSStore();
   const { posts } = useContentStore();
@@ -41,9 +39,10 @@ export default function Terminal() {
 
   // 1. 初始化终端，输出欢迎语
   useEffect(() => {
+    const currentYear = new Date().getFullYear();
     const welcome = lang === 'zh'
-      ? `ShimmerOS [v3.0.0]\n(c) 2026 Shimmer. 保留所有权利。\n\n输入 "help" 查看可用命令列表。\n`
-      : `ShimmerOS [v3.0.0]\n(c) 2026 Shimmer. All rights reserved.\n\nType "help" to view the list of available commands.\n`;
+      ? `ShimmerOS [v3.0.0]\n(c) 2024-${currentYear} Shimmer. 保留所有权利。\n\n输入 "help" 查看可用命令列表。\n`
+      : `ShimmerOS [v3.0.0]\n(c) 2024-${currentYear} Shimmer. All rights reserved.\n\nType "help" to view the list of available commands.\n`;
     
     setHistory([{ type: 'output', text: welcome }]);
   }, [lang]);
@@ -121,7 +120,7 @@ export default function Terminal() {
   - skills           [技能图谱 - Skill Tree]
   - projects         [项目仓库 - Project Browser]
   - travel           [足迹足迹 - Travel footprints]
-  - plan             [日程计划 - Plan schedule]
+  - plan             [二月计划 - Janus Blueprint]
   - toolbox          [工具箱 - Hokie Hub]
   - links            [友情链接 - Friend Links]
   - guestbook        [留言板 - Guestbook]
@@ -133,7 +132,7 @@ export default function Terminal() {
   - skills           [Skill Tree]
   - projects         [Project Browser]
   - travel           [Travel footprints]
-  - plan             [Plan schedule]
+  - plan             [Current focus - Now]
   - toolbox          [Toolbox - Hokie Hub]
   - links            [Friend Links]
   - guestbook        [Guestbook]
@@ -154,7 +153,7 @@ export default function Terminal() {
           skills: 'Skill Tree',
           projects: lang === 'zh' ? '项目浏览器' : 'Project Browser',
           travel: lang === 'zh' ? '出行足迹' : 'Travel footprints',
-          plan: lang === 'zh' ? '二月计划' : 'Plan schedule',
+          plan: lang === 'zh' ? '二月计划 · Janus Blueprint' : 'Janus Blueprint',
           toolbox: lang === 'zh' ? '工具箱' : 'Toolbox',
           links: lang === 'zh' ? '友情链接' : 'Friend Links',
           guestbook: lang === 'zh' ? '留言板' : 'Guestbook',
@@ -208,8 +207,8 @@ export default function Terminal() {
 <pre class="term-ascii-logo">${ASCII_LOGO}</pre>
 <div class="term-specs">
   <p><span class="spec-label">User:</span> shimmer@github.io</p>
-  <p><span class="spec-label">OS:</span> ShimmerOS 2026 (v3.0.0)</p>
-  <p><span class="spec-label">Kernel:</span> Astro 7.0.5 + React 19.2</p>
+  <p><span class="spec-label">OS:</span> ShimmerOS v3.0.0</p>
+  <p><span class="spec-label">Kernel:</span> Astro 7 + React 19</p>
   <p><span class="spec-label">Uptime:</span> ${getUptimeString()}</p>
   <p><span class="spec-label">Theme:</span> ${theme.toUpperCase()}</p>
   <p><span class="spec-label">Accent:</span> ${accentLabel}</p>

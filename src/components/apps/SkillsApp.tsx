@@ -1,10 +1,10 @@
 // src/components/apps/SkillsApp.tsx
 import { useEffect, useRef, useState, useMemo } from 'react';
 import * as d3 from 'd3';
-import { useWindow } from '../window/Window';
 import { useWindowsStore } from '../../store/windows';
 import { useContentStore } from '../../store/content';
 import { useT } from '../../i18n';
+import { useElementSize } from '../../lib/use-element-size';
 import skillsDataRaw from '../../data/skills.json';
 import './SkillsApp.css';
 
@@ -30,7 +30,6 @@ interface SkillLink extends d3.SimulationLinkDatum<SkillNode> {
 
 export default function SkillsApp() {
   const t = useT();
-  const { winId } = useWindow();
   const openWindow = useWindowsStore(s => s.openWindow);
   
   // 联动总线
@@ -38,6 +37,7 @@ export default function SkillsApp() {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const { width, height } = useElementSize(containerRef);
 
   // 选中的节点，用于侧边栏渲染
   const [selectedNode, setSelectedNode] = useState<SkillNode | null>(null);
@@ -62,13 +62,10 @@ export default function SkillsApp() {
   useEffect(() => {
     const container = containerRef.current;
     const svgEl = svgRef.current;
-    if (!container || !svgEl) return;
+    if (!container || !svgEl || !width || !height) return;
 
     // 清空历史 SVG 元素
     d3.select(svgEl).selectAll('*').remove();
-
-    const width = container.clientWidth || 550;
-    const height = container.clientHeight || 450;
 
     const svg = d3.select(svgEl)
       .attr('width', '100%')
@@ -120,7 +117,9 @@ export default function SkillsApp() {
         .id(d => d.id)
         .distance(d => {
           // 连线间距分配
-          if (d.source.type === 'core' || d.target.type === 'core') return 130;
+          const source = d.source as SkillNode;
+          const target = d.target as SkillNode;
+          if (source.type === 'core' || target.type === 'core') return 130;
           return 75;
         })
         .strength(1.0)
@@ -199,7 +198,7 @@ export default function SkillsApp() {
     });
 
     // 悬停高亮相连节点
-    node.on('mouseover', (event, d) => {
+    node.on('mouseover', (_, d) => {
       const connectedIds = new Set<string>([d.id]);
       graphData.links.forEach(l => {
         const sourceId = typeof l.source === 'object' ? l.source.id : l.source;
@@ -276,9 +275,10 @@ export default function SkillsApp() {
     svg.call(zoom.transform, d3.zoomIdentity.translate(0, 0).scale(0.95));
 
     return () => {
+      svg.interrupt();
       simulation.stop();
     };
-  }, [graphData]);
+  }, [graphData, width, height]);
 
   // 5. 分类筛选响应式过滤
   useEffect(() => {
@@ -295,7 +295,7 @@ export default function SkillsApp() {
         const t = l.target as SkillNode;
         return (isFiltered(s, activeFilter) && isFiltered(t, activeFilter)) ? 0.6 : 0.05;
       });
-  }, [activeFilter]);
+  }, [activeFilter, width, height]);
 
   function isFiltered(n: SkillNode, filter: string) {
     if (filter === 'all') return true;

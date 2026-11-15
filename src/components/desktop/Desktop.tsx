@@ -46,21 +46,23 @@ export default function Desktop({ loaded }: DesktopProps) {
         <div className="aurora-blob aurora-blob--3" />
       </div>
 
-      {/* 具有呼吸感的全息 Uptime 计时时钟 */}
-      <UptimeClock />
+      <div className="desktop-content">
+        {/* 窄屏时计时器进入正常排版，为应用入口留出空间。 */}
+        <UptimeClock />
 
-      {/* 图标区域 */}
-      <div className="desktop-icons">
-        {APPS.map((app, i) => (
-          <DesktopIcon
-            key={app.id}
-            appId={app.id}
-            label={t(`app.${app.id}.label`)}
-            tier={app.tier}
-            animDelay={i * 60}
-            onClick={() => handleIconClick(app.id)}
-          />
-        ))}
+        {/* 图标区域 */}
+        <div className="desktop-icons">
+          {APPS.map((app, i) => (
+            <DesktopIcon
+              key={app.id}
+              appId={app.id}
+              label={t(`app.${app.id}.label`)}
+              tier={app.tier}
+              animDelay={i * 60}
+              onClick={() => handleIconClick(app.id)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

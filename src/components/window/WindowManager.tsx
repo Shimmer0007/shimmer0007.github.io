@@ -1,6 +1,6 @@
 // src/components/window/WindowManager.tsx
 // 窗口管理器 — 渲染所有已开窗口，懒加载各 App
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useRef } from 'react';
 import { useWindowsStore } from '../../store/windows';
 import Window from './Window';
 import './WindowManager.css';
@@ -42,9 +42,18 @@ function AppLoader() {
 
 export default function WindowManager() {
   const windows = useWindowsStore(s => s.windows);
+  const fitWindowsToViewport = useWindowsStore(s => s.fitWindowsToViewport);
+  const areaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!areaRef.current) return;
+    const observer = new ResizeObserver(fitWindowsToViewport);
+    observer.observe(areaRef.current);
+    return () => observer.disconnect();
+  }, [fitWindowsToViewport]);
 
   return (
-    <div className="window-manager" aria-live="polite">
+    <div className="window-manager" ref={areaRef} aria-live="polite">
       {windows.map(win => {
         const AppComponent = APP_COMPONENTS[win.appId];
         if (!AppComponent) return null;

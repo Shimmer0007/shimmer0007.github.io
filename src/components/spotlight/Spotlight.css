@@ -10,11 +10,14 @@
 
 .spotlight {
   position: fixed;
-  top: 18%;
+  top: max(12px, env(safe-area-inset-top, 0px), min(12dvh, 120px));
   left: 50%;
   transform: translateX(-50%);
   z-index: var(--z-spotlight);
   width: min(580px, 92vw);
+  max-height: calc(88dvh - max(24px, env(safe-area-inset-top, 0px)));
+  display: flex;
+  flex-direction: column;
   background: var(--color-bg-overlay);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -28,6 +31,7 @@
 /* ===== 输入区 ===== */
 .spotlight__input-wrap {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-4) var(--space-5);
@@ -43,6 +47,7 @@
 
 .spotlight__input {
   flex: 1;
+  min-width: 0;
   font-size: 1rem;
   font-family: var(--font-sans);
   color: var(--color-text-primary);
@@ -66,6 +71,7 @@
 /* ===== 结果列表 ===== */
 .spotlight__results {
   list-style: none;
+  min-height: 0;
   max-height: 320px;
   overflow-y: auto;
   padding: var(--space-2);
@@ -73,6 +79,7 @@
 
 .spotlight__item {
   display: flex;
+  min-height: 44px;
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-2) var(--space-3);
@@ -91,6 +98,8 @@
 
 .spotlight__item-label {
   flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--color-text-primary);
@@ -114,6 +123,7 @@
 /* ===== 快捷键提示 ===== */
 .spotlight__hint {
   display: flex;
+  flex-shrink: 0;
   gap: var(--space-4);
   padding: var(--space-2) var(--space-5);
   border-top: 1px solid var(--color-border-subtle);

@@ -3,7 +3,8 @@
 .about-app-container {
   display: flex;
   height: 100%;
-  min-height: 520px;
+  min-height: 0;
+  min-width: 0;
   gap: var(--space-5);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
@@ -112,6 +113,8 @@
 /* ===== 主展示区 ===== */
 .about-main-content {
   flex: 1;
+  min-width: 0;
+  min-height: 0;
   overflow-y: auto;
   padding-left: var(--space-2);
 }
@@ -146,7 +149,7 @@
 
 .about-grid-stats {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-4);
 }
 
@@ -212,6 +215,8 @@
 }
 
 .social-link-btn {
+  max-width: 100%;
+  overflow-wrap: anywhere;
   padding: var(--space-3) var(--space-4);
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--color-border-subtle);
@@ -478,10 +483,12 @@
   top: 1px;
 }
 
-/* ===== 移动端适配 ===== */
-@media (max-width: 768px) {
+/* ===== 按窗口宽度调整导航，窄窗口采用单一纵向滚动 ===== */
+@container app-window (max-width: 760px) {
   .about-app-container {
     flex-direction: column;
+    height: auto;
+    min-height: 100%;
     gap: var(--space-4);
   }
 
@@ -496,19 +503,22 @@
 
   .about-nav {
     flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+    overflow-x: auto;
     gap: var(--space-2);
   }
 
   .about-nav-item {
     width: auto;
+    flex-shrink: 0;
+    min-height: 44px;
+    white-space: nowrap;
     padding: 6px 12px;
     font-size: 0.78rem;
   }
 
   .about-profile-header {
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
     gap: var(--space-4);
   }
@@ -519,5 +529,16 @@
 
   .about-main-content {
     padding-left: 0;
+    overflow: visible;
+    flex: none;
   }
+
+  .about-profile-avatar { width: 44px; height: 44px; font-size: 1.25rem; }
+  .quest-card__badge { position: static; align-self: flex-start; margin-bottom: var(--space-2); }
+  .quest-card__title { max-width: 100%; }
+}
+
+@container app-window (max-width: 380px) {
+  .about-grid-stats { grid-template-columns: 1fr; }
+  .about-profile-class { flex-basis: 100%; }
 }

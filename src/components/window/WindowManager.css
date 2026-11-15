@@ -1,7 +1,7 @@
 /* WindowManager.css */
 .window-manager {
-  position: fixed;
-  inset: 0;
+  position: absolute;
+  inset: 0 0 var(--dock-clearance);
   pointer-events: none; /* 让桌面点击穿透 */
   z-index: var(--z-window);
 }

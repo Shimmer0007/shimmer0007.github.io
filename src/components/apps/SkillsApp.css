@@ -3,7 +3,8 @@
 .skills-container {
   display: flex;
   height: 100%;
-  min-height: 520px;
+  min-height: 0;
+  min-width: 0;
   position: relative;
   overflow: hidden;
   color: var(--color-text-primary);
@@ -13,6 +14,8 @@
 /* ===== A. 左侧拓扑网络图 ===== */
 .skills-graph-area {
   flex: 1;
+  min-width: 0;
+  min-height: 0;
   height: 100%;
   position: relative;
   display: flex;
@@ -25,6 +28,8 @@
   top: var(--space-4);
   left: var(--space-4);
   display: flex;
+  right: var(--space-4);
+  flex-wrap: wrap;
   gap: var(--space-1);
   z-index: 10;
 }
@@ -320,14 +325,14 @@
 }
 
 /* ===== 移动端自适应 ===== */
-@media (max-width: 768px) {
+@container app-window (max-width: 640px) {
   .skills-container {
     flex-direction: column;
   }
   
   .skills-detail-sidebar {
     width: 100%;
-    height: 180px;
+    height: min(65%, 360px);
     top: auto;
     bottom: 0;
     transform: translateY(100%);
@@ -338,4 +343,8 @@
   .skills-detail-sidebar.visible {
     transform: translateY(0);
   }
+
+  .skills-filter-btn { min-height: 40px; padding: 5px 10px; }
+  .skills-controls button { width: 44px; height: 44px; }
+  .skills-detail-close { width: 44px; height: 44px; top: 4px; right: 4px; }
 }

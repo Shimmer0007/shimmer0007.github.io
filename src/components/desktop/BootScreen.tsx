@@ -1,5 +1,5 @@
 // src/components/desktop/BootScreen.tsx
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useOSStore } from '../../store/os';
 import './BootScreen.css';
 
@@ -13,38 +13,78 @@ export default function BootScreen({ onComplete }: BootScreenProps) {
   const [phase, setPhase] = useState<'letters' | 'progress' | 'done'>('letters');
   const [progress, setProgress] = useState(0);
   const [hidden, setHidden] = useState(false);
+  const timeoutIdsRef = useRef<number[]>([]);
+  const intervalIdRef = useRef<number | null>(null);
+  const completedRef = useRef(false);
   const theme = useOSStore(s => s.theme);
+
+  const clearBootTimers = useCallback(() => {
+    timeoutIdsRef.current.forEach(window.clearTimeout);
+    timeoutIdsRef.current = [];
+
+    if (intervalIdRef.current !== null) {
+      window.clearInterval(intervalIdRef.current);
+      intervalIdRef.current = null;
+    }
+  }, []);
+
+  const completeBoot = useCallback((skipAnimation = false) => {
+    if (completedRef.current) return;
+    completedRef.current = true;
+    clearBootTimers();
+    setProgress(100);
+
+    if (skipAnimation) {
+      setHidden(true);
+      onComplete();
+      return;
+    }
+
+    setPhase('done');
+    const exitTimer = window.setTimeout(() => {
+      setHidden(true);
+      onComplete();
+    }, 600);
+    timeoutIdsRef.current.push(exitTimer);
+  }, [clearBootTimers, onComplete]);
 
   useEffect(() => {
     // Phase 1: 文字出现 (0ms → 800ms)
-    const t1 = setTimeout(() => setPhase('progress'), 900);
+    const t1 = window.setTimeout(() => setPhase('progress'), 900);
 
     // Phase 2: 进度条 (900ms → 2600ms)
-    const t2 = setTimeout(() => {
+    const t2 = window.setTimeout(() => {
       let p = 0;
-      const interval = setInterval(() => {
+      intervalIdRef.current = window.setInterval(() => {
         p += Math.random() * 18 + 8;
         if (p >= 100) {
           p = 100;
-          clearInterval(interval);
+          if (intervalIdRef.current !== null) {
+            window.clearInterval(intervalIdRef.current);
+            intervalIdRef.current = null;
+          }
           setProgress(100);
           // Phase 3: 消失
-          setTimeout(() => {
-            setPhase('done');
-            setTimeout(() => {
-              setHidden(true);
-              onComplete();
-            }, 600);
-          }, 350);
+          const finishTimer = window.setTimeout(() => completeBoot(), 350);
+          timeoutIdsRef.current.push(finishTimer);
         } else {
           setProgress(p);
         }
       }, 90);
-      return () => clearInterval(interval);
     }, 900);
 
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, [onComplete]);
+    timeoutIdsRef.current.push(t1, t2);
+    return clearBootTimers;
+  }, [clearBootTimers, completeBoot]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') completeBoot(true);
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [completeBoot]);
 
   if (hidden) return null;
 
@@ -53,6 +93,16 @@ export default function BootScreen({ onComplete }: BootScreenProps) {
       className={`boot-screen ${phase === 'done' ? 'boot-screen--exit' : ''}`}
       data-theme={theme}
     >
+      <button
+        type="button"
+        className="boot-skip"
+        onClick={() => completeBoot(true)}
+        aria-label="跳过开机动画"
+      >
+        <span>跳过启动</span>
+        <kbd>Esc</kbd>
+      </button>
+
       {/* 极光背景 */}
       <div className="boot-aurora" aria-hidden />
 
@@ -71,7 +121,7 @@ export default function BootScreen({ onComplete }: BootScreenProps) {
       </div>
 
       {/* 版本 */}
-      <p className="boot-version">v3.0.0 · 2026</p>
+      <p className="boot-version">v3.0.0 · PERSONAL KNOWLEDGE OS</p>
 
       {/* 进度条 */}
       {phase !== 'letters' && (

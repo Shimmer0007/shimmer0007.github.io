@@ -1,7 +1,7 @@
 // src/components/window/Window.tsx
 // 单个窗口组件 — 拖拽、最大化、标题栏红绿灯
 import { useRef, useCallback, useEffect, createContext, useContext } from 'react';
-import { useWindowsStore, type AppWindow } from '../../store/windows';
+import { isCompactViewport, useWindowsStore, type AppWindow } from '../../store/windows';
 import './Window.css';
 
 interface WindowContextType {
@@ -15,7 +15,7 @@ interface WindowProps {
 }
 
 export default function Window({ win, children }: WindowProps) {
-  const { activateWindow, closeWindow, minimizeWindow, toggleMaximize, moveWindow } =
+  const { activateWindow, closeWindow, minimizeWindow, toggleMaximize, moveWindow, resizeWindow } =
     useWindowsStore();
   const dragRef = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
   const winRef  = useRef<HTMLDivElement>(null);
@@ -23,14 +23,30 @@ export default function Window({ win, children }: WindowProps) {
   const isMaximized = win.state === 'maximized';
   const isMinimized = win.state === 'minimized';
 
-  /* ===== Drag ===== */
-  const onTitleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      if ((e.target as HTMLElement).closest('.win-control')) return;
-      if (isMaximized || window.innerWidth <= 768) return;
-      e.preventDefault();
-      activateWindow(win.id);
+  // 原生 resize 会改变 DOM 尺寸；同步到状态后，最大化再还原仍保持用户的尺寸。
+  useEffect(() => {
+    const element = winRef.current;
+    if (!element || isMaximized || isMinimized) return;
+    const observer = new ResizeObserver(() => {
+      if (isCompactViewport() || !element.offsetWidth || !element.offsetHeight) return;
+      const current = useWindowsStore.getState().windows.find(item => item.id === win.id);
+      if (current && (current.rect.width !== element.offsetWidth || current.rect.height !== element.offsetHeight)) {
+        resizeWindow(win.id, element.offsetWidth, element.offsetHeight);
+      }
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [win.id, isMaximized, isMinimized, resizeWindow]);
 
+  /* ===== Drag ===== */
+  const onTitlePointerDown = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (e.button !== 0 || (e.target as HTMLElement).closest('button')) return;
+      if (isMaximized || isCompactViewport()) return;
+      e.preventDefault();
+      e.stopPropagation();
+      activateWindow(win.id);
+      e.currentTarget.setPointerCapture(e.pointerId);
       dragRef.current = {
         startX: e.clientX,
         startY: e.clientY,
@@ -38,30 +54,13 @@ export default function Window({ win, children }: WindowProps) {
         origY:  win.rect.y,
       };
 
-      const onMove = (me: MouseEvent) => {
-        if (!dragRef.current) return;
-        const dx = me.clientX - dragRef.current.startX;
-        const dy = me.clientY - dragRef.current.startY;
-        const newX = dragRef.current.origX + dx;
-        const newY = dragRef.current.origY + dy;
-        // 边界限制：不超出屏幕顶部
-        moveWindow(win.id, newX, Math.max(0, newY));
-      };
-
-      const onUp = () => {
-        dragRef.current = null;
-        document.removeEventListener('mousemove', onMove);
-        document.removeEventListener('mouseup', onUp);
-      };
-
-      document.addEventListener('mousemove', onMove);
-      document.addEventListener('mouseup', onUp);
     },
-    [win.id, win.rect, isMaximized, activateWindow, moveWindow]
+    [win.id, win.rect, isMaximized, activateWindow]
   );
 
   // 双击标题栏 → 最大化/还原
-  const onTitleDblClick = useCallback(() => {
+  const onTitleDblClick = useCallback((e: React.MouseEvent) => {
+    if (isCompactViewport() || (e.target as HTMLElement).closest('button')) return;
     toggleMaximize(win.id);
   }, [win.id, toggleMaximize]);
 
@@ -69,8 +68,8 @@ export default function Window({ win, children }: WindowProps) {
   const style: React.CSSProperties = isMaximized
     ? {
         left: 0, top: 0,
-        width: '100vw',
-        height: 'calc(100vh - 84px)', // 留出 Dock 空间
+        width: '100%',
+        height: '100%',
         zIndex: win.zIndex,
       }
     : {
@@ -88,14 +87,24 @@ export default function Window({ win, children }: WindowProps) {
       ref={winRef}
       className={`window ${win.isActive ? 'window--active' : ''} ${isMaximized ? 'window--maximized' : ''}`}
       style={style}
-      onMouseDown={() => activateWindow(win.id)}
+      onPointerDown={() => { if (!win.isActive) activateWindow(win.id); }}
       role="dialog"
       aria-label={win.title}
     >
       {/* ===== Title Bar ===== */}
       <div
         className="win-titlebar"
-        onMouseDown={onTitleMouseDown}
+        onPointerDown={onTitlePointerDown}
+        onPointerMove={e => {
+          const drag = dragRef.current;
+          if (drag) moveWindow(win.id, drag.origX + e.clientX - drag.startX, drag.origY + e.clientY - drag.startY);
+        }}
+        onPointerUp={e => {
+          dragRef.current = null;
+          if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
+        }}
+        onPointerCancel={() => { dragRef.current = null; }}
+        onLostPointerCapture={() => { dragRef.current = null; }}
         onDoubleClick={onTitleDblClick}
       >
         {/* 左侧控制区 */}

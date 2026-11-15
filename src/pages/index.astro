@@ -10,17 +10,28 @@ const posts = await getCollection('posts');
 const clientPosts = posts.map(post => ({
   id: post.id,
   slug: post.id,
-  body: post.body,
   data: post.data,
 })).sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()); // 按时间倒序
 ---
 
-<html lang="zh">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-    <title>ShimmerOS 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="Shimmer 的个人主页：金融、数据科学、人工智能、项目与写作。" />
+    <meta name="author" content="Shimmer" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0f0d1a" />
+    <title>ShimmerOS · Shimmer 的个人主页</title>
+    <link rel="canonical" href={Astro.site} />
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ShimmerOS" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:title" content="ShimmerOS · Shimmer 的个人主页" />
+    <meta property="og:description" content="金融、数据科学、人工智能、项目与写作。" />
+    <meta property="og:url" content={Astro.site} />
+    <meta name="twitter:card" content="summary" />
     <!-- 引入初始字体以防止闪烁，这里选择预加载中英文主字体 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

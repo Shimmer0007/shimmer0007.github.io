@@ -1,8 +1,8 @@
 // src/components/ui/AppIcon.tsx
 // SVG 应用图标注册表 — 统一风格，渐变描边，不用 Emoji
-import type { SVGProps } from 'react';
+import type { ReactElement } from 'react';
 
-interface AppIconProps extends SVGProps<SVGSVGElement> {
+interface AppIconProps {
   appId: string;
   className?: string;
 }
@@ -16,7 +16,7 @@ const BASE = {
   strokeLinejoin: 'round' as const,
 };
 
-const ICONS: Record<string, (id: string) => JSX.Element> = {
+const ICONS: Record<string, (id: string) => ReactElement> = {
   about: (id) => (
     <svg {...BASE} xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -183,7 +183,7 @@ const DefaultIcon = ({ id }: { id: string }) => (
   </svg>
 );
 
-export default function AppIcon({ appId, className, ...rest }: AppIconProps) {
+export default function AppIcon({ appId, className }: AppIconProps) {
   const renderFn = ICONS[appId];
   const uniqueId = `icon-${appId}`;
 

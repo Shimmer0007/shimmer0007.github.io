@@ -18,6 +18,7 @@
 - Toolbox：HokieEhall 资源导航、Markdown 手册和 GitHub 仓库查询。
 - Terminal：支持 `help`、`open`、`theme`、`accent`、`sysinfo`、`date`、`contact`、`clear` 和 `reboot` 等命令。
 - Guestbook：通过 Utterances 将留言保存为 GitHub Issue 评论。
+- 二月计划（Janus Blueprint）：一系列以两个月为基本单位的中长期指导性文件，文件目录待整理。
 - 个性化设置：主题、语言和强调色会保存在浏览器本地存储中。
 
 ## 技术栈
@@ -29,7 +30,7 @@
 - [Marked](https://marked.js.org/)：Markdown 内容渲染。
 - GitHub Pages + GitHub Actions：自动构建与部署。
 
-项目要求 Node.js `>=18.17.1`。CI 当前使用 Node.js 22。
+项目要求 Node.js `>=22.23.4`。CI 当前使用 Node.js 24。
 
 ## 本地开发
 
@@ -47,7 +48,10 @@ npm run dev
 | 命令 | 说明 |
 | --- | --- |
 | `npm run dev` | 启动开发服务器 |
+| `npm run audit` | 检查 high 及以上等级的依赖漏洞 |
+| `npm run check` | 检查 Astro、TypeScript 与内容类型 |
 | `npm run build` | 构建静态生产产物到 `dist/` |
+| `npm run validate` | 依次执行静态检查与生产构建 |
 | `npm run preview` | 预览生产构建结果 |
 | `npm run astro -- --help` | 查看 Astro CLI 帮助 |
 
@@ -121,7 +125,7 @@ link: "https://example.com/original-note"
 项目通过 GitHub Actions 部署到 GitHub Pages：
 
 1. 将代码推送到 `main` 分支，或在 Actions 页面手动运行工作流。
-2. 工作流执行 `npm ci` 和 `npm run build`。
+2. 工作流执行依赖安全审计、Astro/TypeScript 静态检查和生产构建。
 3. `dist/` 会上传为 Pages artifact，并由 `actions/deploy-pages` 发布。
 
 仓库需要在 GitHub Pages 设置中选择 **GitHub Actions** 作为构建来源，并确保工作流具有 Pages 写入权限。
@@ -147,7 +151,7 @@ link: "https://example.com/original-note"
 
 ## 当前工程状态
 
-截至目前，生产构建可以成功生成首页及文章静态路由。项目仍以交互体验为主，后续可继续补充自动化测试、类型检查和 lint 质量门禁。
+生产构建可以生成首页及文章静态路由；CI 会对 pull request 和 `main` 分支执行 Astro/TypeScript 静态检查与生产构建。Dependabot 每月检查 npm 与 GitHub Actions 更新。
 
 ## License
 

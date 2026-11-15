@@ -32,6 +32,14 @@ interface FireworkParticle {
   color: string;
 }
 
+interface HologramItem {
+  text: string;
+  type: string;
+  title?: string;
+  app?: string;
+  postId?: string;
+}
+
 // 黄金比例，用于构建正二十面体 (Icosahedron)
 const PHI = (1 + Math.sqrt(5)) / 2;
 const ICOSAHEDRON_VERTICES = [
@@ -65,15 +73,10 @@ export default function Interactive3DBackground() {
   const { posts, setActivePostId } = useContentStore();
 
   // 全息卡片状态
-  const [hologram, setHologram] = useState<{
+  const [hologram, setHologram] = useState<(HologramItem & {
     x: number;
     y: number;
-    text: string;
-    type: string;
-    title?: string;
-    app?: string;
-    postId?: string;
-  } | null>(null);
+  }) | null>(null);
 
   // 用 Ref 保持当前渲染投影粒子的 2D 屏幕位置，以便全局点击命中检测和鼠标 Hover 检测
   const projectedNodesRef = useRef<{ id: number; x: number; y: number; z: number; colorType: string; radius: number }[]>([]);
@@ -85,7 +88,7 @@ export default function Interactive3DBackground() {
   // ===== 动态生成引文与传送门数据库 =====
   const dynamicMemes = useMemo(() => {
     // 基础系统内置句子与常设传送门
-    const list = [
+    const list: HologramItem[] = [
       { text: '“用 linear-gradient，让紫与金在夜空撞色呼吸。”', type: 'quote' },
       { text: '“ShimmerOS 核心终端已加载完毕。你可以双击图标拉开对应的系统窗口。”', type: 'quote' },
       { text: '“发现了一条系统传送门！可直接穿梭进入关于我角色面板：”', type: 'portal', title: '关于我 (Player Profile)', app: 'about' },

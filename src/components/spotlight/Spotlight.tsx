@@ -3,7 +3,6 @@
 import { useRef, useEffect, useMemo } from 'react';
 import { useContentStore } from '../../store/content';
 import { useWindowsStore } from '../../store/windows';
-import { useOSStore } from '../../store/os';
 import { useT } from '../../i18n';
 import './Spotlight.css';
 
@@ -14,7 +13,7 @@ const SEARCHABLE_APPS = [
   { id: 'skills',   keywords: ['技能', 'skill', 'tree'] },
   { id: 'projects', keywords: ['项目', 'project', 'portfolio'] },
   { id: 'travel',   keywords: ['旅行', 'travel', '足迹', 'map'] },
-  { id: 'plan',     keywords: ['计划', 'plan', '二月'] },
+  { id: 'plan',     keywords: ['二月计划', 'janus', 'blueprint', '两个月', '规划', '指导性文件'] },
   { id: 'toolbox',  keywords: ['工具', 'tool', 'github'] },
   { id: 'links',    keywords: ['友链', 'links', '友情'] },
   { id: 'settings', keywords: ['设置', 'setting', 'theme'] },

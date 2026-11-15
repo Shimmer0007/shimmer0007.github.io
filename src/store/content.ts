@@ -5,7 +5,6 @@ import { create } from 'zustand';
 export interface PostItem {
   id: string;
   slug: string;
-  body: string;
   data: {
     title: string;
     date: string;

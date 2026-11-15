@@ -170,7 +170,7 @@
 }
 
 /* 响应式调整 */
-@media (max-width: 600px) {
+@container app-window (max-width: 600px) {
   .term-sysinfo {
     flex-direction: column;
     align-items: flex-start;
