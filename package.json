@@ -33,6 +33,6 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "@types/d3": "^7.4.3",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   }
 }
